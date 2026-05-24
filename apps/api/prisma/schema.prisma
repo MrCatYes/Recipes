@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum StoreChain {
+  IGA
+  Metro
+  Maxi
+  Walmart
+  Costco
+}
+
+enum UnitType {
+  weight
+  volume
+  count
+}
+
+enum PriceSource {
+  scrape
+  flyer
+  manual
+}
+
+// ─── Stores ───────────────────────────────────────────────────────────────────
+
+model Store {
+  id           String     @id @default(cuid())
+  chain        StoreChain
+  name         String
+  address      String?
+  city         String?
+  postalCode   String?
+  latitude     Float?
+  longitude    Float?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  storeProducts StoreProduct[]
+  flyerItems    FlyerItem[]
+
+  @@index([chain])
+  @@index([city])
+}
+
+// ─── Products ─────────────────────────────────────────────────────────────────
+
+model Product {
+  id              String     @id @default(cuid())
+  name            String
+  brand           String?
+  category        String
+  gtin            String?    @unique
+  defaultUnit     String     // g | ml | unit
+  defaultUnitType UnitType
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  storeProducts   StoreProduct[]
+  ingredients     Ingredient[]
+  flyerItems      FlyerItem[]
+  unitConversions UnitConversion[]
+
+  @@index([name])
+  @@index([category])
+  @@index([gtin])
+}
+
+model StoreProduct {
+  id           String   @id @default(cuid())
+  productId    String
+  storeId      String
+  sku          String?
+  packageSize  Float
+  packageUnit  String
+  lastSeenAt   DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  store        Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  prices       Price[]
+
+  @@unique([productId, storeId, sku])
+  @@index([productId])
+  @@index([storeId])
+}
+
+// ─── Prices ───────────────────────────────────────────────────────────────────
+
+model Price {
+  id             String      @id @default(cuid())
+  storeProductId String
+  priceCents     Int
+  currency       String      @default("CAD")
+  source         PriceSource
+  capturedAt     DateTime    @default(now())
+  validFrom      DateTime?
+  validTo        DateTime?
+
+  storeProduct   StoreProduct @relation(fields: [storeProductId], references: [id], onDelete: Cascade)
+
+  @@index([storeProductId])
+  @@index([capturedAt])
+  @@index([validFrom, validTo])
+}
+
+// ─── Flyers ───────────────────────────────────────────────────────────────────
+
+model FlyerItem {
+  id                String   @id @default(cuid())
+  storeId           String
+  productId         String?
+  rawText           String
+  promoPriceCents   Int
+  regularPriceCents Int?
+  weekOf            DateTime // Monday of the flyer week
+  createdAt         DateTime @default(now())
+
+  store             Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  product           Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([storeId])
+  @@index([productId])
+  @@index([weekOf])
+}
+
+// ─── Recipes ──────────────────────────────────────────────────────────────────
+
+model Recipe {
+  id               String   @id @default(cuid())
+  sourceUrl        String?  @unique
+  title            String
+  servings         Int      @default(4)
+  imageUrl         String?
+  instructions     String[] // array of steps
+  prepTimeMinutes  Int?
+  cookTimeMinutes  Int?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  ingredients      Ingredient[]
+
+  @@index([title])
+}
+
+model Ingredient {
+  id              String   @id @default(cuid())
+  recipeId        String
+  rawText         String
+  parsedQuantity  Float?
+  parsedUnit      String?
+  productId       String?
+  notes           String?
+  sortOrder       Int      @default(0)
+
+  recipe          Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  product         Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  @@index([recipeId])
+  @@index([productId])
+}
+
+// ─── Unit Conversions ─────────────────────────────────────────────────────────
+
+model UnitConversion {
+  id        String   @id @default(cuid())
+  fromUnit  String
+  toUnit    String
+  productId String?  // null = universal, set = product-specific density
+  factor    Float    // toUnit = fromUnit * factor
+
+  product   Product? @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([fromUnit, toUnit, productId])
+  @@index([fromUnit])
+  @@index([toUnit])
+  @@index([productId])
+}

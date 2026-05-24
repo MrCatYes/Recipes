@@ -1,0 +1,24 @@
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+Thumbs.db
+
+# Expo
+.expo/
+apps/mobile/.expo/
+apps/mobile/android/
+apps/mobile/ios/
+
+# Prisma
+apps/api/prisma/migrations/*.sql.bak
+
+# Build
+apps/api/dist/
+packages/shared-types/dist/
+
+# Test coverage
+coverage/
