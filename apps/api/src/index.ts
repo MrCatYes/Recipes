@@ -3,6 +3,7 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import sensible from '@fastify/sensible';
 import { productsRoutes } from './routes/products.routes';
+import { recipesRoutes } from './routes/recipes.routes';
 
 const server = Fastify({
   logger: {
@@ -18,8 +19,8 @@ async function main() {
   server.get('/health', async () => ({ status: 'ok', ts: new Date().toISOString() }));
 
   await server.register(productsRoutes, { prefix: '/api/v1' });
+  await server.register(recipesRoutes, { prefix: '/api/v1' });
 
-  // TODO Phase 2: recipes routes
   // TODO Phase 3: flyers routes
 
   const port = Number(process.env.PORT ?? 3000);

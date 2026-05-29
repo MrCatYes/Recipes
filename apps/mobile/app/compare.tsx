@@ -10,8 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import type { GetPricesResponse, StoreChain } from '@epicerie/shared-types';
-
-const API_BASE = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
+import { getProductPrices } from '../lib/api';
 
 const CHAIN_COLORS: Record<StoreChain, string> = {
   IGA: '#E53935',
@@ -31,11 +30,7 @@ export default function CompareScreen() {
     setLoading(true);
     setData(null);
     try {
-      const res = await fetch(
-        `${API_BASE}/products/prices?q=${encodeURIComponent(query.trim())}`
-      );
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setData(await res.json());
+      setData(await getProductPrices(query.trim()));
     } catch (e) {
       Alert.alert('Erreur', String(e));
     } finally {
@@ -63,27 +58,37 @@ export default function CompareScreen() {
 
       {data && (
         <>
-          <Text style={styles.productName}>{data.product.name}</Text>
+          <View style={styles.productHeader}>
+            <Text style={styles.productName}>{data.product.name}</Text>
+            {data.product.brand && (
+              <Text style={styles.productBrand}>{data.product.brand}</Text>
+            )}
+            {data.prices.length === 0 && (
+              <Text style={styles.empty}>Aucun prix disponible pour ce produit.</Text>
+            )}
+          </View>
           <FlatList
             data={data.prices}
             keyExtractor={(_, i) => String(i)}
+            contentContainerStyle={styles.list}
             renderItem={({ item, index }) => (
               <View style={[styles.priceRow, index === 0 && styles.cheapestRow]}>
-                <View
-                  style={[styles.chainBadge, { backgroundColor: CHAIN_COLORS[item.chain] }]}
-                >
+                <View style={[styles.chainBadge, { backgroundColor: CHAIN_COLORS[item.chain] }]}>
                   <Text style={styles.chainText}>{item.chain}</Text>
                 </View>
                 <View style={styles.priceInfo}>
-                  <Text style={styles.price}>{formatCents(item.priceCents)}</Text>
+                  <Text style={styles.storeName}>{item.storeName}</Text>
                   <Text style={styles.packageInfo}>
                     {item.packageSize} {item.packageUnit}
                   </Text>
                 </View>
-                <Text style={styles.unitPrice}>
-                  {formatCents(item.pricePerUnit)}/{data.product.defaultUnit}
-                </Text>
-                {item.isPromo && <Text style={styles.promoBadge}>PROMO</Text>}
+                <View style={styles.priceRight}>
+                  <Text style={styles.price}>{formatCents(item.priceCents)}</Text>
+                  <Text style={styles.unitPrice}>
+                    {formatCents(item.pricePerUnit)}/{data.product.defaultUnit}
+                  </Text>
+                  {item.isPromo && <Text style={styles.promoBadge}>PROMO</Text>}
+                </View>
               </View>
             )}
           />
@@ -119,13 +124,15 @@ const styles = StyleSheet.create({
   },
   buttonText: { color: '#fff', fontWeight: '600' },
   loader: { marginTop: 32 },
-  productName: { fontSize: 18, fontWeight: '700', paddingHorizontal: 16, marginBottom: 8 },
+  productHeader: { paddingHorizontal: 16, paddingBottom: 8 },
+  productName: { fontSize: 18, fontWeight: '700' },
+  productBrand: { fontSize: 13, color: '#666', marginTop: 2 },
+  empty: { color: '#999', marginTop: 12, fontSize: 14 },
+  list: { padding: 16, gap: 10 },
   priceRow: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    marginHorizontal: 16,
-    marginBottom: 8,
     borderRadius: 10,
     padding: 12,
     gap: 10,
@@ -140,9 +147,11 @@ const styles = StyleSheet.create({
   },
   chainText: { color: '#fff', fontWeight: '700', fontSize: 12 },
   priceInfo: { flex: 1 },
+  storeName: { fontSize: 13, fontWeight: '600' },
+  packageInfo: { color: '#666', fontSize: 12, marginTop: 2 },
+  priceRight: { alignItems: 'flex-end', gap: 2 },
   price: { fontSize: 18, fontWeight: '700' },
-  packageInfo: { color: '#666', fontSize: 12 },
-  unitPrice: { fontSize: 13, color: '#444', textAlign: 'right' },
+  unitPrice: { fontSize: 12, color: '#666' },
   promoBadge: {
     backgroundColor: '#FF6F00',
     color: '#fff',
@@ -151,5 +160,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
+    overflow: 'hidden',
   },
 });

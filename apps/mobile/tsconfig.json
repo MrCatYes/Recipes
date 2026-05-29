@@ -2,8 +2,8 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "types": ["node"],
     "paths": {
-      "@epicerie/shared-types": ["../../packages/shared-types/src/index.ts"],
       "@/*": ["./*"]
     }
   }
