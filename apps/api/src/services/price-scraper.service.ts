@@ -157,9 +157,15 @@ export async function scrapeAllPrices(): Promise<{ matched: number; total: numbe
 
       const isPromo = item.pre_price != null && item.pre_price > item.current_price!;
       const regularCents = item.pre_price ? Math.round(item.pre_price * 100) : null;
-      const { size, unit } = parsePackageSize(
+      let { size, unit } = parsePackageSize(
         item.unit_price ?? item.description ?? item.name
       );
+      // Fall back to the catalog's canonical package when the flyer text has no
+      // parseable size — avoids garbage size=1 that wrecks prorated recipe costs.
+      if (size <= 1) {
+        const cat = CATALOG.find((c) => c.name === pq.dbName);
+        if (cat) { size = cat.pkg.size; unit = cat.pkg.unit; }
+      }
 
       // Upsert StoreProduct
       const sp = await prisma.storeProduct.upsert({

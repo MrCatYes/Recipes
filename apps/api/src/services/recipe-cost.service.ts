@@ -36,7 +36,7 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
       notes: ing.notes,
     };
 
-    if (!ing.productId || ing.parsedQuantity == null || !ing.parsedUnit) {
+    if (!ing.productId || ing.parsedQuantity == null) {
       ingredientsWithCost.push({ ...base, product: null, costByStore: [], cheapestCostCents: null, cheapestStore: null });
       continue;
     }
@@ -47,19 +47,20 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
       continue;
     }
 
+    // Count products ("4 oeufs") often have no parsed unit → default to 'unit'.
+    const effectiveUnit = ing.parsedUnit ?? (priceData.product.defaultUnitType === 'count' ? 'unit' : null);
+    if (!effectiveUnit) {
+      ingredientsWithCost.push({ ...base, product: priceData.product, costByStore: [], cheapestCostCents: null, cheapestStore: null });
+      continue;
+    }
+
     const svc = await loadConversionSvc(ing.productId);
 
     const costByStore: PriceWithStore[] = [];
     for (const p of priceData.prices) {
-      // Skip prices with an unparsed package size. packageSize=1 is the parser's
-      // default fallback (flyer items without a size) — our staples are always
-      // sold in larger packages (454g, 2L, 12 eggs...), so size<=1 = garbage and
-      // would wildly inflate the prorated cost.
-      if (p.packageSize <= 1) continue;
-
       const portionCents = svc.costForPortion(
         ing.parsedQuantity,
-        ing.parsedUnit,
+        effectiveUnit,
         p.packageSize,
         p.packageUnit,
         p.priceCents,

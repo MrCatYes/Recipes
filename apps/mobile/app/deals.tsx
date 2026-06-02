@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   View, Text, StyleSheet, SectionList, FlatList, ActivityIndicator,
-  RefreshControl, TouchableOpacity,
+  RefreshControl, TouchableOpacity, Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import type { FlyerItem, RecipesByPromosResponse } from '@epicerie/shared-types';
 import { getFlyers, getRecipesByPromos } from '../lib/api';
 import { useStores, type StoreChain } from '../lib/store-context';
@@ -21,6 +22,7 @@ const STORE_COLORS: Record<StoreChain, string> = {
 interface Section { title: StoreChain; data: FlyerItem[] }
 
 export default function DealsScreen() {
+  const router = useRouter();
   const { selectedStores } = useStores();
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -106,7 +108,14 @@ export default function DealsScreen() {
               keyExtractor={(r) => r.recipe.id}
               contentContainerStyle={styles.recipeScroll}
               renderItem={({ item }) => (
-                <View style={styles.recipeCard}>
+                <TouchableOpacity
+                  style={styles.recipeCard}
+                  activeOpacity={0.7}
+                  onPress={() => router.push(`/recipe/${item.recipe.id}`)}
+                >
+                  {item.recipe.imageUrl && (
+                    <Image source={{ uri: item.recipe.imageUrl }} style={styles.recipeImg} resizeMode="cover" />
+                  )}
                   <Text style={styles.recipeTitle} numberOfLines={2}>{item.recipe.title}</Text>
                   <View style={styles.recipeBadge}>
                     <Ionicons name="flame" size={12} color="#E65100" />
@@ -120,7 +129,11 @@ export default function DealsScreen() {
                       <Text style={styles.recipeStore}> · {item.recipe.cheapestStore}</Text>
                     </Text>
                   )}
-                </View>
+                  <View style={styles.recipeLink}>
+                    <Text style={styles.recipeLinkText}>Voir la recette</Text>
+                    <Ionicons name="chevron-forward" size={13} color="#2E7D32" />
+                  </View>
+                </TouchableOpacity>
               )}
             />
           </View>
@@ -187,10 +200,13 @@ const styles = StyleSheet.create({
   blockTitle:    { fontSize: 17, fontWeight: '700', paddingHorizontal: 16, color: '#1B5E20' },
   blockSub:      { fontSize: 12, color: '#888', paddingHorizontal: 16, marginTop: 2, marginBottom: 10 },
   recipeScroll:  { paddingHorizontal: 16, gap: 10 },
-  recipeCard:    { width: 160, backgroundColor: '#fff', borderRadius: 12, padding: 12, gap: 6, borderWidth: 1, borderColor: '#E8F5E9' },
+  recipeCard:    { width: 170, backgroundColor: '#fff', borderRadius: 12, padding: 10, gap: 6, borderWidth: 1, borderColor: '#E8F5E9' },
+  recipeImg:     { width: '100%', height: 80, borderRadius: 8, backgroundColor: '#eee' },
   recipeTitle:   { fontSize: 13, fontWeight: '600', minHeight: 34 },
   recipeBadge:   { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: '#FFF3E0', alignSelf: 'flex-start', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
   recipeBadgeText:{ fontSize: 11, color: '#E65100', fontWeight: '600' },
   recipePrice:   { fontSize: 15, fontWeight: '700', color: '#2E7D32' },
   recipeStore:   { fontSize: 11, fontWeight: '400', color: '#888' },
+  recipeLink:    { flexDirection: 'row', alignItems: 'center', gap: 2, marginTop: 2 },
+  recipeLinkText:{ fontSize: 12, color: '#2E7D32', fontWeight: '600' },
 });

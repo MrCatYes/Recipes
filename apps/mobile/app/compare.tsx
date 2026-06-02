@@ -79,9 +79,7 @@ export default function CompareScreen() {
                 : null
             }
             renderItem={({ item, index }) => {
-              // Per-unit price is only reliable when package size is parsed (>0)
-              // and plausibly smaller than the package price.
-              const showUnit = item.pricePerUnit > 0 && item.pricePerUnit < item.priceCents;
+              const unitLabel = formatUnitPrice(item.pricePerUnit, data.product.defaultUnit);
               return (
                 <View style={[styles.priceRow, index === 0 && styles.cheapestRow]}>
                   <View style={[styles.chainBadge, { backgroundColor: CHAIN_COLORS[item.chain] }]}>
@@ -97,11 +95,7 @@ export default function CompareScreen() {
                   </View>
                   <View style={styles.priceRight}>
                     <Text style={styles.price}>{formatCents(item.priceCents)}</Text>
-                    {showUnit && (
-                      <Text style={styles.unitPrice}>
-                        {formatCents(item.pricePerUnit)}/{data.product.defaultUnit}
-                      </Text>
-                    )}
+                    {unitLabel && <Text style={styles.unitPrice}>{unitLabel}</Text>}
                     {item.isPromo && <Text style={styles.promoBadge}>PROMO</Text>}
                   </View>
                 </View>
@@ -116,6 +110,17 @@ export default function CompareScreen() {
 
 function formatCents(cents: number) {
   return `${(cents / 100).toFixed(2)} $`;
+}
+
+// pricePerUnit is cents per base unit (g/ml). Sub-cent values round to 0.00,
+// so for weight/volume show price per 100 g/ml (Quebec unit-pricing convention).
+function formatUnitPrice(pricePerUnit: number, defaultUnit: string): string | null {
+  if (pricePerUnit <= 0) return null;
+  if (defaultUnit === 'unit') {
+    return `${(pricePerUnit / 100).toFixed(2)} $/unité`;
+  }
+  const per100 = pricePerUnit * 100; // cents per 100 g/ml
+  return `${(per100 / 100).toFixed(2)} $/100 ${defaultUnit}`;
 }
 
 const styles = StyleSheet.create({
