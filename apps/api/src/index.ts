@@ -5,6 +5,7 @@ import sensible from '@fastify/sensible';
 import { schedule } from 'node-cron';
 import { productsRoutes } from './routes/products.routes';
 import { recipesRoutes } from './routes/recipes.routes';
+import { flyersRoutes } from './routes/flyers.routes';
 import { scrapeAllPrices } from './services/price-scraper.service';
 
 const server = Fastify({
@@ -22,8 +23,7 @@ async function main() {
 
   await server.register(productsRoutes, { prefix: '/api/v1' });
   await server.register(recipesRoutes, { prefix: '/api/v1' });
-
-  // TODO Phase 3: flyers routes
+  await server.register(flyersRoutes, { prefix: '/api/v1' });
 
   // ─── Daily Flipp price scrape cron ─────────────────────────────────────────
   // Browser-free (runs fine in Docker). Every day at 6:00 AM.

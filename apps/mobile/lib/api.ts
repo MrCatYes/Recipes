@@ -1,6 +1,7 @@
 import type {
   GetPricesResponse,
   ParseRecipeResponse,
+  GetFlyersResponse,
 } from '@epicerie/shared-types';
 
 export const API_BASE = process.env.EXPO_PUBLIC_API_URL;
@@ -53,4 +54,9 @@ export function getProductPrices(q: string) {
   return apiFetch<GetPricesResponse>(
     `/products/prices?q=${encodeURIComponent(q)}`,
   );
+}
+
+export function getFlyers(chains?: string[]) {
+  const qs = chains?.length ? `?chains=${chains.join(',')}` : '';
+  return apiFetch<GetFlyersResponse>(`/flyers${qs}`);
 }
