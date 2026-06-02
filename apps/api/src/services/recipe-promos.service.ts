@@ -44,7 +44,7 @@ export async function getRecipesByPromos(
     include: { ingredients: { select: { id: true, productId: true } } },
   });
 
-  const ranked: Array<{ recipeId: string; promoIngredientIds: string[]; savings: number }> = [];
+  const ranked: Array<{ recipeId: string; title: string; promoIngredientIds: string[]; savings: number }> = [];
 
   for (const r of recipes) {
     const promoIngredientIds: string[] = [];
@@ -61,7 +61,7 @@ export async function getRecipesByPromos(
     }
 
     if (promoIngredientIds.length > 0) {
-      ranked.push({ recipeId: r.id, promoIngredientIds, savings });
+      ranked.push({ recipeId: r.id, title: r.title, promoIngredientIds, savings });
     }
   }
 
@@ -70,7 +70,16 @@ export async function getRecipesByPromos(
     b.promoIngredientIds.length - a.promoIngredientIds.length || b.savings - a.savings,
   );
 
-  const top = ranked.slice(0, maxRecipes);
+  // Dedup by title (defensive: same recipe parsed under different source URLs)
+  const seenTitles = new Set<string>();
+  const deduped = ranked.filter((r) => {
+    const key = r.title.trim().toLowerCase();
+    if (seenTitles.has(key)) return false;
+    seenTitles.add(key);
+    return true;
+  });
+
+  const top = deduped.slice(0, maxRecipes);
 
   const recipesOut: RecipesByPromosResponse['recipes'] = [];
   for (const entry of top) {
