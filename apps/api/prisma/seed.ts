@@ -1,4 +1,5 @@
 import { PrismaClient, StoreChain } from '@prisma/client';
+import { CATALOG } from '../src/data/catalog';
 
 const prisma = new PrismaClient();
 
@@ -59,24 +60,14 @@ async function seedStores() {
 }
 
 async function seedProducts() {
-  // ~15 common products to bootstrap Phase 1 comparator
-  const products = [
-    { name: 'Farine tout-usage',     brand: 'Robin Hood', category: 'Farine', defaultUnit: 'g', defaultUnitType: 'weight' as const },
-    { name: 'Sucre blanc',           brand: 'Redpath',    category: 'Sucre',  defaultUnit: 'g', defaultUnitType: 'weight' as const },
-    { name: 'Beurre non salé',       brand: null,         category: 'Produits laitiers', defaultUnit: 'g', defaultUnitType: 'weight' as const },
-    { name: 'Lait 3,25%',            brand: 'Natrel',     category: 'Produits laitiers', defaultUnit: 'ml', defaultUnitType: 'volume' as const },
-    { name: 'Crème 35%',             brand: null,         category: 'Produits laitiers', defaultUnit: 'ml', defaultUnitType: 'volume' as const },
-    { name: 'Oeufs gros',            brand: null,         category: 'Oeufs',  defaultUnit: 'unit', defaultUnitType: 'count' as const },
-    { name: 'Huile canola',          brand: null,         category: 'Huiles', defaultUnit: 'ml', defaultUnitType: 'volume' as const },
-    { name: 'Huile d\'olive extra vierge', brand: null,  category: 'Huiles', defaultUnit: 'ml', defaultUnitType: 'volume' as const },
-    { name: 'Riz blanc long grain',  brand: 'Uncle Ben\'s', category: 'Féculents', defaultUnit: 'g', defaultUnitType: 'weight' as const },
-    { name: 'Pâtes spaghetti',       brand: 'Barilla',   category: 'Féculents', defaultUnit: 'g', defaultUnitType: 'weight' as const },
-    { name: 'Poitrine de poulet',    brand: null,         category: 'Viandes', defaultUnit: 'g', defaultUnitType: 'weight' as const },
-    { name: 'Boeuf haché maigre',    brand: null,         category: 'Viandes', defaultUnit: 'g', defaultUnitType: 'weight' as const },
-    { name: 'Tomates en dés',        brand: 'Hunts',     category: 'Conserves', defaultUnit: 'ml', defaultUnitType: 'volume' as const },
-    { name: 'Pois chiches en conserve', brand: null,     category: 'Légumineuses', defaultUnit: 'ml', defaultUnitType: 'volume' as const },
-    { name: 'Levure chimique',       brand: 'Magic',     category: 'Épices', defaultUnit: 'g', defaultUnitType: 'weight' as const },
-  ];
+  // Derived from canonical catalog (src/data/catalog.ts)
+  const products = CATALOG.map((p) => ({
+    name: p.name,
+    brand: p.brand,
+    category: p.category,
+    defaultUnit: p.defaultUnit,
+    defaultUnitType: p.defaultUnitType,
+  }));
 
   await prisma.product.createMany({ data: products, skipDuplicates: true });
 }

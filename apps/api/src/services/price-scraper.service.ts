@@ -7,6 +7,7 @@
 
 import { PrismaClient, type StoreChain } from '@prisma/client';
 import { matchesProduct } from './product-matcher';
+import { CATALOG } from '../data/catalog';
 
 const prisma = new PrismaClient();
 
@@ -45,107 +46,17 @@ function resolveChain(merchantName: string): StoreChain | null {
   return MERCHANT_CHAIN.find(m => lower.includes(m.keyword))?.chain ?? null;
 }
 
-// ─── Product query definitions ────────────────────────────────────────────────
+// ─── Product query definitions (derived from canonical catalog) ───────────────
 
 interface ProductQuery {
   dbName: string;
-  queries: string[];         // multiple search terms to try
-  mustInclude: string[];     // at least one must be in item name
-  mustExclude: string[];     // none must be in item name
+  queries: string[];
 }
 
-const PRODUCT_QUERIES: ProductQuery[] = [
-  {
-    dbName: 'Farine tout-usage',
-    queries: ['farine', 'farine tout usage', 'flour'],
-    mustInclude: ['farine', 'flour'],
-    mustExclude: ['blé entier', 'whole wheat', 'sarrasin', 'amande', 'avoine', 'riz', 'sans gluten'],
-  },
-  {
-    dbName: 'Sucre blanc',
-    queries: ['sucre granulé', 'sucre blanc'],
-    mustInclude: ['sucre', 'sugar'],
-    mustExclude: ['cassonade', 'glace', 'roux', 'brown', 'icing', 'coconut', 'coco', 'érable', 'maple', 'vanille'],
-  },
-  {
-    dbName: 'Beurre non salé',
-    queries: ['beurre', 'butter'],
-    mustInclude: ['beurre', 'butter'],
-    mustExclude: ['arachide', 'peanut', 'amande', 'almond', 'margarine', 'ghee', 'cacao'],
-  },
-  {
-    dbName: 'Lait 3,25%',
-    queries: ['lait 3.25', 'lait homogénéisé', 'milk 3.25'],
-    mustInclude: ['lait', 'milk'],
-    mustExclude: ['chocolat', 'chocolate', 'amande', 'almond', 'avoine', 'oat', 'soya', 'coconut', 'coco', 'condensé', '1%', '2%', 'skim', 'écrémé', 'frappé', 'sans lactose', 'lactose'],
-  },
-  {
-    dbName: 'Crème 35%',
-    queries: ['crème 35', 'cream 35', 'whipping cream'],
-    mustInclude: ['crème', 'cream'],
-    mustExclude: ['glacée', 'ice', 'sure', 'sour', 'fraîche', 'café', 'coffee', '10%', '15%', 'coco', 'coconut'],
-  },
-  {
-    dbName: 'Oeufs gros',
-    queries: ['oeufs gros', 'large eggs', 'oeufs blancs'],
-    mustInclude: ['oeuf', 'egg'],
-    mustExclude: ['chocolat', 'pâques', 'easter', 'substitute', 'liquide'],
-  },
-  {
-    dbName: 'Huile canola',
-    queries: ['huile canola', 'canola oil'],
-    mustInclude: ['canola'],
-    mustExclude: [],
-  },
-  {
-    dbName: "Huile d'olive extra vierge",
-    queries: ['huile olive', 'olive oil'],
-    mustInclude: ['olive'],
-    mustExclude: ['tapenade', 'antipasto', 'marinade'],
-  },
-  {
-    dbName: 'Riz blanc long grain',
-    queries: ['riz blanc', 'white rice', 'long grain rice'],
-    mustInclude: ['riz', 'rice'],
-    mustExclude: ['brun', 'brown', 'sauvage', 'wild', 'instantané', 'instant', 'arborio', 'jasmin'],
-  },
-  {
-    dbName: 'Pâtes spaghetti',
-    queries: ['spaghetti', 'pâtes barilla', 'pasta'],
-    mustInclude: ['spaghetti', 'pâtes', 'pasta', 'barilla'],
-    mustExclude: ['sauce', 'repas', 'meal', 'soupe', 'soup'],
-  },
-  {
-    dbName: 'Poitrine de poulet',
-    queries: ['poitrine poulet', 'chicken breast'],
-    mustInclude: ['poulet', 'chicken'],
-    mustExclude: ['haché', 'ground', 'aile', 'wing', 'cuisse', 'thigh', 'entier', 'whole', 'nugget', 'bouillon', 'broth', 'porc', 'pork'],
-  },
-  {
-    dbName: 'Boeuf haché maigre',
-    queries: ['boeuf haché', 'ground beef', 'boeuf haché maigre'],
-    mustInclude: ['boeuf', 'beef'],
-    mustExclude: ['bouillon', 'broth', 'sauce', 'veau', 'veal'],
-  },
-  {
-    dbName: 'Tomates en dés',
-    queries: ['tomates dés', 'diced tomatoes', 'tomates conserve'],
-    mustInclude: ['tomate', 'tomato'],
-    mustExclude: ['vigne', 'vine', 'cerise', 'cherry', 'fraîche', 'fresh', 'séché', 'dried', 'sauce', 'pâte', 'paste', 'ketchup'],
-  },
-  {
-    dbName: 'Pois chiches en conserve',
-    queries: ['pois chiches', 'chickpeas'],
-    mustInclude: ['pois chiche', 'chickpea', 'chick pea'],
-    mustExclude: [],
-  },
-  {
-    dbName: 'Levure chimique',
-    queries: ['poudre à pâte', 'baking powder'],
-    mustInclude: ['poudre à pâte', 'baking powder'],
-    mustExclude: [],
-  },
-];
+const PRODUCT_QUERIES: ProductQuery[] = CATALOG.map((p) => ({
+  dbName: p.name,
+  queries: p.queries,
+}));
 
 // ─── Flipp API ────────────────────────────────────────────────────────────────
 
