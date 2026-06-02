@@ -61,10 +61,9 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
       );
       if (portionCents === null) continue;
       costByStore.push({ ...p, priceCents: portionCents, packagePriceCents: p.packagePriceCents });
-      totalsByStore[p.chain] = (totalsByStore[p.chain] ?? 0) + portionCents;
     }
 
-    // Keep cheapest per chain only
+    // Keep cheapest per chain only (avoid double-counting flipp + manual + scrape duplicates)
     const cheapestByChain = new Map<string, PriceWithStore>();
     for (const p of costByStore) {
       const existing = cheapestByChain.get(p.chain);
@@ -74,6 +73,11 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
     }
     const dedupedCostByStore = Array.from(cheapestByChain.values())
       .sort((a, b) => a.priceCents - b.priceCents);
+
+    // Accumulate per-store totals from deduped prices only
+    for (const p of dedupedCostByStore) {
+      totalsByStore[p.chain] = (totalsByStore[p.chain] ?? 0) + p.priceCents;
+    }
 
     ingredientsWithCost.push({
       ...base,
