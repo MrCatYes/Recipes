@@ -46,6 +46,7 @@ model Store {
   storeProducts StoreProduct[]
   flyerItems    FlyerItem[]
 
+  @@unique([chain, name])
   @@index([chain])
   @@index([city])
 }

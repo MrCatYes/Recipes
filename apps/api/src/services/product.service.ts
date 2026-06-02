@@ -58,24 +58,23 @@ export async function getProductPrices(productId: string): Promise<GetPricesResp
     },
   });
 
-  const now = new Date();
   const prices: Array<PriceWithStore & { source: string }> = [];
+  const baselineByChain = new Map<string, number>(); // manual price per chain
 
   for (const sp of storeProducts) {
     const latest = sp.prices[0];
     if (!latest) continue;
 
-    const isPromo =
-      latest.source === 'flyer' ||
-      (latest.validFrom != null &&
-        latest.validTo != null &&
-        latest.validFrom <= now &&
-        now <= latest.validTo);
+    const chain = sp.store.chain as StoreChain;
+    if (latest.source === 'manual') {
+      const prev = baselineByChain.get(chain);
+      if (prev == null || latest.priceCents < prev) baselineByChain.set(chain, latest.priceCents);
+    }
 
     const perUnit = svc.pricePerBaseUnit(sp.packageSize, sp.packageUnit, latest.priceCents);
 
     prices.push({
-      chain: sp.store.chain as StoreChain,
+      chain,
       storeName: sp.store.name,
       priceCents: latest.priceCents,
       packagePriceCents: latest.priceCents,
@@ -83,7 +82,7 @@ export async function getProductPrices(productId: string): Promise<GetPricesResp
       packageUnit: sp.packageUnit,
       pricePerUnit: perUnit?.cents ?? 0,
       capturedAt: latest.capturedAt.toISOString(),
-      isPromo,
+      isPromo: false, // recomputed after dedup vs baseline
       source: latest.source,
     });
   }
@@ -99,6 +98,13 @@ export async function getProductPrices(productId: string): Promise<GetPricesResp
       sourceRank(p.source) > sourceRank(existing.source) ||
       (sourceRank(p.source) === sourceRank(existing.source) && p.priceCents < existing.priceCents);
     if (better) cheapestByChain.set(p.chain, p);
+  }
+
+  // A kept price is a promo if it's a real (non-manual) price meaningfully below
+  // that chain's manual baseline (≥5% cheaper).
+  for (const [chain, p] of cheapestByChain) {
+    const base = baselineByChain.get(chain);
+    p.isPromo = p.source !== 'manual' && base != null && p.priceCents <= base * 0.95;
   }
   // Sort by absolute package price. Per-unit price is unreliable here because
   // flyer items frequently have an unparseable package size.
