@@ -2,6 +2,7 @@ import type {
   GetPricesResponse,
   ParseRecipeResponse,
   GetFlyersResponse,
+  RecipesByPromosResponse,
 } from '@epicerie/shared-types';
 
 export const API_BASE = process.env.EXPO_PUBLIC_API_URL;
@@ -59,4 +60,9 @@ export function getProductPrices(q: string) {
 export function getFlyers(chains?: string[]) {
   const qs = chains?.length ? `?chains=${chains.join(',')}` : '';
   return apiFetch<GetFlyersResponse>(`/flyers${qs}`);
+}
+
+export function getRecipesByPromos(chains?: string[]) {
+  const qs = chains?.length ? `?chains=${chains.join(',')}` : '';
+  return apiFetch<RecipesByPromosResponse>(`/recipes/by-promos${qs}`);
 }

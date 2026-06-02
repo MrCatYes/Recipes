@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  View, Text, StyleSheet, SectionList, ActivityIndicator,
+  View, Text, StyleSheet, SectionList, FlatList, ActivityIndicator,
   RefreshControl, TouchableOpacity,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import type { FlyerItem } from '@epicerie/shared-types';
-import { getFlyers } from '../lib/api';
+import type { FlyerItem, RecipesByPromosResponse } from '@epicerie/shared-types';
+import { getFlyers, getRecipesByPromos } from '../lib/api';
 import { useStores, type StoreChain } from '../lib/store-context';
+
+type PromoRecipe = RecipesByPromosResponse['recipes'][number];
 
 const STORE_COLORS: Record<StoreChain, string> = {
   Maxi:    '#E53935',
@@ -23,13 +25,18 @@ export default function DealsScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [items, setItems] = useState<FlyerItem[]>([]);
+  const [promoRecipes, setPromoRecipes] = useState<PromoRecipe[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setError(null);
     try {
-      const data = await getFlyers(selectedStores);
-      setItems(data.items);
+      const [flyers, recipes] = await Promise.all([
+        getFlyers(selectedStores),
+        getRecipesByPromos(selectedStores).catch(() => ({ recipes: [] } as Partial<RecipesByPromosResponse>)),
+      ]);
+      setItems(flyers.items);
+      setPromoRecipes(recipes.recipes ?? []);
     } catch (e) {
       setError(String(e));
     } finally {
@@ -87,6 +94,38 @@ export default function DealsScreen() {
       sections={sections}
       keyExtractor={(item) => item.id}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      ListHeaderComponent={
+        promoRecipes.length > 0 ? (
+          <View style={styles.recipesBlock}>
+            <Text style={styles.blockTitle}>🍳 Recettes avantageuses</Text>
+            <Text style={styles.blockSub}>Leurs ingrédients sont en spécial cette semaine</Text>
+            <FlatList
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              data={promoRecipes}
+              keyExtractor={(r) => r.recipe.id}
+              contentContainerStyle={styles.recipeScroll}
+              renderItem={({ item }) => (
+                <View style={styles.recipeCard}>
+                  <Text style={styles.recipeTitle} numberOfLines={2}>{item.recipe.title}</Text>
+                  <View style={styles.recipeBadge}>
+                    <Ionicons name="flame" size={12} color="#E65100" />
+                    <Text style={styles.recipeBadgeText}>
+                      {item.promoIngredients.length} en spécial
+                    </Text>
+                  </View>
+                  {item.recipe.cheapestTotalCents != null && (
+                    <Text style={styles.recipePrice}>
+                      {formatCents(item.recipe.cheapestTotalCents)}
+                      <Text style={styles.recipeStore}> · {item.recipe.cheapestStore}</Text>
+                    </Text>
+                  )}
+                </View>
+              )}
+            />
+          </View>
+        ) : null
+      }
       renderSectionHeader={({ section }) => (
         <View style={styles.sectionHeader}>
           <View style={[styles.tag, { backgroundColor: STORE_COLORS[section.title] }]}>
@@ -143,4 +182,15 @@ const styles = StyleSheet.create({
   promoPrice:    { fontSize: 17, fontWeight: '700', color: '#2E7D32' },
   regPrice:      { fontSize: 12, color: '#C62828', textDecorationLine: 'line-through' },
   savings:       { fontSize: 11, color: '#E65100', fontWeight: '600' },
+
+  recipesBlock:  { paddingTop: 16, paddingBottom: 4 },
+  blockTitle:    { fontSize: 17, fontWeight: '700', paddingHorizontal: 16, color: '#1B5E20' },
+  blockSub:      { fontSize: 12, color: '#888', paddingHorizontal: 16, marginTop: 2, marginBottom: 10 },
+  recipeScroll:  { paddingHorizontal: 16, gap: 10 },
+  recipeCard:    { width: 160, backgroundColor: '#fff', borderRadius: 12, padding: 12, gap: 6, borderWidth: 1, borderColor: '#E8F5E9' },
+  recipeTitle:   { fontSize: 13, fontWeight: '600', minHeight: 34 },
+  recipeBadge:   { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: '#FFF3E0', alignSelf: 'flex-start', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
+  recipeBadgeText:{ fontSize: 11, color: '#E65100', fontWeight: '600' },
+  recipePrice:   { fontSize: 15, fontWeight: '700', color: '#2E7D32' },
+  recipeStore:   { fontSize: 11, fontWeight: '400', color: '#888' },
 });

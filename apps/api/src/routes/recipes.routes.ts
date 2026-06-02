@@ -4,9 +4,31 @@ import { prisma } from '../db';
 import { RecipeParserService } from '../services/recipe-parser.service';
 import { IngredientMatcherService } from '../services/ingredient-matcher.service';
 import { computeRecipeCost } from '../services/recipe-cost.service';
-import type { ParseRecipeResponse } from '@epicerie/shared-types';
+import { getRecipesByPromos } from '../services/recipe-promos.service';
+import type { ParseRecipeResponse, StoreChain } from '@epicerie/shared-types';
+
+const CHAINS = ['IGA', 'Metro', 'Maxi', 'Walmart', 'Costco'] as const;
 
 export async function recipesRoutes(app: FastifyInstance) {
+  // GET /recipes/by-promos?chains=Maxi,IGA  → recipes whose ingredients are on sale
+  app.get('/recipes/by-promos', async (req, reply) => {
+    const schema = z.object({
+      chains: z.string().optional(),
+      max: z.coerce.number().min(1).max(50).optional().default(10),
+    });
+    const parsed = schema.safeParse(req.query);
+    if (!parsed.success) return reply.badRequest(parsed.error.message);
+
+    let chains: StoreChain[] | undefined;
+    if (parsed.data.chains) {
+      chains = parsed.data.chains
+        .split(',').map(c => c.trim())
+        .filter((c): c is StoreChain => (CHAINS as readonly string[]).includes(c));
+    }
+
+    return getRecipesByPromos(chains, parsed.data.max);
+  });
+
   // POST /recipes/parse  { url }  → parse + save + return RecipeWithCost
   app.post('/recipes/parse', async (req, reply) => {
     const schema = z.object({ url: z.string().url() });

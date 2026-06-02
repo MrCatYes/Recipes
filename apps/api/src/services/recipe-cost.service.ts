@@ -51,6 +51,12 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
 
     const costByStore: PriceWithStore[] = [];
     for (const p of priceData.prices) {
+      // Skip prices with an unparsed package size. packageSize=1 is the parser's
+      // default fallback (flyer items without a size) — our staples are always
+      // sold in larger packages (454g, 2L, 12 eggs...), so size<=1 = garbage and
+      // would wildly inflate the prorated cost.
+      if (p.packageSize <= 1) continue;
+
       const portionCents = svc.costForPortion(
         ing.parsedQuantity,
         ing.parsedUnit,
