@@ -1,5 +1,5 @@
 import { load } from 'cheerio';
-import Anthropic from '@anthropic-ai/sdk';
+import Groq from 'groq-sdk';
 
 export interface ParsedRecipe {
   title: string;
@@ -128,10 +128,10 @@ Rules:
 - Return ONLY the JSON object`;
 
 export class RecipeParserService {
-  private claude: Anthropic;
+  private groq: Groq;
 
-  constructor(claude?: Anthropic) {
-    this.claude = claude ?? new Anthropic();
+  constructor(groq?: Groq) {
+    this.groq = groq ?? new Groq({ apiKey: process.env.GROQ_API_KEY });
   }
 
   async parseUrl(url: string): Promise<ParsedRecipe> {
@@ -140,13 +140,13 @@ export class RecipeParserService {
     const fromJsonLd = extractJsonLd(html);
     if (fromJsonLd && fromJsonLd.ingredients.length > 0) return fromJsonLd;
 
-    // Claude fallback only if API key available
-    if (!process.env.ANTHROPIC_API_KEY) {
+    // Groq fallback only if API key available
+    if (!process.env.GROQ_API_KEY) {
       if (fromJsonLd) return fromJsonLd; // partial result
       throw new Error('Recette introuvable (JSON-LD absent). Essaie Ricardo, SOS Cuisine ou AllRecipes.');
     }
 
-    return this.extractWithClaude(html, url, fromJsonLd);
+    return this.extractWithGroq(html, url, fromJsonLd);
   }
 
   private async fetchHtml(url: string): Promise<string> {
@@ -161,33 +161,30 @@ export class RecipeParserService {
     return res.text();
   }
 
-  private async extractWithClaude(
+  private async extractWithGroq(
     html: string,
     url: string,
     partial: ParsedRecipe | null
   ): Promise<ParsedRecipe> {
     const $ = load(html);
     $('script, style, nav, footer, header, aside, [role="navigation"]').remove();
-    const text = $('body').text().replace(/\s{3,}/g, '\n\n').slice(0, 40_000);
+    const text = $('body').text().replace(/\s{3,}/g, '\n\n').slice(0, 20_000);
 
-    const stream = this.claude.messages.stream({
-      model: 'claude-opus-4-7',
+    const completion = await this.groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
       max_tokens: 4096,
-      thinking: { type: 'adaptive' },
-      system: [{ type: 'text', text: CLAUDE_SYSTEM, cache_control: { type: 'ephemeral' } }],
-      messages: [{ role: 'user', content: `URL: ${url}\n\nPage content:\n${text}` }],
+      messages: [
+        { role: 'system', content: CLAUDE_SYSTEM },
+        { role: 'user', content: `URL: ${url}\n\nPage content:\n${text}` },
+      ],
     });
-    const message = await stream.finalMessage();
 
-    for (const block of message.content) {
-      if (block.type === 'text' && block.text.trim()) {
-        try {
-          const match = block.text.match(/\{[\s\S]*\}/);
-          if (match) return JSON.parse(match[0]) as ParsedRecipe;
-        } catch {
-          // keep trying blocks
-        }
-      }
+    const content = completion.choices[0]?.message?.content ?? '';
+    try {
+      const match = content.match(/\{[\s\S]*\}/);
+      if (match) return JSON.parse(match[0]) as ParsedRecipe;
+    } catch {
+      // fall through
     }
 
     if (partial) return partial;

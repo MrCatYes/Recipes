@@ -1,5 +1,5 @@
 import Fuse from 'fuse.js';
-import Anthropic from '@anthropic-ai/sdk';
+import Groq from 'groq-sdk';
 import type { Product } from '@epicerie/shared-types';
 
 export interface RegexParseResult {
@@ -121,17 +121,17 @@ const CONFIDENCE_THRESHOLD = 0.55;
 
 export class IngredientMatcherService {
   private fuse: Fuse<Product>;
-  private claude: Anthropic;
+  private groq: Groq;
   private products: Product[];
 
-  constructor(products: Product[], claude?: Anthropic) {
+  constructor(products: Product[], groq?: Groq) {
     this.products = products;
     this.fuse = new Fuse(products, {
       keys: ['name', 'brand'],
       threshold: 0.45,
       includeScore: true,
     });
-    this.claude = claude ?? new Anthropic();
+    this.groq = groq ?? new Groq({ apiKey: process.env.GROQ_API_KEY });
   }
 
   async matchAll(rawIngredients: string[]): Promise<ParsedIngredient[]> {
@@ -161,8 +161,8 @@ export class IngredientMatcherService {
       });
     }
 
-    // Batch unmatched through Claude (only if API key available)
-    const unmatched = process.env.ANTHROPIC_API_KEY
+    // Batch unmatched through Groq (only if API key available)
+    const unmatched = process.env.GROQ_API_KEY
       ? results.map((r, i) => ({ i, raw: r.rawText, needsClaude: r.needsClaude })).filter(x => x.needsClaude)
       : [];
 
@@ -199,12 +199,13 @@ export class IngredientMatcherService {
   ): Promise<Array<RegexParseResult>> {
     const productList = this.products.map(p => p.name).join(', ');
 
-    const stream = this.claude.messages.stream({
-      model: 'claude-haiku-4-5',
+    const completion = await this.groq.chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
       max_tokens: 2048,
-      system: [{
-        type: 'text',
-        text: `Parse Quebec French recipe ingredient lines. Match each to the closest product name.
+      messages: [
+        {
+          role: 'system',
+          content: `Parse Quebec French recipe ingredient lines. Match each to the closest product name.
 
 Available products: ${productList}
 
@@ -217,24 +218,20 @@ Rules:
 - productName: exact product name from the available list, or null if no match
 - notes: preparation notes (haché, tranché, etc.), or null
 - Return ONLY the JSON array`,
-        cache_control: { type: 'ephemeral' },
-      }],
-      messages: [{
-        role: 'user',
-        content: ingredients.map((s, i) => `${i + 1}. ${s}`).join('\n'),
-      }],
+        },
+        {
+          role: 'user',
+          content: ingredients.map((s, i) => `${i + 1}. ${s}`).join('\n'),
+        },
+      ],
     });
-    const message = await stream.finalMessage();
 
-    for (const block of message.content) {
-      if (block.type === 'text' && block.text.trim()) {
-        try {
-          const match = block.text.match(/\[[\s\S]*\]/);
-          if (match) return JSON.parse(match[0]) as RegexParseResult[];
-        } catch {
-          // keep trying
-        }
-      }
+    const content = completion.choices[0]?.message?.content ?? '';
+    try {
+      const match = content.match(/\[[\s\S]*\]/);
+      if (match) return JSON.parse(match[0]) as RegexParseResult[];
+    } catch {
+      // fall through
     }
     return ingredients.map(() => ({ quantity: null, unit: null, productName: null, notes: null }));
   }

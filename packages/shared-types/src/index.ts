@@ -44,7 +44,8 @@ export interface Price {
 export interface PriceWithStore {
   chain: StoreChain;
   storeName: string;
-  priceCents: number;
+  priceCents: number;        // cost for the portion used in recipe
+  packagePriceCents: number; // full package price
   packageSize: number;
   packageUnit: string;
   pricePerUnit: number; // cents per base unit (g or ml)

@@ -78,6 +78,7 @@ export async function getProductPrices(productId: string): Promise<GetPricesResp
       chain: sp.store.chain as StoreChain,
       storeName: sp.store.name,
       priceCents: latest.priceCents,
+      packagePriceCents: latest.priceCents,
       packageSize: sp.packageSize,
       packageUnit: sp.packageUnit,
       pricePerUnit: perUnit?.cents ?? 0,

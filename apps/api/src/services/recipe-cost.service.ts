@@ -60,17 +60,27 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
         ing.productId,
       );
       if (portionCents === null) continue;
-      costByStore.push({ ...p, priceCents: portionCents });
+      costByStore.push({ ...p, priceCents: portionCents, packagePriceCents: p.packagePriceCents });
       totalsByStore[p.chain] = (totalsByStore[p.chain] ?? 0) + portionCents;
     }
 
-    costByStore.sort((a, b) => a.priceCents - b.priceCents);
+    // Keep cheapest per chain only
+    const cheapestByChain = new Map<string, PriceWithStore>();
+    for (const p of costByStore) {
+      const existing = cheapestByChain.get(p.chain);
+      if (!existing || p.priceCents < existing.priceCents) {
+        cheapestByChain.set(p.chain, p);
+      }
+    }
+    const dedupedCostByStore = Array.from(cheapestByChain.values())
+      .sort((a, b) => a.priceCents - b.priceCents);
+
     ingredientsWithCost.push({
       ...base,
       product: priceData.product,
-      costByStore,
-      cheapestCostCents: costByStore[0]?.priceCents ?? null,
-      cheapestStore: costByStore[0]?.chain ?? null,
+      costByStore: dedupedCostByStore,
+      cheapestCostCents: dedupedCostByStore[0]?.priceCents ?? null,
+      cheapestStore: dedupedCostByStore[0]?.chain ?? null,
     });
   }
 
