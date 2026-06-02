@@ -11,19 +11,21 @@ import {
 } from 'react-native';
 import type { GetPricesResponse, StoreChain } from '@epicerie/shared-types';
 import { getProductPrices } from '../lib/api';
+import { useStores } from '../lib/store-context';
 
 const CHAIN_COLORS: Record<StoreChain, string> = {
-  IGA: '#E53935',
-  Metro: '#1565C0',
-  Maxi: '#F57F17',
+  Maxi:    '#E53935',
+  IGA:     '#1565C0',
+  Metro:   '#F57C00',
   Walmart: '#0071CE',
-  Costco: '#003DA5',
+  Costco:  '#003DA5',
 };
 
 export default function CompareScreen() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<GetPricesResponse | null>(null);
+  const { selectedStores } = useStores();
 
   async function search() {
     if (!query.trim()) return;
@@ -68,29 +70,43 @@ export default function CompareScreen() {
             )}
           </View>
           <FlatList
-            data={data.prices}
+            data={data.prices.filter(p => selectedStores.includes(p.chain))}
             keyExtractor={(_, i) => String(i)}
             contentContainerStyle={styles.list}
-            renderItem={({ item, index }) => (
-              <View style={[styles.priceRow, index === 0 && styles.cheapestRow]}>
-                <View style={[styles.chainBadge, { backgroundColor: CHAIN_COLORS[item.chain] }]}>
-                  <Text style={styles.chainText}>{item.chain}</Text>
+            ListEmptyComponent={
+              data.prices.length > 0
+                ? <Text style={styles.empty}>Aucun magasin sélectionné. Active des magasins dans l'onglet Magasins.</Text>
+                : null
+            }
+            renderItem={({ item, index }) => {
+              // Per-unit price is only reliable when package size is parsed (>0)
+              // and plausibly smaller than the package price.
+              const showUnit = item.pricePerUnit > 0 && item.pricePerUnit < item.priceCents;
+              return (
+                <View style={[styles.priceRow, index === 0 && styles.cheapestRow]}>
+                  <View style={[styles.chainBadge, { backgroundColor: CHAIN_COLORS[item.chain] }]}>
+                    <Text style={styles.chainText}>{item.chain}</Text>
+                  </View>
+                  <View style={styles.priceInfo}>
+                    <Text style={styles.storeName}>{item.storeName}</Text>
+                    {item.packageSize > 1 && (
+                      <Text style={styles.packageInfo}>
+                        {item.packageSize} {item.packageUnit}
+                      </Text>
+                    )}
+                  </View>
+                  <View style={styles.priceRight}>
+                    <Text style={styles.price}>{formatCents(item.priceCents)}</Text>
+                    {showUnit && (
+                      <Text style={styles.unitPrice}>
+                        {formatCents(item.pricePerUnit)}/{data.product.defaultUnit}
+                      </Text>
+                    )}
+                    {item.isPromo && <Text style={styles.promoBadge}>PROMO</Text>}
+                  </View>
                 </View>
-                <View style={styles.priceInfo}>
-                  <Text style={styles.storeName}>{item.storeName}</Text>
-                  <Text style={styles.packageInfo}>
-                    {item.packageSize} {item.packageUnit}
-                  </Text>
-                </View>
-                <View style={styles.priceRight}>
-                  <Text style={styles.price}>{formatCents(item.priceCents)}</Text>
-                  <Text style={styles.unitPrice}>
-                    {formatCents(item.pricePerUnit)}/{data.product.defaultUnit}
-                  </Text>
-                  {item.isPromo && <Text style={styles.promoBadge}>PROMO</Text>}
-                </View>
-              </View>
-            )}
+              );
+            }}
           />
         </>
       )}

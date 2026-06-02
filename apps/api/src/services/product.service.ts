@@ -59,7 +59,7 @@ export async function getProductPrices(productId: string): Promise<GetPricesResp
   });
 
   const now = new Date();
-  const prices: PriceWithStore[] = [];
+  const prices: Array<PriceWithStore & { source: string }> = [];
 
   for (const sp of storeProducts) {
     const latest = sp.prices[0];
@@ -84,13 +84,29 @@ export async function getProductPrices(productId: string): Promise<GetPricesResp
       pricePerUnit: perUnit?.cents ?? 0,
       capturedAt: latest.capturedAt.toISOString(),
       isPromo,
+      source: latest.source,
     });
   }
 
-  // Sort cheapest first
-  prices.sort((a, b) => a.pricePerUnit - b.pricePerUnit);
+  // Dedup per chain. Prefer real data (flyer/scrape) over manual baseline;
+  // within same source tier, keep cheapest package price.
+  const sourceRank = (s: string) => (s === 'manual' ? 0 : 1); // higher = better
+  const cheapestByChain = new Map<string, PriceWithStore & { source: string }>();
+  for (const p of prices) {
+    const existing = cheapestByChain.get(p.chain);
+    if (!existing) { cheapestByChain.set(p.chain, p); continue; }
+    const better =
+      sourceRank(p.source) > sourceRank(existing.source) ||
+      (sourceRank(p.source) === sourceRank(existing.source) && p.priceCents < existing.priceCents);
+    if (better) cheapestByChain.set(p.chain, p);
+  }
+  // Sort by absolute package price. Per-unit price is unreliable here because
+  // flyer items frequently have an unparseable package size.
+  const dedupedPrices: PriceWithStore[] = Array.from(cheapestByChain.values())
+    .map(({ source: _source, ...p }) => p)
+    .sort((a, b) => a.priceCents - b.priceCents);
 
-  const cheapestChain = prices[0]?.chain ?? null;
+  const cheapestChain = dedupedPrices[0]?.chain ?? null;
 
   return {
     product: {
@@ -102,7 +118,7 @@ export async function getProductPrices(productId: string): Promise<GetPricesResp
       defaultUnit: product.defaultUnit,
       defaultUnitType: product.defaultUnitType as 'weight' | 'volume' | 'count',
     },
-    prices,
+    prices: dedupedPrices,
     cheapestChain,
   };
 }
