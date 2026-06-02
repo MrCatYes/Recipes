@@ -1,4 +1,26 @@
 services:
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://epicerie:epicerie_dev@postgres:5432/epicerie
+      REDIS_URL: redis://redis:6379
+      PORT: "3000"
+      NODE_ENV: development
+    env_file:
+      - apps/api/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - ./apps/api/src:/app/apps/api/src
+      - ./apps/api/prisma:/app/apps/api/prisma
+
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped

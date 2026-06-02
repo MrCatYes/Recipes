@@ -3,6 +3,7 @@
     "name": "Épicerie Prix",
     "slug": "epicerie-prix",
     "version": "1.0.0",
+    "platforms": ["ios", "android"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -30,6 +31,7 @@
       "expo-font",
       "expo-splash-screen"
     ],
-    "scheme": "epicerie-prix"
+    "scheme": "epicerie-prix",
+    "jsEngine": "hermes"
   }
 }

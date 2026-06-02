@@ -35,11 +35,14 @@ export async function recipesRoutes(app: FastifyInstance) {
     }
 
     // Parse the URL
+    console.log('[parse] 1. fetching URL:', url);
     const parser = new RecipeParserService();
     let rawRecipe;
     try {
       rawRecipe = await parser.parseUrl(url);
+      console.log('[parse] 2. parsed OK:', rawRecipe.title, `(${rawRecipe.ingredients.length} ingredients)`);
     } catch (err) {
+      console.log('[parse] ERROR:', err);
       return reply.status(422).send({
         error: 'UnprocessableContent',
         message: err instanceof Error ? err.message : 'Failed to parse recipe',
@@ -47,6 +50,7 @@ export async function recipesRoutes(app: FastifyInstance) {
     }
 
     // Save recipe skeleton
+    console.log('[parse] 3. saving to DB...');
     const recipe = await prisma.recipe.upsert({
       where: { sourceUrl: url },
       create: {
@@ -75,8 +79,10 @@ export async function recipesRoutes(app: FastifyInstance) {
     const products = await prisma.product.findMany({
       select: { id: true, name: true, brand: true, category: true, gtin: true, defaultUnit: true, defaultUnitType: true },
     });
+    console.log('[parse] 4. matching', rawRecipe.ingredients.length, 'ingredients...');
     const matcher = new IngredientMatcherService(products);
     const matchedIngredients = await matcher.matchAll(rawRecipe.ingredients);
+    console.log('[parse] 5. matched. computing cost...');
 
     // Save ingredients
     await prisma.ingredient.createMany({
