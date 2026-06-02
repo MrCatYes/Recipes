@@ -38,6 +38,7 @@ export async function getCurrentFlyers(chains?: StoreChain[]): Promise<GetFlyers
       storeId: r.storeId,
       productId: r.productId,
       productName: r.product?.name ?? null,
+      category: r.product?.category ?? null,
       rawText: r.rawText,
       promoPriceCents: r.promoPriceCents,
       regularPriceCents: regular,

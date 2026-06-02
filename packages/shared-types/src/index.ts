@@ -98,6 +98,7 @@ export interface FlyerItem {
   storeId: string;
   productId: string | null;
   productName: string | null; // matched canonical product name
+  category: string | null;    // product category (Viandes, Produits laitiers...)
   rawText: string;
   promoPriceCents: number;
   regularPriceCents: number | null;
