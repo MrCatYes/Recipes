@@ -13,7 +13,31 @@ async function main() {
   console.log('Seeding sample products...');
   await seedProducts();
 
+  console.log('Seeding product densities...');
+  await seedDensities();
+
   console.log('Done.');
+}
+
+// Per-product ml→g density conversions (e.g. tsp of salt → grams), so recipes
+// that measure weight-products by volume can be costed.
+async function seedDensities() {
+  for (const p of CATALOG) {
+    if (p.densityGPerMl == null) continue;
+    const product = await prisma.product.findFirst({ where: { name: p.name } });
+    if (!product) continue;
+
+    for (const [from, to, factor] of [
+      ['ml', 'g', p.densityGPerMl],
+      ['g', 'ml', 1 / p.densityGPerMl],
+    ] as const) {
+      await prisma.unitConversion.upsert({
+        where: { fromUnit_toUnit_productId: { fromUnit: from, toUnit: to, productId: product.id } },
+        create: { fromUnit: from, toUnit: to, productId: product.id, factor },
+        update: { factor },
+      });
+    }
+  }
 }
 
 async function seedUnitConversions() {

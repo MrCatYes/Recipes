@@ -1,6 +1,7 @@
 import Fuse from 'fuse.js';
 import Groq from 'groq-sdk';
 import type { Product } from '@epicerie/shared-types';
+import { ruleMatch } from './product-matcher';
 
 export interface RegexParseResult {
   quantity: number | null;
@@ -142,7 +143,15 @@ export class IngredientMatcherService {
       let productId: string | null = null;
       let confidence = 0;
 
-      if (parsed.productName) {
+      // 1. Catalog keyword aliases (e.g. "poudre à pâte" → "Levure chimique").
+      const kw = ruleMatch(raw, this.products);
+      if (kw) {
+        productId = kw.id;
+        confidence = 0.95;
+      }
+
+      // 2. Fuzzy fallback on the parsed product name.
+      if (!productId && parsed.productName) {
         const match = this.fuzzyMatch(parsed.productName);
         if (match && match.confidence >= CONFIDENCE_THRESHOLD) {
           productId = match.product.id;

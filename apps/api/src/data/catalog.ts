@@ -27,6 +27,9 @@ export interface CatalogProduct {
   /** baseline package + price per chain (cents), used when no flyer/scrape price */
   pkg: { size: number; unit: string };
   baseline: Partial<Record<Chain, number>>;
+  /** density in g per ml — enables ml→g for weight products measured by volume
+   *  in recipes (tsp of salt, tbsp of baking powder, cups of flour…) */
+  densityGPerMl?: number;
 }
 
 export const CATALOG: CatalogProduct[] = [
@@ -37,7 +40,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['farine tout usage', 'farine tout-usage', 'all purpose flour', 'all-purpose flour', 'farine robin hood', 'farine five roses', 'farine selection', 'farine no name', 'farine sans nom'],
     exclude: ['blé entier', 'whole wheat', 'sarrasin', 'amande', 'avoine', 'gâteau', 'cake', 'sans gluten', 'gluten free', 'épeautre', 'à pain', 'bread'],
     queries: ['farine', 'farine tout usage', 'flour'],
-    pkg: { size: 2000, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+    pkg: { size: 2000, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 0.53,
   },
   {
     name: 'Sucre blanc', brand: 'Redpath', category: 'Sucre',
@@ -45,7 +48,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['sucre granulé', 'sucre blanc', 'granulated sugar', 'white sugar', 'sucre à fruits', 'sucre lantic', 'sucre redpath'],
     exclude: ['cassonade', 'glace', 'icing', 'brown', 'roux', 'érable', 'maple', 'coco', 'vanille', 'substitut', 'édulcorant', 'stevia'],
     queries: ['sucre', 'sucre granulé'],
-    pkg: { size: 2000, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+    pkg: { size: 2000, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 }, densityGPerMl: 0.85,
   },
   {
     name: 'Cassonade', brand: null, category: 'Sucre',
@@ -53,7 +56,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['cassonade', 'sucre roux', 'brown sugar'],
     exclude: ['glace', 'icing', 'granulé'],
     queries: ['cassonade', 'brown sugar'],
-    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 299, IGA: 329, Metro: 319 },
+    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 299, IGA: 329, Metro: 319 }, densityGPerMl: 0.9,
   },
   {
     name: "Sirop d'érable", brand: null, category: 'Sucre',
@@ -69,7 +72,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['poudre à pâte', 'baking powder', 'poudre à lever'],
     exclude: ['bicarbonate', 'baking soda', 'levure de bière', 'levure sèche', 'yeast'],
     queries: ['poudre à pâte', 'baking powder'],
-    pkg: { size: 450, unit: 'g' }, baseline: { Maxi: 349, IGA: 379, Metro: 359 },
+    pkg: { size: 450, unit: 'g' }, baseline: { Maxi: 349, IGA: 379, Metro: 359 }, densityGPerMl: 0.8,
   },
   {
     name: 'Bicarbonate de soude', brand: 'Arm & Hammer', category: 'Épices',
@@ -77,7 +80,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['bicarbonate de soude', 'bicarbonate de sodium', 'baking soda', 'petite vache'],
     exclude: ['poudre à pâte', 'baking powder'],
     queries: ['bicarbonate', 'baking soda'],
-    pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+    pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 }, densityGPerMl: 0.9,
   },
   {
     name: 'Extrait de vanille', brand: null, category: 'Épices',
@@ -93,7 +96,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['sel de table', 'sel iodé', 'table salt', 'sel sifto', 'sel windsor'],
     exclude: ['marin', 'mer', 'fleur de sel', 'casher', 'kosher', "d'ail", 'garlic salt', 'céleri'],
     queries: ['sel de table', 'table salt'],
-    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 149, IGA: 169, Metro: 159 },
+    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 149, IGA: 169, Metro: 159 }, densityGPerMl: 1.2,
   },
   {
     name: 'Beurre arachide', brand: 'Kraft', category: 'Tartinades',
@@ -101,7 +104,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ["beurre d'arachide", 'beurre arachide', 'peanut butter'],
     exclude: ['amande', 'almond', 'noisette', 'chocolat'],
     queries: ["beurre d'arachide", 'peanut butter'],
-    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 1.07,
   },
   {
     name: "Flocons d'avoine", brand: 'Quaker', category: 'Céréales',
@@ -119,7 +122,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['beurre non salé', 'unsalted butter', 'beurre doux', 'beurre selection', 'beurre lactantia', 'beurre président', 'beurre no name'],
     exclude: ['arachide', 'peanut', 'amande', 'almond', 'margarine', 'cacao', "à l'ail", 'garlic', 'demi-sel'],
     queries: ['beurre', 'butter'],
-    pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 699, IGA: 749, Metro: 729 },
+    pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 699, IGA: 749, Metro: 729 }, densityGPerMl: 0.96,
   },
   {
     name: 'Lait 3,25%', brand: 'Natrel', category: 'Produits laitiers',
@@ -203,7 +206,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['riz blanc', 'riz à grain long', 'riz grain long', 'long grain rice', 'white rice', 'riz long'],
     exclude: ['brun', 'brown', 'sauvage', 'wild', 'instantané', 'instant', 'arborio', 'basmati', 'jasmin', 'jasmine', 'assaisonné', 'calrose'],
     queries: ['riz blanc', 'white rice'],
-    pkg: { size: 2000, unit: 'g' }, baseline: { Maxi: 599, IGA: 649, Metro: 629 },
+    pkg: { size: 2000, unit: 'g' }, baseline: { Maxi: 599, IGA: 649, Metro: 629 }, densityGPerMl: 0.85,
   },
   {
     name: 'Pâtes spaghetti', brand: 'Barilla', category: 'Féculents',
