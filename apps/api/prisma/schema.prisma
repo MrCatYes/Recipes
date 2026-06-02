@@ -139,6 +139,7 @@ model Recipe {
   id               String   @id @default(cuid())
   sourceUrl        String?  @unique
   title            String
+  category         String?  // Déjeuner | Entrée | Plat principal | Dessert | Pâtisserie | Accompagnement
   servings         Int      @default(4)
   imageUrl         String?
   instructions     String[] // array of steps
@@ -150,6 +151,7 @@ model Recipe {
   ingredients      Ingredient[]
 
   @@index([title])
+  @@index([category])
 }
 
 model Ingredient {

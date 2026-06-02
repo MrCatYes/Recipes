@@ -59,11 +59,28 @@ export interface Recipe {
   id: string;
   sourceUrl: string | null;
   title: string;
+  category: string | null;
   servings: number;
   imageUrl: string | null;
   instructions: string[];
   prepTimeMinutes: number | null;
   cookTimeMinutes: number | null;
+}
+
+export interface RecipeSummary {
+  id: string;
+  title: string;
+  category: string | null;
+  imageUrl: string | null;
+  servings: number;
+  cheapestStore: StoreChain | null;
+  cheapestTotalCents: number | null;
+  promoIngredientCount: number;
+}
+
+export interface GetRecipesResponse {
+  recipes: RecipeSummary[];
+  categories: string[];
 }
 
 export interface Ingredient {

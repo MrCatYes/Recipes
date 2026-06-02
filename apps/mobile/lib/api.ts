@@ -4,6 +4,7 @@ import type {
   GetFlyersResponse,
   RecipesByPromosResponse,
   RecipeWithCost,
+  GetRecipesResponse,
 } from '@epicerie/shared-types';
 
 export const API_BASE = process.env.EXPO_PUBLIC_API_URL;
@@ -70,4 +71,13 @@ export function getRecipesByPromos(chains?: string[]) {
 
 export function getRecipeCost(id: string) {
   return apiFetch<RecipeWithCost>(`/recipes/${id}/cost`);
+}
+
+export function getRecipes(opts: { category?: string; chains?: string[]; sort?: string } = {}) {
+  const q = new URLSearchParams();
+  if (opts.category) q.set('category', opts.category);
+  if (opts.chains?.length) q.set('chains', opts.chains.join(','));
+  if (opts.sort) q.set('sort', opts.sort);
+  const qs = q.toString();
+  return apiFetch<GetRecipesResponse>(`/recipes${qs ? `?${qs}` : ''}`);
 }

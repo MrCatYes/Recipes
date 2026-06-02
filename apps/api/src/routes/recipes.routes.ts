@@ -5,11 +5,34 @@ import { RecipeParserService } from '../services/recipe-parser.service';
 import { IngredientMatcherService } from '../services/ingredient-matcher.service';
 import { computeRecipeCost } from '../services/recipe-cost.service';
 import { getRecipesByPromos } from '../services/recipe-promos.service';
+import { listRecipes, type RecipeSort } from '../services/recipe-list.service';
+import { classifyRecipe } from '../services/recipe-classifier';
 import type { ParseRecipeResponse, StoreChain } from '@epicerie/shared-types';
 
 const CHAINS = ['IGA', 'Metro', 'Maxi', 'Walmart', 'Costco'] as const;
 
+function parseChains(raw?: string): StoreChain[] | undefined {
+  if (!raw) return undefined;
+  return raw.split(',').map(c => c.trim())
+    .filter((c): c is StoreChain => (CHAINS as readonly string[]).includes(c));
+}
+
 export async function recipesRoutes(app: FastifyInstance) {
+  // GET /recipes?category=Dessert&chains=Maxi,IGA&sort=price|promos|recent
+  app.get('/recipes', async (req, reply) => {
+    const schema = z.object({
+      category: z.string().optional(),
+      chains: z.string().optional(),
+      sort: z.enum(['price', 'promos', 'recent']).optional().default('price'),
+    });
+    const parsed = schema.safeParse(req.query);
+    if (!parsed.success) return reply.badRequest(parsed.error.message);
+    return listRecipes({
+      category: parsed.data.category,
+      chains: parseChains(parsed.data.chains),
+      sort: parsed.data.sort as RecipeSort,
+    });
+  });
   // GET /recipes/by-promos?chains=Maxi,IGA  → recipes whose ingredients are on sale
   app.get('/recipes/by-promos', async (req, reply) => {
     const schema = z.object({
@@ -73,11 +96,13 @@ export async function recipesRoutes(app: FastifyInstance) {
 
     // Save recipe skeleton
     console.log('[parse] 3. saving to DB...');
+    const category = classifyRecipe(rawRecipe.title, rawRecipe.instructions.join(' '));
     const recipe = await prisma.recipe.upsert({
       where: { sourceUrl: url },
       create: {
         sourceUrl: url,
         title: rawRecipe.title,
+        category,
         servings: rawRecipe.servings,
         imageUrl: rawRecipe.imageUrl,
         instructions: rawRecipe.instructions,
@@ -86,6 +111,7 @@ export async function recipesRoutes(app: FastifyInstance) {
       },
       update: {
         title: rawRecipe.title,
+        category,
         servings: rawRecipe.servings,
         imageUrl: rawRecipe.imageUrl,
         instructions: rawRecipe.instructions,
