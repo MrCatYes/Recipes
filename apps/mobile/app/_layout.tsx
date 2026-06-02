@@ -48,6 +48,8 @@ export default function RootLayout() {
             ),
           }}
         />
+        {/* Detail route — registered but hidden from the tab bar */}
+        <Tabs.Screen name="recipe/[id]" options={{ href: null, headerShown: false }} />
       </Tabs>
     </StoreProvider>
   );

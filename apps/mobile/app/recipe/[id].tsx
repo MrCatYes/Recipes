@@ -29,11 +29,23 @@ export default function RecipeDetail() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  const totals = recipe
-    ? Object.entries(recipe.totalCostByStore)
-        .filter(([c]) => selectedStores.includes(c as StoreChain))
-        .sort((a, b) => a[1] - b[1])
-    : [];
+  // Per-store totals: prorata (cost of amounts used) + package (buy full formats)
+  const summaries = (() => {
+    if (!recipe) return [];
+    const prorata = new Map<string, number>();
+    const pkg = new Map<string, number>();
+    for (const ing of recipe.ingredients) {
+      for (const p of ing.costByStore) {
+        if (!selectedStores.includes(p.chain as StoreChain)) continue;
+        prorata.set(p.chain, (prorata.get(p.chain) ?? 0) + p.priceCents);
+        pkg.set(p.chain, (pkg.get(p.chain) ?? 0) + p.packagePriceCents);
+      }
+    }
+    return Array.from(prorata.entries())
+      .map(([chain, pro]) => ({ chain, prorata: pro, pkg: pkg.get(chain) ?? pro }))
+      .sort((a, b) => a.prorata - b.prorata);
+  })();
+  const best = summaries[0];
 
   return (
     <View style={styles.container}>
@@ -60,18 +72,32 @@ export default function RecipeDetail() {
             {recipe.cookTimeMinutes != null && <Text style={styles.metaText}>· cuisson {recipe.cookTimeMinutes} min</Text>}
           </View>
 
-          {/* Store totals */}
-          {totals.length > 0 && (
+          {/* Hero: total recipe cost */}
+          {best && (
+            <View style={styles.hero}>
+              <Text style={styles.heroLabel}>Coût total de la recette</Text>
+              <Text style={styles.heroTotal}>{formatCents(best.prorata)}</Text>
+              <Text style={styles.heroSub}>
+                {formatCents(Math.round(best.prorata / recipe.servings))} / portion · meilleur prix chez {best.chain}
+              </Text>
+              <Text style={styles.heroPkg}>
+                ≈ {formatCents(best.pkg)} si tu achètes les formats complets
+              </Text>
+            </View>
+          )}
+
+          {/* Per-store comparison */}
+          {summaries.length > 1 && (
             <View style={styles.totals}>
-              {totals.map(([chain, total], idx) => (
-                <View key={chain} style={[styles.totalRow, idx === 0 && styles.totalBest]}>
-                  <View style={[styles.tag, { backgroundColor: STORE_COLORS[chain as StoreChain] }]}>
-                    <Text style={styles.tagText}>{chain}</Text>
+              {summaries.map((s, idx) => (
+                <View key={s.chain} style={[styles.totalRow, idx === 0 && styles.totalBest]}>
+                  <View style={[styles.tag, { backgroundColor: STORE_COLORS[s.chain as StoreChain] }]}>
+                    <Text style={styles.tagText}>{s.chain}</Text>
                   </View>
                   <Text style={[styles.totalPrice, idx === 0 && styles.totalPriceBest]}>
-                    {formatCents(total)}
+                    {formatCents(s.prorata)}
                   </Text>
-                  {idx === 0 && <Text style={styles.bestLabel}>meilleur · {formatCents(Math.round(total / recipe.servings))}/portion</Text>}
+                  <Text style={styles.totalPkg}>formats {formatCents(s.pkg)}</Text>
                 </View>
               ))}
             </View>
@@ -132,14 +158,19 @@ const styles = StyleSheet.create({
   title:         { fontSize: 22, fontWeight: '700', paddingHorizontal: 16, paddingTop: 14 },
   meta:          { flexDirection: 'row', flexWrap: 'wrap', gap: 6, paddingHorizontal: 16, marginTop: 4 },
   metaText:      { color: '#666', fontSize: 13 },
-  totals:        { margin: 16, gap: 6 },
+  hero:          { backgroundColor: '#E8F5E9', margin: 16, borderRadius: 12, padding: 16, alignItems: 'center' },
+  heroLabel:     { fontSize: 13, color: '#2E7D32', fontWeight: '600' },
+  heroTotal:     { fontSize: 34, fontWeight: '800', color: '#1B5E20', marginTop: 2 },
+  heroSub:       { fontSize: 13, color: '#388E3C', marginTop: 2 },
+  heroPkg:       { fontSize: 12, color: '#888', marginTop: 6 },
+  totals:        { marginHorizontal: 16, marginBottom: 8, gap: 6 },
   totalRow:      { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 10, borderRadius: 8, backgroundColor: '#fff' },
   totalBest:     { backgroundColor: '#E8F5E9' },
   tag:           { borderRadius: 4, paddingHorizontal: 8, paddingVertical: 3 },
   tagText:       { color: '#fff', fontSize: 11, fontWeight: '700' },
-  totalPrice:    { fontSize: 15, fontWeight: '600', color: '#555' },
-  totalPriceBest:{ fontSize: 17, color: '#1B5E20' },
-  bestLabel:     { fontSize: 11, color: '#2E7D32', fontWeight: '600', flex: 1 },
+  totalPrice:    { fontSize: 15, fontWeight: '700', color: '#1B5E20', flex: 1 },
+  totalPriceBest:{ fontSize: 17 },
+  totalPkg:      { fontSize: 11, color: '#999' },
   section:       { fontSize: 16, fontWeight: '700', paddingHorizontal: 16, marginTop: 14, marginBottom: 6 },
   ingRow:        { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#eee' },
   ingText:       { flex: 1, fontSize: 14, marginRight: 8 },
