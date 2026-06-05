@@ -43,6 +43,7 @@ export default function DealsScreen() {
   const [error, setError] = useState<string | null>(null);
   const [category, setCategory] = useState<string | null>(null);
   const [sort, setSort] = useState<SortMode>('price');
+  const [recipeCat, setRecipeCat] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setError(null);
@@ -172,10 +173,33 @@ export default function DealsScreen() {
             <View style={styles.recipesBlock}>
               <Text style={styles.blockTitle}>🍳 Recettes avantageuses</Text>
               <Text style={styles.blockSub}>Leurs ingrédients sont en spécial cette semaine</Text>
+              {/* Recipe category filter */}
+              {(() => {
+                const recipeCats = Array.from(
+                  new Set(promoRecipes.map(r => r.recipe.category).filter(Boolean) as string[])
+                ).sort();
+                return recipeCats.length > 1 ? (
+                  <FlatList
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    data={[null, ...recipeCats]}
+                    keyExtractor={(c) => c ?? 'all'}
+                    contentContainerStyle={styles.chipScroll}
+                    renderItem={({ item: c }) => {
+                      const active = recipeCat === c;
+                      return (
+                        <TouchableOpacity style={[styles.chip, active && styles.chipActive]} onPress={() => setRecipeCat(c)}>
+                          <Text style={[styles.chipText, active && styles.chipTextActive]}>{c ?? 'Toutes'}</Text>
+                        </TouchableOpacity>
+                      );
+                    }}
+                  />
+                ) : null;
+              })()}
               <FlatList
                 horizontal
                 showsHorizontalScrollIndicator={false}
-                data={promoRecipes}
+                data={recipeCat ? promoRecipes.filter(r => r.recipe.category === recipeCat) : promoRecipes}
                 keyExtractor={(r) => r.recipe.id}
                 contentContainerStyle={styles.recipeScroll}
                 renderItem={({ item }) => (

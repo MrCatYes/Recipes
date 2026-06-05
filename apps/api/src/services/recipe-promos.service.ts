@@ -13,6 +13,7 @@ function getWeekMonday(): Date {
 export async function getRecipesByPromos(
   chains?: StoreChain[],
   maxRecipes = 10,
+  category?: string,
 ): Promise<RecipesByPromosResponse> {
   const weekOf = getWeekMonday();
 
@@ -39,8 +40,9 @@ export async function getRecipesByPromos(
     return { weekOf: weekOf.toISOString(), recipes: [] };
   }
 
-  // All recipes with their ingredient productIds
+  // All recipes with their ingredient productIds (optionally filtered by category)
   const recipes = await prisma.recipe.findMany({
+    where: category ? { category } : undefined,
     include: { ingredients: { select: { id: true, productId: true } } },
   });
 
