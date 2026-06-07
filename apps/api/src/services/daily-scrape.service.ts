@@ -1,27 +1,36 @@
 /**
- * Daily scrape orchestrator (hybrid strategy)
- *   1. Flipp API     → weekly promo prices, all stores (Maxi/IGA/Metro/Super C/Walmart)
- *   2. Metro Playwright → regular catalog prices
- *   3. Manual baseline  → seeded once if a product has no price anywhere
+ * Daily scrape orchestrator (host-run — needs Chromium for the catalog crawl).
+ *   1. Flipp API        → weekly promo prices, all stores (browser-free)
+ *   2. Full catalog crawl → Maxi (+ Metro/IGA when available) regular catalog
  *
- * Runs daily via cron (see index.ts).
+ * Run on the host (not the Docker API container) via host-cron.ts.
  */
 
 import { PrismaClient } from '@prisma/client';
 import { scrapeAllPrices } from './price-scraper.service';
+import { crawlMaxi } from './crawl/maxi-catalog.crawler';
 
 const prisma = new PrismaClient();
 
-export async function runDailyScrape(): Promise<void> {
+export async function runDailyScrape(opts: { catalog?: boolean } = {}): Promise<void> {
   const start = Date.now();
   console.log(`\n🛒 Daily scrape started ${new Date().toISOString()}`);
 
-  // Flipp — all-store prices (Maxi, IGA, Metro, Super C, Walmart). Browser-free.
+  // 1. Flipp — all-store weekly promo prices. Browser-free.
   try {
     const flipp = await scrapeAllPrices();
     console.log(`Flipp: ${flipp.matched} prices saved (${flipp.total} candidates).`);
   } catch (e) {
     console.error('Flipp failed:', e instanceof Error ? e.message : e);
+  }
+
+  // 2. Full catalog crawl (Chromium). Opt-in — heavy (~20 min).
+  if (opts.catalog !== false) {
+    try {
+      await crawlMaxi();
+    } catch (e) {
+      console.error('Maxi catalog crawl failed:', e instanceof Error ? e.message : e);
+    }
   }
 
   const secs = ((Date.now() - start) / 1000).toFixed(0);
