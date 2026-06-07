@@ -94,6 +94,31 @@ model StoreProduct {
   @@index([storeId])
 }
 
+// ─── Full store catalog (crawled) ──────────────────────────────────────────────
+// Independent of curated Product — raw catalog of every scraped store item.
+// Recipe ingredients are matched against this by fuzzy/trigram search.
+
+model CatalogItem {
+  id          String     @id @default(cuid())
+  chain       StoreChain
+  name        String
+  brand       String?
+  category    String?
+  priceCents  Int
+  packageSize Float      @default(1)
+  packageUnit String     @default("unit")
+  sourceSku   String?
+  url         String?
+  inStock     Boolean    @default(true)
+  capturedAt  DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@unique([chain, sourceSku])
+  @@index([chain])
+  @@index([category])
+  @@index([name])
+}
+
 // ─── Prices ───────────────────────────────────────────────────────────────────
 
 model Price {
