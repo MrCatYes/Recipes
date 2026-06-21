@@ -9,7 +9,8 @@
 import { PrismaClient } from '@prisma/client';
 import { scrapeAllPrices } from './price-scraper.service';
 import { crawlMaxi } from './crawl/maxi-catalog.crawler';
-import { crawlMetro } from './crawl/metro-catalog.crawler';
+import { crawlMetro, crawlSuperC } from './crawl/metro-catalog.crawler';
+import { crawlIga } from './crawl/iga-catalog.crawler';
 
 const prisma = new PrismaClient();
 
@@ -25,12 +26,18 @@ export async function runDailyScrape(opts: { catalog?: boolean } = {}): Promise<
     console.error('Flipp failed:', e instanceof Error ? e.message : e);
   }
 
+  // 1b. IGA full catalog — via Algolia JSON API. Browser-free, fast (~1-2 min).
+  try { await crawlIga(); }
+  catch (e) { console.error('IGA catalog crawl failed:', e instanceof Error ? e.message : e); }
+
   // 2. Full catalog crawls (Chromium). Opt-in — heavy (~20-40 min each).
   if (opts.catalog !== false) {
     try { await crawlMaxi(); }
     catch (e) { console.error('Maxi catalog crawl failed:', e instanceof Error ? e.message : e); }
     try { await crawlMetro(); }
     catch (e) { console.error('Metro catalog crawl failed:', e instanceof Error ? e.message : e); }
+    try { await crawlSuperC(); }
+    catch (e) { console.error('Super C catalog crawl failed:', e instanceof Error ? e.message : e); }
   }
 
   const secs = ((Date.now() - start) / 1000).toFixed(0);

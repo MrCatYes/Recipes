@@ -13,12 +13,15 @@ function getWeekMonday(): Date {
 export type RecipeSort = 'price' | 'promos' | 'recent';
 
 export async function listRecipes(
-  opts: { category?: string; chains?: StoreChain[]; sort?: RecipeSort } = {},
+  opts: { category?: string; difficulty?: string; chains?: StoreChain[]; sort?: RecipeSort } = {},
 ): Promise<GetRecipesResponse> {
-  const { category, chains, sort = 'price' } = opts;
+  const { category, difficulty, chains, sort = 'price' } = opts;
 
   const recipes = await prisma.recipe.findMany({
-    where: category ? { category } : undefined,
+    where: {
+      ...(category ? { category } : {}),
+      ...(difficulty ? { difficulty } : {}),
+    },
     include: { ingredients: { select: { id: true, productId: true } } },
     orderBy: { createdAt: 'desc' },
   });
@@ -58,6 +61,7 @@ export async function listRecipes(
       id: r.id,
       title: r.title,
       category: r.category,
+      difficulty: r.difficulty as RecipeSummary['difficulty'],
       imageUrl: r.imageUrl,
       servings: r.servings,
       cheapestStore: (totals[0]?.[0] as StoreChain) ?? null,

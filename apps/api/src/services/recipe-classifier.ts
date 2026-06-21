@@ -35,3 +35,72 @@ export function classifyRecipe(title: string, extra = ''): RecipeCategory {
   }
   return 'Plat principal';
 }
+
+// ─── Difficulty ─────────────────────────────────────────────────────────────
+// Deterministic score from ingredient count, step count, total time and
+// technique keywords. Free, no LLM. Order of techniques = signal strength.
+
+export const RECIPE_DIFFICULTIES = ['débutant', 'confirmé', 'expert'] as const;
+export type RecipeDifficulty = (typeof RECIPE_DIFFICULTIES)[number];
+
+// High-skill techniques — strong push toward expert.
+const ADVANCED_TECHNIQUES = [
+  'pate feuilletee', 'feuilletage', 'temperage', 'temperer le chocolat', 'pochage', 'pocher',
+  'flambe', 'flamber', 'emulsion', 'emulsionner', 'confit', 'confire', 'braiser',
+  'macaron', 'souffle', 'meringue italienne', 'pate a choux', 'genoise', 'bavarois',
+  'ganache', 'sous vide', 'clarifier', 'bain-marie', 'julienne', 'brunoise', 'desosser',
+  'lever les filets', 'abaisser', 'glacage miroir', 'creme anglaise', 'tremper le chocolat',
+  'monter en neige', 'caraméliser', 'carameliser', 'deglacer', 'reduction',
+];
+
+// Mid-skill techniques — push toward confirmé.
+const INTERMEDIATE_TECHNIQUES = [
+  'mariner', 'paner', 'saisir', 'mijoter', 'blanchir', 'sauter', 'rotir', 'gratiner',
+  'reduire', 'fouetter', 'incorporer', 'petrir', 'laisser reposer', 'beurre pommade',
+  'monter', 'napper', 'zester', 'tamiser', 'faire revenir', 'deglacer',
+];
+
+function countMatches(text: string, keywords: string[]): number {
+  let n = 0;
+  for (const k of keywords) if (text.includes(norm(k))) n++;
+  return n;
+}
+
+/**
+ * Classify recipe difficulty: débutant | confirmé | expert.
+ * @param ingredientCount  number of ingredient lines
+ * @param instructions     array of step strings
+ * @param totalMinutes     prep + cook minutes (null if unknown)
+ */
+export function classifyDifficulty(
+  ingredientCount: number,
+  instructions: string[],
+  totalMinutes: number | null,
+): RecipeDifficulty {
+  const text = norm(instructions.join(' '));
+  const steps = instructions.length;
+
+  let score = 0;
+
+  // Ingredient count
+  if (ingredientCount >= 12) score += 2;
+  else if (ingredientCount >= 7) score += 1;
+
+  // Step count
+  if (steps >= 10) score += 2;
+  else if (steps >= 6) score += 1;
+
+  // Total time
+  if (totalMinutes != null) {
+    if (totalMinutes >= 120) score += 2;
+    else if (totalMinutes >= 60) score += 1;
+  }
+
+  // Techniques
+  score += Math.min(countMatches(text, INTERMEDIATE_TECHNIQUES), 2); // cap +2
+  score += Math.min(countMatches(text, ADVANCED_TECHNIQUES) * 2, 4);  // cap +4
+
+  if (score >= 6) return 'expert';
+  if (score >= 3) return 'confirmé';
+  return 'débutant';
+}

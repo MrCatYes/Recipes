@@ -37,8 +37,10 @@ const MERCHANT_CHAIN: Array<{ keyword: string; chain: StoreChain }> = [
   { keyword: 'maxi',    chain: 'Maxi' },
   { keyword: 'iga',     chain: 'IGA' },
   { keyword: 'metro',   chain: 'Metro' },
-  { keyword: 'super c', chain: 'Maxi' }, // Super C = Metro discount banner
+  { keyword: 'super c', chain: 'SuperC' }, // Metro Inc. discount banner
+  { keyword: 'superc', chain: 'SuperC' },
   { keyword: 'walmart', chain: 'Walmart' },
+  { keyword: 'costco', chain: 'Costco' },
 ];
 
 function resolveChain(merchantName: string): StoreChain | null {

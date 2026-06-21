@@ -1,6 +1,56 @@
+// ─── Users & Auth ─────────────────────────────────────────────────────────────
+
+export interface User {
+  id: string;
+  email: string;
+  displayName: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  postalCode: string | null;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  displayName?: string;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface RefreshRequest {
+  refreshToken: string;
+}
+
+// ─── Stores / Geolocation ─────────────────────────────────────────────────────
+
+export interface NearbyStore {
+  id: string;
+  chain: StoreChain;
+  name: string;
+  address: string | null;
+  city: string | null;
+  postalCode: string | null;
+  latitude: number;
+  longitude: number;
+  distanceKm: number;
+}
+
+export interface NearbyStoresResponse {
+  stores: NearbyStore[];
+}
+
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
-export type StoreChain = 'IGA' | 'Metro' | 'Maxi' | 'Walmart' | 'Costco';
+export type StoreChain = 'IGA' | 'Metro' | 'Maxi' | 'Walmart' | 'Costco' | 'SuperC';
 
 export type UnitType = 'weight' | 'volume' | 'count';
 
@@ -55,11 +105,14 @@ export interface PriceWithStore {
 
 // ─── Recipes ──────────────────────────────────────────────────────────────────
 
+export type RecipeDifficulty = 'débutant' | 'confirmé' | 'expert';
+
 export interface Recipe {
   id: string;
   sourceUrl: string | null;
   title: string;
   category: string | null;
+  difficulty: RecipeDifficulty | null;
   servings: number;
   imageUrl: string | null;
   instructions: string[];
@@ -71,6 +124,7 @@ export interface RecipeSummary {
   id: string;
   title: string;
   category: string | null;
+  difficulty: RecipeDifficulty | null;
   imageUrl: string | null;
   servings: number;
   cheapestStore: StoreChain | null;

@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
 
-export type StoreChain = 'Maxi' | 'IGA' | 'Metro' | 'Walmart' | 'Costco';
+export type StoreChain = 'Maxi' | 'IGA' | 'Metro' | 'Walmart' | 'Costco' | 'SuperC';
 
-export const ALL_STORES: StoreChain[] = ['Maxi', 'IGA', 'Metro', 'Walmart', 'Costco'];
+export const ALL_STORES: StoreChain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
 
 interface StoreContextValue {
   selectedStores: StoreChain[];
@@ -17,7 +17,7 @@ const StoreContext = createContext<StoreContextValue>({
 });
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  const [selectedStores, setSelectedStores] = useState<StoreChain[]>(['Maxi', 'IGA', 'Metro']);
+  const [selectedStores, setSelectedStores] = useState<StoreChain[]>(['Maxi', 'IGA', 'Metro', 'SuperC']);
 
   const toggleStore = (chain: StoreChain) => {
     setSelectedStores(prev =>

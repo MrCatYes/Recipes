@@ -6,10 +6,10 @@ import { IngredientMatcherService } from '../services/ingredient-matcher.service
 import { computeRecipeCost } from '../services/recipe-cost.service';
 import { getRecipesByPromos } from '../services/recipe-promos.service';
 import { listRecipes, type RecipeSort } from '../services/recipe-list.service';
-import { classifyRecipe } from '../services/recipe-classifier';
+import { classifyRecipe, classifyDifficulty } from '../services/recipe-classifier';
 import type { ParseRecipeResponse, StoreChain } from '@epicerie/shared-types';
 
-const CHAINS = ['IGA', 'Metro', 'Maxi', 'Walmart', 'Costco'] as const;
+const CHAINS = ['IGA', 'Metro', 'Maxi', 'Walmart', 'Costco', 'SuperC'] as const;
 
 function parseChains(raw?: string): StoreChain[] | undefined {
   if (!raw) return undefined;
@@ -22,6 +22,7 @@ export async function recipesRoutes(app: FastifyInstance) {
   app.get('/recipes', async (req, reply) => {
     const schema = z.object({
       category: z.string().optional(),
+      difficulty: z.enum(['débutant', 'confirmé', 'expert']).optional(),
       chains: z.string().optional(),
       sort: z.enum(['price', 'promos', 'recent']).optional().default('price'),
     });
@@ -29,6 +30,7 @@ export async function recipesRoutes(app: FastifyInstance) {
     if (!parsed.success) return reply.badRequest(parsed.error.message);
     return listRecipes({
       category: parsed.data.category,
+      difficulty: parsed.data.difficulty,
       chains: parseChains(parsed.data.chains),
       sort: parsed.data.sort as RecipeSort,
     });
@@ -97,12 +99,20 @@ export async function recipesRoutes(app: FastifyInstance) {
     // Save recipe skeleton
     console.log('[parse] 3. saving to DB...');
     const category = classifyRecipe(rawRecipe.title, rawRecipe.instructions.join(' '));
+    const totalMinutes =
+      (rawRecipe.prepTimeMinutes ?? 0) + (rawRecipe.cookTimeMinutes ?? 0) || null;
+    const difficulty = classifyDifficulty(
+      rawRecipe.ingredients.length,
+      rawRecipe.instructions,
+      totalMinutes,
+    );
     const recipe = await prisma.recipe.upsert({
       where: { sourceUrl: url },
       create: {
         sourceUrl: url,
         title: rawRecipe.title,
         category,
+        difficulty,
         servings: rawRecipe.servings,
         imageUrl: rawRecipe.imageUrl,
         instructions: rawRecipe.instructions,
@@ -112,6 +122,7 @@ export async function recipesRoutes(app: FastifyInstance) {
       update: {
         title: rawRecipe.title,
         category,
+        difficulty,
         servings: rawRecipe.servings,
         imageUrl: rawRecipe.imageUrl,
         instructions: rawRecipe.instructions,

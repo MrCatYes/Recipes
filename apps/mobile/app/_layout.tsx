@@ -1,9 +1,11 @@
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StoreProvider } from '../lib/store-context';
+import { AuthProvider } from '../lib/auth-context';
 
 export default function RootLayout() {
   return (
+    <AuthProvider>
     <StoreProvider>
       <Tabs
         screenOptions={{
@@ -48,9 +50,12 @@ export default function RootLayout() {
             ),
           }}
         />
-        {/* Detail route — registered but hidden from the tab bar */}
+        {/* Detail + auth routes — registered but hidden from the tab bar */}
         <Tabs.Screen name="recipe/[id]" options={{ href: null, headerShown: false }} />
+        <Tabs.Screen name="auth/login" options={{ href: null, headerShown: false }} />
+        <Tabs.Screen name="auth/register" options={{ href: null, headerShown: false }} />
       </Tabs>
     </StoreProvider>
+    </AuthProvider>
   );
 }

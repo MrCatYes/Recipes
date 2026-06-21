@@ -26,8 +26,10 @@ const MERCHANT_MAP: Record<string, StoreChain> = {
   'maxi':    'Maxi',
   'iga':     'IGA',
   'metro':   'Metro',
-  'super c': 'Maxi', // Super C owned by Metro, closest match
+  'super c': 'SuperC', // Metro Inc. discount banner
+  'superc':  'SuperC',
   'walmart': 'Walmart',
+  'costco':  'Costco',
 };
 
 interface ProductQuery {

@@ -157,6 +157,7 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
     sourceUrl: recipe.sourceUrl,
     title: recipe.title,
     category: recipe.category,
+    difficulty: recipe.difficulty as RecipeWithCost['difficulty'],
     servings: recipe.servings,
     imageUrl: recipe.imageUrl,
     instructions: recipe.instructions as string[],

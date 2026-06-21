@@ -5,13 +5,18 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import type { RecipeSummary } from '@epicerie/shared-types';
+import type { RecipeSummary, RecipeDifficulty } from '@epicerie/shared-types';
 import { parseRecipe, getRecipes } from '../lib/api';
 import { useStores, type StoreChain } from '../lib/store-context';
 
 const STORE_COLORS: Record<StoreChain, string> = {
-  Maxi: '#E53935', IGA: '#1565C0', Metro: '#F57C00', Walmart: '#0071CE', Costco: '#003DA5',
+  Maxi: '#E53935', IGA: '#1565C0', Metro: '#F57C00', SuperC: '#C8102E', Walmart: '#0071CE', Costco: '#003DA5',
 };
+
+const DIFFICULTY_COLORS: Record<RecipeDifficulty, string> = {
+  'débutant': '#2E7D32', 'confirmé': '#EF6C00', 'expert': '#C62828',
+};
+const DIFFICULTIES: RecipeDifficulty[] = ['débutant', 'confirmé', 'expert'];
 
 type Sort = 'price' | 'promos' | 'recent';
 const SORTS: Array<{ key: Sort; label: string }> = [
@@ -29,13 +34,19 @@ export default function RecipesScreen() {
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [category, setCategory] = useState<string | null>(null);
+  const [difficulty, setDifficulty] = useState<RecipeDifficulty | null>(null);
   const [sort, setSort] = useState<Sort>('price');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   const load = useCallback(async () => {
     try {
-      const data = await getRecipes({ category: category ?? undefined, chains: selectedStores, sort });
+      const data = await getRecipes({
+        category: category ?? undefined,
+        difficulty: difficulty ?? undefined,
+        chains: selectedStores,
+        sort,
+      });
       setRecipes(data.recipes);
       setCategories(data.categories);
     } catch {
@@ -44,7 +55,7 @@ export default function RecipesScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [category, sort, selectedStores]);
+  }, [category, difficulty, sort, selectedStores]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -110,6 +121,25 @@ export default function RecipesScreen() {
           );
         }}
       />
+
+      {/* Difficulty filter */}
+      <View style={styles.diffRow}>
+        {([null, ...DIFFICULTIES]).map((d) => {
+          const active = difficulty === d;
+          const color = d ? DIFFICULTY_COLORS[d] : '#2E7D32';
+          return (
+            <TouchableOpacity
+              key={d ?? 'all'}
+              style={[styles.diffChip, active && { backgroundColor: color, borderColor: color }]}
+              onPress={() => setDifficulty(d)}
+            >
+              <Text style={[styles.diffChipText, active && styles.diffChipTextActive]}>
+                {d ? d.charAt(0).toUpperCase() + d.slice(1) : 'Tous niveaux'}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
   );
 
@@ -132,7 +162,14 @@ export default function RecipesScreen() {
             : <View style={[styles.cardImg, styles.cardImgEmpty]}><Ionicons name="restaurant" size={24} color="#ccc" /></View>}
           <View style={styles.cardBody}>
             <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
-            {item.category && <Text style={styles.cardCat}>{item.category}</Text>}
+            <View style={styles.cardMeta}>
+              {item.category && <Text style={styles.cardCat}>{item.category}</Text>}
+              {item.difficulty && (
+                <View style={[styles.diffBadge, { backgroundColor: DIFFICULTY_COLORS[item.difficulty] }]}>
+                  <Text style={styles.diffBadgeText}>{item.difficulty}</Text>
+                </View>
+              )}
+            </View>
             <View style={styles.cardFooter}>
               {item.cheapestStore && (
                 <View style={[styles.miniTag, { backgroundColor: STORE_COLORS[item.cheapestStore] }]}>
@@ -170,13 +207,20 @@ const styles = StyleSheet.create({
   chipActive:    { backgroundColor: '#E8F5E9', borderColor: '#2E7D32' },
   chipText:      { fontSize: 12, color: '#666' },
   chipTextActive:{ color: '#1B5E20', fontWeight: '600' },
+  diffRow:       { flexDirection: 'row', gap: 8, paddingHorizontal: 16, paddingBottom: 10 },
+  diffChip:      { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd' },
+  diffChipText:  { fontSize: 11, color: '#666', fontWeight: '600' },
+  diffChipTextActive: { color: '#fff' },
   empty:         { textAlign: 'center', color: '#999', marginTop: 40, paddingHorizontal: 32 },
   card:          { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 10, borderRadius: 12, padding: 10, gap: 10 },
   cardImg:       { width: 56, height: 56, borderRadius: 8, backgroundColor: '#eee' },
   cardImgEmpty:  { alignItems: 'center', justifyContent: 'center' },
   cardBody:      { flex: 1 },
   cardTitle:     { fontSize: 14, fontWeight: '600' },
-  cardCat:       { fontSize: 11, color: '#999', marginTop: 1 },
+  cardMeta:      { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
+  cardCat:       { fontSize: 11, color: '#999' },
+  diffBadge:     { borderRadius: 3, paddingHorizontal: 5, paddingVertical: 1 },
+  diffBadgeText: { color: '#fff', fontSize: 9, fontWeight: '700', textTransform: 'capitalize' },
   cardFooter:    { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
   miniTag:       { borderRadius: 3, paddingHorizontal: 5, paddingVertical: 1 },
   miniTagText:   { color: '#fff', fontSize: 9, fontWeight: '700' },

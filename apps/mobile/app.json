@@ -3,7 +3,10 @@
     "name": "Épicerie Prix",
     "slug": "epicerie-prix",
     "version": "1.0.0",
-    "platforms": ["ios", "android"],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -29,7 +32,14 @@
     "plugins": [
       "expo-router",
       "expo-font",
-      "expo-splash-screen"
+      "expo-splash-screen",
+      "expo-secure-store",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Épicerie Prix utilise ta position pour trouver les épiceries les plus proches."
+        }
+      ]
     ],
     "scheme": "epicerie-prix",
     "jsEngine": "hermes"

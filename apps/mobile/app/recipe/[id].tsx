@@ -10,7 +10,11 @@ import { getRecipeCost } from '../../lib/api';
 import { useStores, type StoreChain } from '../../lib/store-context';
 
 const STORE_COLORS: Record<StoreChain, string> = {
-  Maxi: '#E53935', IGA: '#1565C0', Metro: '#F57C00', Walmart: '#0071CE', Costco: '#003DA5',
+  Maxi: '#E53935', IGA: '#1565C0', Metro: '#F57C00', SuperC: '#C8102E', Walmart: '#0071CE', Costco: '#003DA5',
+};
+
+const DIFFICULTY_COLORS: Record<string, string> = {
+  'débutant': '#2E7D32', 'confirmé': '#EF6C00', 'expert': '#C62828',
 };
 
 export default function RecipeDetail() {
@@ -67,6 +71,11 @@ export default function RecipeDetail() {
           )}
           <Text style={styles.title}>{recipe.title}</Text>
           <View style={styles.meta}>
+            {recipe.difficulty && (
+              <View style={[styles.diffBadge, { backgroundColor: DIFFICULTY_COLORS[recipe.difficulty] }]}>
+                <Text style={styles.diffBadgeText}>{recipe.difficulty}</Text>
+              </View>
+            )}
             <Text style={styles.metaText}>{recipe.servings} portions</Text>
             {recipe.prepTimeMinutes != null && <Text style={styles.metaText}>· prép {recipe.prepTimeMinutes} min</Text>}
             {recipe.cookTimeMinutes != null && <Text style={styles.metaText}>· cuisson {recipe.cookTimeMinutes} min</Text>}
@@ -156,8 +165,10 @@ const styles = StyleSheet.create({
   scroll:        { paddingBottom: 40 },
   image:         { width: '100%', height: 200 },
   title:         { fontSize: 22, fontWeight: '700', paddingHorizontal: 16, paddingTop: 14 },
-  meta:          { flexDirection: 'row', flexWrap: 'wrap', gap: 6, paddingHorizontal: 16, marginTop: 4 },
+  meta:          { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, paddingHorizontal: 16, marginTop: 4 },
   metaText:      { color: '#666', fontSize: 13 },
+  diffBadge:     { borderRadius: 4, paddingHorizontal: 7, paddingVertical: 2 },
+  diffBadgeText: { color: '#fff', fontSize: 11, fontWeight: '700', textTransform: 'capitalize' },
   hero:          { backgroundColor: '#E8F5E9', margin: 16, borderRadius: 12, padding: 16, alignItems: 'center' },
   heroLabel:     { fontSize: 13, color: '#2E7D32', fontWeight: '600' },
   heroTotal:     { fontSize: 34, fontWeight: '800', color: '#1B5E20', marginTop: 2 },

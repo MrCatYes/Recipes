@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { getCurrentFlyers } from '../services/flyer.service';
 import type { StoreChain } from '@epicerie/shared-types';
 
-const CHAINS = ['IGA', 'Metro', 'Maxi', 'Walmart', 'Costco'] as const;
+const CHAINS = ['IGA', 'Metro', 'Maxi', 'Walmart', 'Costco', 'SuperC'] as const;
 
 export async function flyersRoutes(app: FastifyInstance) {
   // GET /flyers?chains=Maxi,IGA  — current week's specials

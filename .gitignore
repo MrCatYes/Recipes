@@ -22,3 +22,7 @@ packages/shared-types/dist/
 
 # Test coverage
 coverage/
+
+# Local agent settings & debug artifacts
+.claude/
+/metro-*.png

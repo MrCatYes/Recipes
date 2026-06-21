@@ -15,6 +15,7 @@ const STORE_COLORS: Record<StoreChain, string> = {
   Maxi:    '#E53935',
   IGA:     '#1565C0',
   Metro:   '#F57C00',
+  SuperC:  '#C8102E',
   Walmart: '#0071CE',
   Costco:  '#003DA5',
 };
