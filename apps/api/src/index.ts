@@ -10,6 +10,7 @@ import { recipesRoutes } from './routes/recipes.routes';
 import { flyersRoutes } from './routes/flyers.routes';
 import { storesRoutes } from './routes/stores.routes';
 import { shoppingListRoutes } from './routes/shopping-list.routes';
+import { mealPlanRoutes } from './routes/meal-plan.routes';
 import { scrapeAllPrices } from './services/price-scraper.service';
 
 const server = Fastify({
@@ -32,6 +33,7 @@ async function main() {
   await server.register(flyersRoutes, { prefix: '/api/v1' });
   await server.register(storesRoutes, { prefix: '/api/v1' });
   await server.register(shoppingListRoutes, { prefix: '/api/v1' });
+  await server.register(mealPlanRoutes, { prefix: '/api/v1' });
 
   // ─── Daily Flipp price scrape cron ─────────────────────────────────────────
   // Browser-free (runs fine in Docker). Every day at 6:00 AM.

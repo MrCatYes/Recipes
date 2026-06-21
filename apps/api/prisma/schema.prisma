@@ -46,6 +46,7 @@ model User {
 
   refreshTokens RefreshToken[]
   shoppingLists ShoppingList[]
+  mealPlans     MealPlan[]
 
   @@index([email])
 }
@@ -97,6 +98,39 @@ model ShoppingListItem {
 
   @@index([listId])
   @@index([productId])
+}
+
+// ─── Meal Planning + Budget (P2) ──────────────────────────────────────────────
+
+model MealPlan {
+  id          String   @id @default(cuid())
+  userId      String
+  name        String   @default("Ma semaine")
+  weekOf      DateTime? // optional Monday of the planned week
+  budgetCents Int?      // target budget for the plan
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  entries     MealPlanEntry[]
+
+  @@index([userId])
+}
+
+model MealPlanEntry {
+  id        String   @id @default(cuid())
+  planId    String
+  recipeId  String
+  servings  Int      @default(4) // desired servings (scales recipe cost/quantities)
+  dayOfWeek Int?     // 0=Mon .. 6=Sun, optional
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  plan      MealPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([planId])
+  @@index([recipeId])
 }
 
 // ─── Stores ───────────────────────────────────────────────────────────────────
@@ -248,6 +282,7 @@ model Recipe {
   updatedAt        DateTime @updatedAt
 
   ingredients      Ingredient[]
+  mealPlanEntries  MealPlanEntry[]
 
   @@index([title])
   @@index([category])

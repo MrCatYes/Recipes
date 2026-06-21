@@ -101,6 +101,60 @@ export interface AddListItemRequest {
   category?: string;
 }
 
+// ─── Meal Planning + Budget (P2) ──────────────────────────────────────────────
+
+export interface MealPlanEntry {
+  id: string;
+  planId: string;
+  recipeId: string;
+  servings: number;
+  dayOfWeek: number | null; // 0=Mon .. 6=Sun
+  sortOrder: number;
+}
+
+export interface MealPlanEntryWithCost extends MealPlanEntry {
+  recipe: {
+    id: string;
+    title: string;
+    imageUrl: string | null;
+    category: string | null;
+    difficulty: RecipeDifficulty | null;
+    baseServings: number;
+  };
+  costCents: number | null;        // cheapest, scaled to entry.servings
+  cheapestStore: StoreChain | null;
+}
+
+export interface MealPlanSummary {
+  id: string;
+  name: string;
+  weekOf: string | null;
+  budgetCents: number | null;
+  recipeCount: number;
+  updatedAt: string;
+}
+
+export interface MealPlanBudget {
+  targetCents: number;
+  spentCents: number;        // cheapest single-store basket
+  remainingCents: number;    // target - spent (negative = over)
+  overBudget: boolean;
+}
+
+export interface MealPlanWithCost {
+  id: string;
+  name: string;
+  weekOf: string | null;
+  budgetCents: number | null;
+  entries: MealPlanEntryWithCost[];
+  totalCostByStore: Partial<Record<StoreChain, number>>;
+  cheapestStore: StoreChain | null;
+  cheapestTotalCents: number | null;   // single best store
+  estimatedTotalCents: number | null;  // split-shopping minimum
+  budget: MealPlanBudget | null;
+  recipeCount: number;
+}
+
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
 export type StoreChain = 'IGA' | 'Metro' | 'Maxi' | 'Walmart' | 'Costco' | 'SuperC';
