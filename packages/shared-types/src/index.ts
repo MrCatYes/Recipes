@@ -48,6 +48,59 @@ export interface NearbyStoresResponse {
   stores: NearbyStore[];
 }
 
+// ─── Shopping Lists (P2) ──────────────────────────────────────────────────────
+
+export interface ShoppingListItem {
+  id: string;
+  listId: string;
+  productId: string | null;
+  rawText: string;
+  quantity: number | null;
+  unit: string | null;
+  category: string | null;
+  checked: boolean;
+  recipeId: string | null;
+  sortOrder: number;
+}
+
+export interface ShoppingListItemWithCost extends ShoppingListItem {
+  cheapestCostCents: number | null;
+  cheapestStore: StoreChain | null;
+}
+
+/** List summary for the index screen. */
+export interface ShoppingListSummary {
+  id: string;
+  name: string;
+  itemCount: number;
+  checkedCount: number;
+  updatedAt: string;
+}
+
+export interface ShoppingListWithCost {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  items: ShoppingListItemWithCost[];
+  // Per-store total of the items each store carries (shop-all-at-one-store).
+  totalCostByStore: Partial<Record<StoreChain, number>>;
+  cheapestStore: StoreChain | null;       // best single store
+  cheapestTotalCents: number | null;      // that store's basket total
+  // Theoretical minimum if you split across stores (sum of per-item cheapest).
+  estimatedTotalCents: number | null;
+  itemCount: number;
+  checkedCount: number;
+}
+
+export interface AddListItemRequest {
+  rawText: string;
+  productId?: string;
+  quantity?: number;
+  unit?: string;
+  category?: string;
+}
+
 // ─── Enums ────────────────────────────────────────────────────────────────────
 
 export type StoreChain = 'IGA' | 'Metro' | 'Maxi' | 'Walmart' | 'Costco' | 'SuperC';
