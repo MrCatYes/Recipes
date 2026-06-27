@@ -15,7 +15,12 @@ export async function getRecipesByPromos(
   maxRecipes = 10,
   category?: string,
 ): Promise<RecipesByPromosResponse> {
-  const weekOf = getWeekMonday();
+  let weekOf = getWeekMonday();
+  const currentCount = await prisma.flyerItem.count({ where: { weekOf } });
+  if (currentCount === 0) {
+    const latest = await prisma.flyerItem.findFirst({ orderBy: { weekOf: 'desc' }, select: { weekOf: true } });
+    if (latest) weekOf = latest.weekOf;
+  }
 
   // Products on promo this week (in selected chains), with cheapest promo + regular price
   const flyers = await prisma.flyerItem.findMany({

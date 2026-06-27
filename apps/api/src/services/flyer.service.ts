@@ -10,7 +10,14 @@ function getWeekMonday(): Date {
 }
 
 export async function getCurrentFlyers(chains?: StoreChain[]): Promise<GetFlyersResponse> {
-  const weekOf = getWeekMonday();
+  let weekOf = getWeekMonday();
+
+  // If no data for current week, fall back to the most recent week in DB
+  const currentCount = await prisma.flyerItem.count({ where: { weekOf } });
+  if (currentCount === 0) {
+    const latest = await prisma.flyerItem.findFirst({ orderBy: { weekOf: 'desc' }, select: { weekOf: true } });
+    if (latest) weekOf = latest.weekOf;
+  }
 
   const rows = await prisma.flyerItem.findMany({
     where: {
