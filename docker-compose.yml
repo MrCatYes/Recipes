@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: apps/api/Dockerfile
     ports:
-      - "3000:3000"
+      - "3100:3000"
     environment:
       DATABASE_URL: postgresql://epicerie:epicerie_dev@postgres:5432/epicerie
       REDIS_URL: redis://redis:6379

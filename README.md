@@ -74,7 +74,7 @@ Copie `apps/api/.env.example` → `apps/api/.env` et remplis :
 | `JWT_SECRET` | Secret auth (≥ 32 caractères) — `openssl rand -hex 32` |
 | `ACCESS_TOKEN_TTL` | Durée access token (défaut `15m`) |
 | `GROQ_API_KEY` | Parsing recettes par IA (fallback) |
-| `PORT` | Port API (défaut `3000`) |
+| `PORT` | Port API (`3100` — évite la collision avec J.A.R.V.I.S sur 3000) |
 
 > `.env` est **gitignored** — ne jamais committer de secrets.
 
@@ -90,8 +90,10 @@ pnpm dev          # tsx watch + charge .env, port 3000
 Vérifier (⚠️ utilise **`127.0.0.1`**, pas `localhost` — celui-ci résout en IPv6 `::1` alors que le serveur bind IPv4) :
 
 ```powershell
-Invoke-RestMethod "http://127.0.0.1:3000/health"
+Invoke-RestMethod "http://127.0.0.1:3100/health"
 ```
+
+> **Port 3100** : le port host est **3100** (et non 3000) pour éviter une collision avec un autre projet local (J.A.R.V.I.S, Next.js sur 3000). En Docker, le conteneur écoute 3000 en interne et est mappé `3100:3000` (voir `docker-compose.yml`). En natif, `PORT=3100` dans `apps/api/.env`.
 
 Autres scripts (depuis `apps/api`) :
 ```powershell
@@ -114,7 +116,7 @@ Prends l'IP de la carte **Wi-Fi/Ethernet** (ex. `192.168.1.150`) — **pas** VMw
 
 Dans `apps/mobile/.env` :
 ```
-EXPO_PUBLIC_API_URL=http://192.168.1.150:3000/api/v1
+EXPO_PUBLIC_API_URL=http://192.168.1.150:3100/api/v1
 ```
 
 ### b. Démarrer Expo
@@ -156,6 +158,8 @@ pnpm exec tsx --env-file=.env src/services/daily-scrape.service.ts
 | API `localhost` ne répond pas (PowerShell) | Utiliser `127.0.0.1` (IPv6 vs IPv4). |
 | `P1001 Can't reach database server` | Postgres pas démarré (Docker tombé / service Postgres arrêté). |
 | `pipe\dockerBackendApiServer` | Moteur Docker mort → `wsl --shutdown` + relancer Docker Desktop, ou passer à Postgres natif. |
+| `ports are not available: ... 3000/3100` | Un autre process tient le port (ex. J.A.R.V.I.S Next.js sur 3000). Recipes utilise **3100** ; si pris, change le mapping dans `docker-compose.yml`. |
+| `Cannot find module 'node-cron'` (conteneur) | Image Docker périmée après ajout de deps → `docker compose up -d --build`. |
 | `project incompatible with this version` (Expo Go) | Décalage SDK — projet = SDK 54. |
 | `expo not found` | Lancer `pnpm exec expo ...` depuis `apps/mobile`. |
 | Parsing recette tourne en boucle | `GROQ_API_KEY` absent dans `apps/api/.env`. |
