@@ -95,6 +95,27 @@ export default function SettingsScreen() {
           </TouchableOpacity>
         );
       })}
+
+      {/* App info */}
+      <Text style={styles.section}>À propos</Text>
+      <View style={styles.aboutCard}>
+        <View style={styles.aboutRow}>
+          <Text style={styles.aboutLabel}>Version</Text>
+          <Text style={styles.aboutValue}>1.0.0-beta</Text>
+        </View>
+        <View style={styles.aboutRow}>
+          <Text style={styles.aboutLabel}>Produits</Text>
+          <Text style={styles.aboutValue}>288+ articles</Text>
+        </View>
+        <View style={styles.aboutRow}>
+          <Text style={styles.aboutLabel}>Chaînes</Text>
+          <Text style={styles.aboutValue}>IGA, Metro, Maxi, Super C, Walmart, Costco</Text>
+        </View>
+        <View style={styles.aboutRow}>
+          <Text style={styles.aboutLabel}>Données</Text>
+          <Text style={styles.aboutValue}>Circulaires Flipp (hebdomadaire)</Text>
+        </View>
+      </View>
     </ScrollView>
   );
 }
@@ -122,4 +143,8 @@ const styles = StyleSheet.create({
   dot:              { width: 14, height: 14, borderRadius: 7 },
   chainName:        { flex: 1, fontSize: 16, color: '#999', marginLeft: 12 },
   chainNameSelected:{ color: '#111', fontWeight: '600' },
+  aboutCard:        { backgroundColor: '#fff', borderRadius: 12, padding: 16, gap: 10 },
+  aboutRow:         { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  aboutLabel:       { fontSize: 14, color: '#666' },
+  aboutValue:       { fontSize: 14, color: '#333', fontWeight: '500', textAlign: 'right', flex: 1, marginLeft: 10 },
 });
