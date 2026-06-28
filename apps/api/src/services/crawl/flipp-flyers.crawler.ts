@@ -56,20 +56,25 @@ async function fetchAllFlyerItems(flyerId: number): Promise<FlippFlyerItem[]> {
   const seenIds = new Set<number>();
   let from = 0;
   const pageSize = 150;
+  const MAX_PAGES = 10;
 
-  while (true) {
+  for (let page = 0; page < MAX_PAGES; page++) {
     const url = `/items/search?locale=fr-ca&postal_code=${POSTAL_CODE}&flyer_id=${flyerId}&from=${from}&size=${pageSize}`;
     const data = await flippFetch<{ items: FlippFlyerItem[] }>(url);
     const items = data.items ?? [];
     if (items.length === 0) break;
 
+    let newItems = 0;
     for (const item of items) {
       if (!seenIds.has(item.id)) {
         seenIds.add(item.id);
         all.push(item);
+        newItems++;
       }
     }
 
+    // Stop if no new items (API recycles results past the end)
+    if (newItems === 0) break;
     if (items.length < pageSize) break;
     from += pageSize;
     await new Promise(r => setTimeout(r, 300));
