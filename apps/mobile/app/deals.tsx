@@ -170,6 +170,24 @@ export default function DealsScreen() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       ListHeaderComponent={
         <View>
+          {/* Stats summary */}
+          <View style={styles.statsBar}>
+            <View style={styles.stat}>
+              <Text style={styles.statValue}>{filtered.length}</Text>
+              <Text style={styles.statLabel}>Spéciaux</Text>
+            </View>
+            <View style={styles.stat}>
+              <Text style={styles.statValue}>{new Set(filtered.map(i => i.chain)).size}</Text>
+              <Text style={styles.statLabel}>Chaînes</Text>
+            </View>
+            <View style={styles.stat}>
+              <Text style={[styles.statValue, { color: '#2E7D32' }]}>
+                {filtered.filter(i => i.regularPriceCents != null && i.regularPriceCents > i.promoPriceCents).length}
+              </Text>
+              <Text style={styles.statLabel}>Avec rabais</Text>
+            </View>
+          </View>
+
           {promoRecipes.length > 0 && (
             <View style={styles.recipesBlock}>
               <Text style={styles.blockTitle}>🍳 Recettes avantageuses</Text>
@@ -255,6 +273,7 @@ export default function DealsScreen() {
       renderItem={({ item }) => {
         const hasReg = item.regularPriceCents != null && item.regularPriceCents > item.promoPriceCents;
         const savings = hasReg ? item.regularPriceCents! - item.promoPriceCents : 0;
+        const savingsPct = hasReg ? Math.round((savings / item.regularPriceCents!) * 100) : 0;
         return (
           <View style={styles.row}>
             <View style={styles.rowLeft}>
@@ -275,7 +294,7 @@ export default function DealsScreen() {
               {hasReg && (
                 <>
                   <Text style={styles.regPrice}>{formatCents(item.regularPriceCents!)}</Text>
-                  <Text style={styles.savings}>-{formatCents(savings)}</Text>
+                  <Text style={styles.savings}>-{formatCents(savings)} ({savingsPct}%)</Text>
                 </>
               )}
             </View>
@@ -325,6 +344,11 @@ const styles = StyleSheet.create({
   promoPrice:    { fontSize: 17, fontWeight: '700', color: '#2E7D32' },
   regPrice:      { fontSize: 12, color: '#C62828', textDecorationLine: 'line-through' },
   savings:       { fontSize: 11, color: '#E65100', fontWeight: '600' },
+
+  statsBar:      { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 12, paddingHorizontal: 16, backgroundColor: '#fff', marginHorizontal: 16, marginTop: 12, borderRadius: 12 },
+  stat:          { alignItems: 'center' },
+  statValue:     { fontSize: 20, fontWeight: '700', color: '#333' },
+  statLabel:     { fontSize: 11, color: '#888', marginTop: 2 },
 
   recipesBlock:  { paddingTop: 16, paddingBottom: 4 },
   blockTitle:    { fontSize: 17, fontWeight: '700', paddingHorizontal: 16, color: '#1B5E20' },
