@@ -81,6 +81,12 @@ export default function CompareScreen() {
             }
             renderItem={({ item, index }) => {
               const unitLabel = formatUnitPrice(item.pricePerUnit, data.product.defaultUnit);
+              const freshness = formatFreshness(item.capturedAt);
+              const filteredPrices = data.prices.filter(p => selectedStores.includes(p.chain));
+              const mostExpensive = filteredPrices.length > 1 ? filteredPrices[filteredPrices.length - 1].priceCents : null;
+              const savingsPercent = index === 0 && mostExpensive && mostExpensive > item.priceCents
+                ? Math.round((1 - item.priceCents / mostExpensive) * 100)
+                : null;
               return (
                 <View style={[styles.priceRow, index === 0 && styles.cheapestRow]}>
                   <View style={[styles.chainBadge, { backgroundColor: CHAIN_COLORS[item.chain] }]}>
@@ -93,11 +99,17 @@ export default function CompareScreen() {
                         {item.packageSize} {item.packageUnit}
                       </Text>
                     )}
+                    <Text style={[styles.freshnessText, freshness.stale && styles.staleText]}>
+                      {freshness.label}
+                    </Text>
                   </View>
                   <View style={styles.priceRight}>
                     <Text style={styles.price}>{formatCents(item.priceCents)}</Text>
                     {unitLabel && <Text style={styles.unitPrice}>{unitLabel}</Text>}
                     {item.isPromo && <Text style={styles.promoBadge}>PROMO</Text>}
+                    {savingsPercent != null && savingsPercent > 0 && (
+                      <Text style={styles.savingsBadge}>-{savingsPercent}%</Text>
+                    )}
                   </View>
                 </View>
               );
@@ -111,6 +123,16 @@ export default function CompareScreen() {
 
 function formatCents(cents: number) {
   return `${(cents / 100).toFixed(2)} $`;
+}
+
+function formatFreshness(capturedAt: string): { label: string; stale: boolean } {
+  const diffMs = Date.now() - new Date(capturedAt).getTime();
+  const days = Math.floor(diffMs / 86400_000);
+  if (days <= 0) return { label: "Aujourd'hui", stale: false };
+  if (days === 1) return { label: 'Hier', stale: false };
+  if (days <= 7) return { label: `Il y a ${days} jours`, stale: false };
+  if (days <= 14) return { label: `Il y a ${days} jours`, stale: true };
+  return { label: `Il y a ${Math.floor(days / 7)} sem.`, stale: true };
 }
 
 // pricePerUnit is cents per base unit (g/ml). Sub-cent values round to 0.00,
@@ -184,4 +206,16 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     overflow: 'hidden',
   },
+  savingsBadge: {
+    backgroundColor: '#2E7D32',
+    color: '#fff',
+    fontSize: 10,
+    fontWeight: '700',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  freshnessText: { color: '#999', fontSize: 11, marginTop: 2 },
+  staleText: { color: '#E53935' },
 });
