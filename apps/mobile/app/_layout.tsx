@@ -42,6 +42,24 @@ export default function RootLayout() {
           }}
         />
         <Tabs.Screen
+          name="lists"
+          options={{
+            title: 'Listes',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="cart-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="plans"
+          options={{
+            title: 'Planif',
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="calendar-outline" size={size} color={color} />
+            ),
+          }}
+        />
+        <Tabs.Screen
           name="settings"
           options={{
             title: 'Magasins',

@@ -8,6 +8,11 @@ import type {
   AuthResponse,
   User,
   NearbyStoresResponse,
+  ShoppingListSummary,
+  ShoppingListWithCost,
+  AddListItemRequest,
+  MealPlanSummary,
+  MealPlanWithCost,
 } from '@epicerie/shared-types';
 
 export const API_BASE = process.env.EXPO_PUBLIC_API_URL;
@@ -170,4 +175,64 @@ export function getRecipes(opts: { category?: string; difficulty?: string; chain
   if (opts.sort) q.set('sort', opts.sort);
   const qs = q.toString();
   return apiFetch<GetRecipesResponse>(`/recipes${qs ? `?${qs}` : ''}`);
+}
+
+// ─── Shopping Lists ──────────────────────────────────────────────────────────
+
+export function getShoppingLists() {
+  return apiFetch<{ lists: ShoppingListSummary[] }>('/lists');
+}
+
+export function getShoppingList(id: string) {
+  return apiFetch<ShoppingListWithCost>(`/lists/${id}`);
+}
+
+export function createShoppingList(name: string) {
+  return apiFetch<ShoppingListWithCost>('/lists', { method: 'POST', body: JSON.stringify({ name }) });
+}
+
+export function deleteShoppingList(id: string) {
+  return apiFetch<void>(`/lists/${id}`, { method: 'DELETE' });
+}
+
+export function addListItem(listId: string, item: AddListItemRequest) {
+  return apiFetch<ShoppingListWithCost>(`/lists/${listId}/items`, { method: 'POST', body: JSON.stringify(item) });
+}
+
+export function toggleListItem(listId: string, itemId: string, checked: boolean) {
+  return apiFetch<void>(`/lists/${listId}/items/${itemId}`, { method: 'PATCH', body: JSON.stringify({ checked }) });
+}
+
+export function deleteListItem(listId: string, itemId: string) {
+  return apiFetch<void>(`/lists/${listId}/items/${itemId}`, { method: 'DELETE' });
+}
+
+// ─── Meal Plans ──────────────────────────────────────────────────────────────
+
+export function getMealPlans() {
+  return apiFetch<{ plans: MealPlanSummary[] }>('/meal-plans');
+}
+
+export function getMealPlan(id: string) {
+  return apiFetch<MealPlanWithCost>(`/meal-plans/${id}`);
+}
+
+export function createMealPlan(name: string, budgetCents?: number) {
+  return apiFetch<MealPlanWithCost>('/meal-plans', { method: 'POST', body: JSON.stringify({ name, budgetCents }) });
+}
+
+export function deleteMealPlan(id: string) {
+  return apiFetch<void>(`/meal-plans/${id}`, { method: 'DELETE' });
+}
+
+export function addRecipeToPlan(planId: string, recipeId: string, servings?: number) {
+  return apiFetch<MealPlanWithCost>(`/meal-plans/${planId}/recipes`, { method: 'POST', body: JSON.stringify({ recipeId, servings }) });
+}
+
+export function deleteEntry(planId: string, entryId: string) {
+  return apiFetch<void>(`/meal-plans/${planId}/entries/${entryId}`, { method: 'DELETE' });
+}
+
+export function generateListFromPlan(planId: string) {
+  return apiFetch<ShoppingListWithCost>(`/meal-plans/${planId}/generate-list`, { method: 'POST', body: JSON.stringify({}) });
 }
