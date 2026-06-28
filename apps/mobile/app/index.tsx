@@ -30,6 +30,7 @@ export default function RecipesScreen() {
   const { selectedStores } = useStores();
   const [url, setUrl] = useState('');
   const [parsing, setParsing] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const [recipes, setRecipes] = useState<RecipeSummary[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
@@ -92,6 +93,18 @@ export default function RecipesScreen() {
         </TouchableOpacity>
       </View>
 
+      {/* Search by name */}
+      <View style={styles.searchFilterRow}>
+        <Ionicons name="search-outline" size={18} color="#999" />
+        <TextInput
+          style={styles.searchFilter}
+          placeholder="Filtrer les recettes..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          clearButtonMode="while-editing"
+        />
+      </View>
+
       {/* Sort */}
       <View style={styles.sortRow}>
         {SORTS.map((s) => (
@@ -146,7 +159,9 @@ export default function RecipesScreen() {
   return (
     <FlatList
       style={styles.container}
-      data={recipes}
+      data={searchQuery.trim()
+        ? recipes.filter(r => r.title.toLowerCase().includes(searchQuery.toLowerCase()))
+        : recipes}
       keyExtractor={(r) => r.id}
       ListHeaderComponent={header}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} />}
@@ -177,7 +192,12 @@ export default function RecipesScreen() {
                 </View>
               )}
               {item.cheapestTotalCents != null && (
-                <Text style={styles.cardPrice}>{(item.cheapestTotalCents / 100).toFixed(2)} $</Text>
+                <Text style={styles.cardPrice}>
+                  {(item.cheapestTotalCents / 100).toFixed(2)} $
+                  <Text style={styles.perPortion}>
+                    {' '}({(item.cheapestTotalCents / 100 / item.servings).toFixed(2)} $/portion)
+                  </Text>
+                </Text>
               )}
               {item.promoIngredientCount > 0 && (
                 <Text style={styles.cardPromo}>🔥 {item.promoIngredientCount}</Text>
@@ -225,5 +245,8 @@ const styles = StyleSheet.create({
   miniTag:       { borderRadius: 3, paddingHorizontal: 5, paddingVertical: 1 },
   miniTagText:   { color: '#fff', fontSize: 9, fontWeight: '700' },
   cardPrice:     { fontSize: 14, fontWeight: '700', color: '#1B5E20' },
+  perPortion:    { fontSize: 11, fontWeight: '400', color: '#888' },
   cardPromo:     { fontSize: 12, color: '#E65100', fontWeight: '600' },
+  searchFilterRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 16, marginBottom: 8, backgroundColor: '#fff', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, borderColor: '#eee' },
+  searchFilter:  { flex: 1, fontSize: 14, paddingVertical: 2 },
 });
