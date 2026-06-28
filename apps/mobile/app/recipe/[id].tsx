@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, Image, ActivityIndicator,
-  TouchableOpacity, Linking,
+  TouchableOpacity, Linking, Alert,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import type { RecipeWithCost } from '@epicerie/shared-types';
-import { getRecipeCost, getProductSubstitutions } from '../../lib/api';
+import { getRecipeCost, getProductSubstitutions, createShoppingList, addListItem } from '../../lib/api';
 import { useStores, type StoreChain } from '../../lib/store-context';
 
 const STORE_COLORS: Record<StoreChain, string> = {
@@ -25,6 +25,29 @@ export default function RecipeDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [servingsMultiplier, setServingsMultiplier] = useState(1);
+  const [addingToList, setAddingToList] = useState(false);
+
+  async function handleAddToList() {
+    if (!recipe) return;
+    setAddingToList(true);
+    try {
+      const list = await createShoppingList(recipe.title);
+      for (const ing of recipe.ingredients) {
+        await addListItem(list.id, {
+          rawText: ing.rawText,
+          productId: ing.productId ?? undefined,
+          quantity: ing.parsedQuantity ? Math.round(ing.parsedQuantity * servingsMultiplier * 100) / 100 : undefined,
+          unit: ing.parsedUnit ?? undefined,
+        });
+      }
+      Alert.alert('Liste créée', `"${recipe.title}" ajoutée à tes listes d'épicerie.`);
+    } catch (e) {
+      Alert.alert('Erreur', String(e));
+    } finally {
+      setAddingToList(false);
+    }
+  }
+
   const [substitutions, setSubstitutions] = useState<
     Array<{ ingredientId: string; originalName: string; substituteName: string; savingsCents: number; reason: string }>
   >([]);
@@ -224,6 +247,19 @@ export default function RecipeDetail() {
               <Text style={styles.sourceBtnText}>Voir la recette originale</Text>
             </TouchableOpacity>
           )}
+
+          <TouchableOpacity
+            style={styles.listBtn}
+            onPress={handleAddToList}
+            disabled={addingToList}
+          >
+            {addingToList
+              ? <ActivityIndicator color="#2E7D32" />
+              : <>
+                  <Ionicons name="cart-outline" size={18} color="#2E7D32" />
+                  <Text style={styles.listBtnText}>Ajouter à la liste d'épicerie</Text>
+                </>}
+          </TouchableOpacity>
         </ScrollView>
       )}
     </View>
@@ -280,6 +316,8 @@ const styles = StyleSheet.create({
   subReplace:    { fontSize: 13, color: '#E65100', fontWeight: '600' },
   subSaving:     { backgroundColor: '#2E7D32', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
   subSavingText: { color: '#fff', fontSize: 11, fontWeight: '700' },
-  sourceBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#2E7D32', margin: 16, borderRadius: 10, paddingVertical: 14 },
+  sourceBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#2E7D32', marginHorizontal: 16, marginTop: 16, borderRadius: 10, paddingVertical: 14 },
   sourceBtnText: { color: '#fff', fontWeight: '600', fontSize: 15 },
+  listBtn:       { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#E8F5E9', marginHorizontal: 16, marginTop: 8, marginBottom: 16, borderRadius: 10, paddingVertical: 14, borderWidth: 1.5, borderColor: '#2E7D32' },
+  listBtnText:   { color: '#2E7D32', fontWeight: '600', fontSize: 15 },
 });
