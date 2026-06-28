@@ -15,6 +15,7 @@
 
 import { PrismaClient, type StoreChain } from '@prisma/client';
 import Fuse from 'fuse.js';
+import { CATALOG } from '../../data/catalog';
 
 const prisma = new PrismaClient();
 const POSTAL_CODE = process.env.FLIPP_POSTAL_CODE ?? 'H2X1Y6';
@@ -104,13 +105,21 @@ function getWeekMonday(): Date {
   return d;
 }
 
-async function flippFetch<T>(path: string): Promise<T> {
-  const res = await fetch(`${BASE}${path}`, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EpicerieBot/1.0)', 'Accept': 'application/json' },
-    signal: AbortSignal.timeout(15_000),
-  });
-  if (!res.ok) throw new Error(`Flipp ${res.status} on ${path}`);
-  return res.json() as Promise<T>;
+async function flippFetch<T>(path: string, retries = 2): Promise<T> {
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(`${BASE}${path}`, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; EpicerieBot/1.0)', 'Accept': 'application/json' },
+        signal: AbortSignal.timeout(30_000),
+      });
+      if (!res.ok) throw new Error(`Flipp ${res.status} on ${path}`);
+      return res.json() as Promise<T>;
+    } catch (e) {
+      if (attempt === retries) throw e;
+      await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+    }
+  }
+  throw new Error('unreachable');
 }
 
 function parsePriceCents(item: FlippFlyerItem): number | null {
@@ -185,6 +194,7 @@ export async function crawlFlippFlyers(): Promise<{
   }
 
   const products = await prisma.product.findMany();
+  const productsByName = new Map(products.map(p => [p.name, p]));
   const fuse = new Fuse(products, {
     keys: ['name'],
     threshold: 0.35,
@@ -221,13 +231,25 @@ export async function crawlFlippFlyers(): Promise<{
           const regularCents = parseRegularCents(item);
           const rawText = [item.name, item.description].filter(Boolean).join(' | ').substring(0, 500);
 
-          // Fuzzy match to a product
+          // Match to product: keyword rules first (fast), fuzzy fallback
           let productId: string | null = null;
-          const searchName = item.name ?? '';
+          const searchName = (item.name ?? '').toLowerCase();
           if (searchName.length > 2) {
-            const results = fuse.search(searchName);
-            if (results.length > 0 && (results[0].score ?? 1) < 0.35) {
-              productId = results[0].item.id;
+            // Keyword match via catalog include/exclude rules
+            for (const cat of CATALOG) {
+              const hasInclude = cat.include.some(kw => searchName.includes(kw.toLowerCase()));
+              const hasExclude = cat.exclude.some(kw => searchName.includes(kw.toLowerCase()));
+              if (hasInclude && !hasExclude) {
+                const p = productsByName.get(cat.name);
+                if (p) { productId = p.id; break; }
+              }
+            }
+            // Fuzzy fallback
+            if (!productId) {
+              const results = fuse.search(item.name ?? '');
+              if (results.length > 0 && (results[0].score ?? 1) < 0.35) {
+                productId = results[0].item.id;
+              }
             }
           }
 
