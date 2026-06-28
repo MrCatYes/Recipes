@@ -8,6 +8,7 @@
 
 import { PrismaClient } from '@prisma/client';
 import { scrapeAllPrices } from './price-scraper.service';
+import { crawlFlippFlyers } from './crawl/flipp-flyers.crawler';
 import { crawlMaxi } from './crawl/maxi-catalog.crawler';
 import { crawlMetro, crawlSuperC } from './crawl/metro-catalog.crawler';
 import { crawlIga } from './crawl/iga-catalog.crawler';
@@ -18,15 +19,23 @@ export async function runDailyScrape(opts: { catalog?: boolean } = {}): Promise<
   const start = Date.now();
   console.log(`\n🛒 Daily scrape started ${new Date().toISOString()}`);
 
-  // 1. Flipp — all-store weekly promo prices. Browser-free.
+  // 1. Full Flipp flyers — all items from every chain's circular. Browser-free.
   try {
-    const flipp = await scrapeAllPrices();
-    console.log(`Flipp: ${flipp.matched} prices saved (${flipp.total} candidates).`);
+    const ff = await crawlFlippFlyers();
+    console.log(`Flipp flyers: ${ff.totalItems} items from ${ff.flyersProcessed} flyers (${ff.matched} matched).`);
   } catch (e) {
-    console.error('Flipp failed:', e instanceof Error ? e.message : e);
+    console.error('Flipp flyers failed:', e instanceof Error ? e.message : e);
   }
 
-  // 1b. IGA full catalog — via Algolia JSON API. Browser-free, fast (~1-2 min).
+  // 1b. Flipp product search — targeted product prices (supplements the full flyers).
+  try {
+    const flipp = await scrapeAllPrices();
+    console.log(`Flipp search: ${flipp.matched} prices saved (${flipp.total} candidates).`);
+  } catch (e) {
+    console.error('Flipp search failed:', e instanceof Error ? e.message : e);
+  }
+
+  // 1c. IGA full catalog — via Algolia JSON API. Browser-free, fast (~1-2 min).
   try { await crawlIga(); }
   catch (e) { console.error('IGA catalog crawl failed:', e instanceof Error ? e.message : e); }
 
