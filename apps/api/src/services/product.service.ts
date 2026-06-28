@@ -59,7 +59,7 @@ export async function getProductPrices(productId: string): Promise<GetPricesResp
   });
 
   const prices: Array<PriceWithStore & { source: string }> = [];
-  const baselineByChain = new Map<string, number>(); // manual price per chain
+  const baselineByChain = new Map<string, number>();
 
   for (const sp of storeProducts) {
     const latest = sp.prices[0];
@@ -82,8 +82,39 @@ export async function getProductPrices(productId: string): Promise<GetPricesResp
       packageUnit: sp.packageUnit,
       pricePerUnit: perUnit?.cents ?? 0,
       capturedAt: latest.capturedAt.toISOString(),
-      isPromo: false, // recomputed after dedup vs baseline
+      isPromo: false,
       source: latest.source,
+    });
+  }
+
+  // Also pull current flyer promos for this product
+  const now = new Date();
+  const flyerItems = await prisma.flyerItem.findMany({
+    where: {
+      productId,
+      weekOf: { gte: new Date(now.getTime() - 14 * 86400_000) },
+    },
+    include: { store: true },
+    orderBy: { weekOf: 'desc' },
+  });
+
+  const seenFlyerChains = new Set<string>();
+  for (const fi of flyerItems) {
+    const chain = fi.store.chain as StoreChain;
+    if (seenFlyerChains.has(chain)) continue;
+    seenFlyerChains.add(chain);
+
+    prices.push({
+      chain,
+      storeName: fi.store.name,
+      priceCents: fi.promoPriceCents,
+      packagePriceCents: fi.promoPriceCents,
+      packageSize: 1,
+      packageUnit: product.defaultUnit,
+      pricePerUnit: fi.promoPriceCents,
+      capturedAt: fi.createdAt.toISOString(),
+      isPromo: fi.regularPriceCents != null && fi.promoPriceCents < fi.regularPriceCents,
+      source: 'flyer',
     });
   }
 
