@@ -11,7 +11,7 @@ import {
   ScrollView,
 } from 'react-native';
 import type { GetPricesResponse, StoreChain } from '@epicerie/shared-types';
-import { getProductPrices, getProductCategories } from '../lib/api';
+import { getProductPrices, getProductCategories, getProductHistory } from '../lib/api';
 import { useStores } from '../lib/store-context';
 
 const CHAIN_COLORS: Record<StoreChain, string> = {
@@ -28,6 +28,10 @@ export default function CompareScreen() {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<GetPricesResponse | null>(null);
   const [categories, setCategories] = useState<Array<{ category: string; count: number }>>([]);
+  const [history, setHistory] = useState<{
+    prices: Array<{ date: string; priceCents: number; chain: string }>;
+    flyerPrices: Array<{ date: string; promoPriceCents: number; chain: string }>;
+  } | null>(null);
   const { selectedStores } = useStores();
 
   useEffect(() => {
@@ -39,8 +43,11 @@ export default function CompareScreen() {
     if (!term) return;
     setLoading(true);
     setData(null);
+    setHistory(null);
     try {
-      setData(await getProductPrices(term));
+      const result = await getProductPrices(term);
+      setData(result);
+      getProductHistory(result.product.id, 30).then(setHistory).catch(() => {});
     } catch (e) {
       Alert.alert('Erreur', String(e));
     } finally {
@@ -93,6 +100,37 @@ export default function CompareScreen() {
               <Text style={styles.empty}>Aucun prix disponible pour ce produit.</Text>
             )}
           </View>
+
+          {/* Mini price history */}
+          {history && (history.prices.length > 0 || history.flyerPrices.length > 0) && (
+            <View style={styles.historyCard}>
+              <Text style={styles.historyTitle}>Historique (30 jours)</Text>
+              <View style={styles.historyBars}>
+                {(() => {
+                  const allPts = [
+                    ...history.prices.map(p => ({ date: p.date, cents: p.priceCents, chain: p.chain, promo: false })),
+                    ...history.flyerPrices.map(p => ({ date: p.date, cents: p.promoPriceCents, chain: p.chain, promo: true })),
+                  ].sort((a, b) => a.date.localeCompare(b.date));
+                  if (allPts.length === 0) return null;
+                  const maxC = Math.max(...allPts.map(p => p.cents));
+                  const minC = Math.min(...allPts.map(p => p.cents));
+                  const last10 = allPts.slice(-10);
+                  return last10.map((pt, i) => {
+                    const h = maxC === minC ? 30 : 10 + (pt.cents - minC) / (maxC - minC) * 30;
+                    return (
+                      <View key={i} style={styles.historyBarWrap}>
+                        <View style={[
+                          styles.historyBar,
+                          { height: h, backgroundColor: pt.promo ? '#FF6F00' : (CHAIN_COLORS[pt.chain as StoreChain] ?? '#999') },
+                        ]} />
+                        <Text style={styles.historyBarLabel}>{formatCents(pt.cents)}</Text>
+                      </View>
+                    );
+                  });
+                })()}
+              </View>
+            </View>
+          )}
           <FlatList
             data={data.prices.filter(p => selectedStores.includes(p.chain))}
             keyExtractor={(_, i) => String(i)}
@@ -241,6 +279,12 @@ const styles = StyleSheet.create({
   },
   freshnessText: { color: '#999', fontSize: 11, marginTop: 2 },
   staleText: { color: '#E53935' },
+  historyCard: { marginHorizontal: 16, marginBottom: 8, padding: 12, backgroundColor: '#fff', borderRadius: 10 },
+  historyTitle: { fontSize: 13, fontWeight: '700', color: '#333', marginBottom: 8 },
+  historyBars: { flexDirection: 'row', alignItems: 'flex-end', justifyContent: 'space-around', height: 60 },
+  historyBarWrap: { alignItems: 'center', gap: 2, flex: 1 },
+  historyBar: { width: 16, borderRadius: 3 },
+  historyBarLabel: { fontSize: 8, color: '#999' },
   catScroll: { paddingHorizontal: 16, paddingBottom: 8, gap: 8 },
   catChip: {
     flexDirection: 'row',
