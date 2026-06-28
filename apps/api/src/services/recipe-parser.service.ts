@@ -155,16 +155,34 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
 
   const ingredients: string[] = [];
   const ingSelectors = [
+    // WordPress recipe plugins
+    '.wprm-recipe-ingredient',
+    '.tasty-recipe-ingredients li',
+    '.mv-create-ingredients li',
+    '.easyrecipe .ingredient',
+    // Common class patterns
     '.recipe-ingredients li',
     '.ingredients li',
     '.ingredient-list li',
     '[class*="ingredient"] li',
-    '.wprm-recipe-ingredient',
-    '.tasty-recipe-ingredients li',
+    // Ricardo.com
+    '.recipe__ingredients li',
+    '.c-ingredients li',
+    // SOS Cuisine
+    '.recipe-ingredient-list li',
+    '.ingredients-group li',
+    // Allrecipes
+    '.mntl-structured-ingredients__list-item',
+    // Marmiton / Cuisinez
+    '.recipe-ingredients__list__item',
+    '.recipe-ingredient-qty',
+    // Generic fallback
+    'ul[class*="recette"] li',
+    'ul[class*="recipe"] li',
   ];
   for (const sel of ingSelectors) {
     $(sel).each((_, el) => {
-      const t = $(el).text().trim();
+      const t = $(el).text().trim().replace(/\s+/g, ' ');
       if (t && t.length > 2 && t.length < 200) ingredients.push(t);
     });
     if (ingredients.length > 0) break;
@@ -173,26 +191,51 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
 
   const instructions: string[] = [];
   const stepSelectors = [
+    '.wprm-recipe-instruction',
+    '.tasty-recipe-instructions li',
+    '.mv-create-instructions li',
     '.recipe-instructions li',
     '.instructions li',
     '.recipe-steps li',
     '[class*="instruction"] li',
-    '.wprm-recipe-instruction',
-    '.tasty-recipe-instructions li',
+    '[class*="preparation"] li',
+    '.recipe__steps li',
+    '.c-steps li',
+    '.mntl-sc-block-group--LI',
+    '.recipe-steps__list__item',
+    'ol[class*="recette"] li',
+    'ol[class*="recipe"] li',
   ];
   for (const sel of stepSelectors) {
     $(sel).each((_, el) => {
-      const t = $(el).text().trim();
+      const t = $(el).text().trim().replace(/\s+/g, ' ');
       if (t && t.length > 5) instructions.push(t);
     });
     if (instructions.length > 0) break;
+  }
+
+  // Try to extract servings from common patterns
+  let servings = 4;
+  const servingsSelectors = [
+    '.wprm-recipe-servings',
+    '.tasty-recipe-yield',
+    '[class*="serving"]',
+    '[class*="portion"]',
+    '[class*="yield"]',
+  ];
+  for (const sel of servingsSelectors) {
+    const t = $(sel).first().text();
+    if (t) {
+      const s = parseServings(t);
+      if (s > 0) { servings = s; break; }
+    }
   }
 
   const imageUrl = $('meta[property="og:image"]').attr('content') ?? null;
 
   return {
     title,
-    servings: 4,
+    servings,
     ingredients,
     instructions,
     imageUrl,
@@ -257,10 +300,12 @@ export class RecipeParserService {
   private async fetchHtml(url: string): Promise<string> {
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; EpicerieBot/1.0)',
-        'Accept': 'text/html,application/xhtml+xml',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'fr-CA,fr;q=0.9,en;q=0.8',
       },
-      signal: AbortSignal.timeout(10_000),
+      redirect: 'follow',
+      signal: AbortSignal.timeout(15_000),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${url}`);
     return res.text();
