@@ -241,9 +241,21 @@ export class IngredientMatcherService {
 
   private fuzzyMatch(name: string): { product: Product; confidence: number } | null {
     const hits = this.fuse.search(name, { limit: 1 });
-    if (!hits.length) return null;
-    const score = hits[0].score ?? 1; // Fuse: lower = better
-    return { product: hits[0].item, confidence: 1 - score };
+    if (hits.length && (hits[0].score ?? 1) < 0.45) {
+      return { product: hits[0].item, confidence: 1 - (hits[0].score ?? 1) };
+    }
+    // Try simplified: strip articles, prepositions, adjectives
+    const simplified = name
+      .replace(/\b(du|de la|de l'|des|d'|le|la|les|un|une|au|aux|en|avec|pour|frais|fraîche|frais|fraîches)\b/gi, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+    if (simplified !== name && simplified.length > 2) {
+      const retry = this.fuse.search(simplified, { limit: 1 });
+      if (retry.length && (retry[0].score ?? 1) < 0.45) {
+        return { product: retry[0].item, confidence: (1 - (retry[0].score ?? 1)) * 0.9 };
+      }
+    }
+    return hits.length ? { product: hits[0].item, confidence: 1 - (hits[0].score ?? 1) } : null;
   }
 
   private async matchWithClaude(
