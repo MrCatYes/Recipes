@@ -2,9 +2,11 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StoreProvider } from '../lib/store-context';
 import { AuthProvider } from '../lib/auth-context';
+import { ErrorBoundary } from '../lib/ErrorBoundary';
 
 export default function RootLayout() {
   return (
+    <ErrorBoundary>
     <AuthProvider>
     <StoreProvider>
       <Tabs
@@ -75,5 +77,6 @@ export default function RootLayout() {
       </Tabs>
     </StoreProvider>
     </AuthProvider>
+    </ErrorBoundary>
   );
 }
