@@ -158,12 +158,26 @@ export default function RecipeDetail() {
           {/* Ingredients */}
           <Text style={styles.section}>Ingrédients</Text>
           {recipe.ingredients.map((ing) => {
-            const prices = ing.costByStore.filter(p => selectedStores.includes(p.chain as StoreChain));
+            const prices = ing.costByStore
+              .filter(p => selectedStores.includes(p.chain as StoreChain))
+              .sort((a, b) => a.priceCents - b.priceCents);
+            const cheapest = prices[0];
+            const priceDiff = prices.length >= 2 ? prices[prices.length - 1].priceCents - prices[0].priceCents : 0;
             return (
               <View key={ing.id} style={styles.ingRow}>
-                <Text style={styles.ingText}>{ing.rawText}</Text>
-                {prices.length > 0
-                  ? <Text style={styles.ingPrice}>{formatCents(prices[0].priceCents)}</Text>
+                <View style={styles.ingLeft}>
+                  <Text style={styles.ingText}>{ing.rawText}</Text>
+                  {cheapest && prices.length > 1 && priceDiff > 10 && (
+                    <Text style={styles.ingBestChain}>
+                      Meilleur: {cheapest.chain} ({formatCents(cheapest.priceCents)})
+                    </Text>
+                  )}
+                </View>
+                {cheapest
+                  ? <View style={styles.ingPriceWrap}>
+                      <Text style={styles.ingPrice}>{formatCents(Math.round(cheapest.priceCents * servingsMultiplier))}</Text>
+                      {cheapest.isPromo && <Text style={styles.ingPromo}>PROMO</Text>}
+                    </View>
                   : <Text style={styles.ingNo}>—</Text>}
               </View>
             );
@@ -250,8 +264,12 @@ const styles = StyleSheet.create({
   totalPkg:      { fontSize: 11, color: '#999' },
   section:       { fontSize: 16, fontWeight: '700', paddingHorizontal: 16, marginTop: 14, marginBottom: 6 },
   ingRow:        { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#eee' },
-  ingText:       { flex: 1, fontSize: 14, marginRight: 8 },
+  ingLeft:       { flex: 1, marginRight: 8 },
+  ingText:       { fontSize: 14 },
+  ingBestChain:  { fontSize: 10, color: '#2E7D32', marginTop: 1 },
+  ingPriceWrap:  { alignItems: 'flex-end', gap: 1 },
   ingPrice:      { fontSize: 14, color: '#2E7D32', fontWeight: '600' },
+  ingPromo:      { fontSize: 8, color: '#FF6F00', fontWeight: '700' },
   ingNo:         { fontSize: 14, color: '#ccc' },
   stepRow:       { flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 6, gap: 10 },
   stepNum:       { width: 22, height: 22, borderRadius: 11, backgroundColor: '#2E7D32', color: '#fff', textAlign: 'center', lineHeight: 22, fontSize: 12, fontWeight: '700', overflow: 'hidden' },
