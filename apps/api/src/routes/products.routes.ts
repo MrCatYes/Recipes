@@ -34,11 +34,60 @@ export async function productsRoutes(app: FastifyInstance) {
     return result;
   });
 
+  // GET /products/:id/history?days=90 — price history for charts
+  app.get<{ Params: { id: string } }>('/products/:id/history', async (req, reply) => {
+    const days = Number((req.query as Record<string, string>).days ?? '90');
+    const since = new Date(Date.now() - days * 86400_000);
+
+    const prices = await prisma.price.findMany({
+      where: {
+        storeProduct: { productId: req.params.id },
+        capturedAt: { gte: since },
+      },
+      include: { storeProduct: { include: { store: true } } },
+      orderBy: { capturedAt: 'asc' },
+    });
+
+    const flyerPrices = await prisma.flyerItem.findMany({
+      where: {
+        productId: req.params.id,
+        weekOf: { gte: since },
+      },
+      include: { store: true },
+      orderBy: { weekOf: 'asc' },
+    });
+
+    return {
+      prices: prices.map(p => ({
+        date: p.capturedAt.toISOString().split('T')[0],
+        priceCents: p.priceCents,
+        chain: p.storeProduct.store.chain,
+        source: p.source,
+      })),
+      flyerPrices: flyerPrices.map(f => ({
+        date: f.weekOf.toISOString().split('T')[0],
+        promoPriceCents: f.promoPriceCents,
+        regularPriceCents: f.regularPriceCents,
+        chain: f.store.chain,
+      })),
+    };
+  });
+
   // GET /products/:id/substitutions?chains=Maxi,IGA
   app.get<{ Params: { id: string } }>('/products/:id/substitutions', async (req, reply) => {
     const chainsParam = (req.query as Record<string, string>).chains ?? '';
     const chains = chainsParam ? chainsParam.split(',') : ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
     return findSubstitutions(req.params.id, chains);
+  });
+
+  // GET /products/categories — list all product categories with counts
+  app.get('/products/categories', async () => {
+    const cats = await prisma.product.groupBy({
+      by: ['category'],
+      _count: true,
+      orderBy: { category: 'asc' },
+    });
+    return cats.map(c => ({ category: c.category, count: c._count }));
   });
 
   // GET /products/prices?q=farine  (search + best prices in one call for compare screen)
