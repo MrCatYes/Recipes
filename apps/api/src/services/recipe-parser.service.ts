@@ -106,6 +106,101 @@ export function extractJsonLd(html: string): ParsedRecipe | null {
   return null;
 }
 
+export function extractMicrodata(html: string): ParsedRecipe | null {
+  const $ = load(html);
+  const recipeEl = $('[itemtype*="schema.org/Recipe"]').first();
+  if (!recipeEl.length) return null;
+
+  const prop = (name: string) => recipeEl.find(`[itemprop="${name}"]`);
+
+  const title = prop('name').first().text().trim();
+  if (!title) return null;
+
+  const ingredients = prop('recipeIngredient').toArray()
+    .map(el => $(el).text().trim())
+    .filter(Boolean);
+  if (ingredients.length === 0) {
+    prop('ingredients').toArray()
+      .map(el => $(el).text().trim())
+      .filter(Boolean)
+      .forEach(i => ingredients.push(i));
+  }
+  if (ingredients.length === 0) return null;
+
+  const instructions = prop('recipeInstructions').toArray()
+    .map(el => $(el).text().trim())
+    .filter(Boolean);
+
+  const imageEl = prop('image').first();
+  const imageUrl = imageEl.attr('src') ?? imageEl.attr('content') ?? null;
+
+  return {
+    title,
+    servings: parseServings(prop('recipeYield').first().text() || null),
+    ingredients,
+    instructions,
+    imageUrl,
+    prepTimeMinutes: parseDuration(prop('prepTime').first().attr('content') ?? prop('prepTime').first().attr('datetime') ?? null),
+    cookTimeMinutes: parseDuration(prop('cookTime').first().attr('content') ?? prop('cookTime').first().attr('datetime') ?? null),
+  };
+}
+
+export function extractHeuristicHtml(html: string): ParsedRecipe | null {
+  const $ = load(html);
+
+  const title = $('h1').first().text().trim()
+    || $('meta[property="og:title"]').attr('content')?.trim()
+    || null;
+  if (!title) return null;
+
+  const ingredients: string[] = [];
+  const ingSelectors = [
+    '.recipe-ingredients li',
+    '.ingredients li',
+    '.ingredient-list li',
+    '[class*="ingredient"] li',
+    '.wprm-recipe-ingredient',
+    '.tasty-recipe-ingredients li',
+  ];
+  for (const sel of ingSelectors) {
+    $(sel).each((_, el) => {
+      const t = $(el).text().trim();
+      if (t && t.length > 2 && t.length < 200) ingredients.push(t);
+    });
+    if (ingredients.length > 0) break;
+  }
+  if (ingredients.length === 0) return null;
+
+  const instructions: string[] = [];
+  const stepSelectors = [
+    '.recipe-instructions li',
+    '.instructions li',
+    '.recipe-steps li',
+    '[class*="instruction"] li',
+    '.wprm-recipe-instruction',
+    '.tasty-recipe-instructions li',
+  ];
+  for (const sel of stepSelectors) {
+    $(sel).each((_, el) => {
+      const t = $(el).text().trim();
+      if (t && t.length > 5) instructions.push(t);
+    });
+    if (instructions.length > 0) break;
+  }
+
+  const imageUrl = $('meta[property="og:image"]').attr('content') ?? null;
+
+  return {
+    title,
+    servings: 4,
+    ingredients,
+    instructions,
+    imageUrl,
+    prepTimeMinutes: null,
+    cookTimeMinutes: null,
+  };
+}
+
 // ─── Service ──────────────────────────────────────────────────────────────────
 
 const CLAUDE_SYSTEM = `Extract recipe data from a web page. Return a single JSON object, no markdown, no explanation.
@@ -137,16 +232,26 @@ export class RecipeParserService {
   async parseUrl(url: string): Promise<ParsedRecipe> {
     const html = await this.fetchHtml(url);
 
+    // Tier 1: JSON-LD (schema.org/Recipe) — most reliable
     const fromJsonLd = extractJsonLd(html);
     if (fromJsonLd && fromJsonLd.ingredients.length > 0) return fromJsonLd;
 
-    // Groq fallback only if API key available
+    // Tier 2: HTML Microdata (itemtype="schema.org/Recipe")
+    const fromMicrodata = extractMicrodata(html);
+    if (fromMicrodata && fromMicrodata.ingredients.length > 0) return fromMicrodata;
+
+    // Tier 3: CSS-class heuristics (WordPress recipe plugins, common patterns)
+    const fromHeuristic = extractHeuristicHtml(html);
+    if (fromHeuristic && fromHeuristic.ingredients.length > 0) return fromHeuristic;
+
+    // Tier 4: Groq LLM fallback
+    const partial = fromJsonLd ?? fromMicrodata ?? fromHeuristic;
     if (!process.env.GROQ_API_KEY) {
-      if (fromJsonLd) return fromJsonLd; // partial result
-      throw new Error('Recette introuvable (JSON-LD absent). Essaie Ricardo, SOS Cuisine ou AllRecipes.');
+      if (partial) return partial;
+      throw new Error('Recette introuvable. Essaie Ricardo, SOS Cuisine ou AllRecipes.');
     }
 
-    return this.extractWithGroq(html, url, fromJsonLd);
+    return this.extractWithGroq(html, url, partial);
   }
 
   private async fetchHtml(url: string): Promise<string> {

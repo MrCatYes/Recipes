@@ -23,21 +23,41 @@ export interface ParsedIngredient {
 
 const UNIT_NORMALIZE: Record<string, string> = {
   tasses: 'tasse',
+  tasse: 'tasse',
+  cup: 'tasse',
+  cups: 'tasse',
   'cuillère à soupe': 'c. à s.',
   'cuillères à soupe': 'c. à s.',
   'c.à.s.': 'c. à s.',
+  'c. à s.': 'c. à s.',
+  'c à s': 'c. à s.',
   'cuillere a soupe': 'c. à s.',
+  tbsp: 'c. à s.',
+  tablespoon: 'c. à s.',
+  tablespoons: 'c. à s.',
   'cuillère à thé': 'c. à t.',
   'cuillères à thé': 'c. à t.',
   'c.à.t.': 'c. à t.',
+  'c. à t.': 'c. à t.',
+  'c à t': 'c. à t.',
   'cuillere a the': 'c. à t.',
+  tsp: 'c. à t.',
+  teaspoon: 'c. à t.',
+  teaspoons: 'c. à t.',
   l: 'L',
   litre: 'L',
   litres: 'L',
+  liter: 'L',
+  liters: 'L',
   livre: 'lb',
   livres: 'lb',
+  lbs: 'lb',
+  pound: 'lb',
+  pounds: 'lb',
   once: 'oz',
   onces: 'oz',
+  ounce: 'oz',
+  ounces: 'oz',
   unité: 'unit',
   unités: 'unit',
   gousses: 'gousse',
@@ -46,10 +66,24 @@ const UNIT_NORMALIZE: Record<string, string> = {
   feuilles: 'feuille',
   morceaux: 'morceau',
   pincées: 'pincée',
+  pincée: 'pincée',
+  pinch: 'pincée',
   sachets: 'sachet',
   boîtes: 'boîte',
+  boite: 'boîte',
+  can: 'boîte',
+  cans: 'boîte',
   filets: 'filet',
   portions: 'portion',
+  gros: 'unit',
+  grosse: 'unit',
+  grosses: 'unit',
+  petit: 'unit',
+  petite: 'unit',
+  petites: 'unit',
+  moyen: 'unit',
+  moyenne: 'unit',
+  moyens: 'unit',
 };
 
 export function normalizeUnit(raw: string): string {
@@ -63,25 +97,30 @@ export function normalizeUnit(raw: string): string {
 const UNIT_ALTERNATIVES = [
   'c\\.\\s*à\\s*s\\.', 'c\\.\\s*à\\s*t\\.',
   'cuillères?\\s+à\\s+soupe', 'cuillères?\\s+à\\s+thé',
+  'tablespoons?', 'teaspoons?', 'tbsp', 'tsp',
   'oz\\s+fl', 'oz',
-  'tasses?', 'pintes?',
+  'tasses?', 'cups?', 'pintes?',
   'gousses?', 'tranches?', 'branches?', 'feuilles?',
-  'morceaux?', 'pincées?', 'sachets?', 'boîtes?', 'filets?', 'portions?',
+  'morceaux?', 'pincées?', 'sachets?', 'boîtes?', 'boites?', 'cans?', 'filets?', 'portions?',
+  'grosses?', 'gros', 'petites?', 'petit', 'moyenn?e?s?', 'moyen',
+  'pounds?', 'ounces?', 'lbs',
   'kg', 'ml', 'lb', 'g',
-  'L(?!\\w)',
+  'livres?',
+  'L(?!\\w)', 'litres?', 'liters?',
   'unités?', 'unit',
 ];
 
 const UNIT_RX = UNIT_ALTERNATIVES.join('|');
 
-// Matches: [qty] [unit] [de/d'/of] [name] [, notes]
+// Matches: [qty] [unit] [de/d’/of] [name] [, notes]
+// Supports: "1½ tasse", "2 1/4 tasses", "½", "250 ml", etc.
 const INGREDIENT_RX = new RegExp(
-  `^([½¼¾⅓⅔⅛]|\\d+(?:[,.]\\d+)?(?:\\s*/\\s*\\d+(?:[,.]\\d+)?)?)?` +
+  `^(\\d+[½¼¾⅓⅔⅛]|[½¼¾⅓⅔⅛]|\\d+(?:[,.]\\d+)?(?:\\s*/\\s*\\d+(?:[,.]\\d+)?)?)?` +
   `(?:\\s+(${UNIT_RX}))?` +
-  `(?:\\s+(?:d[''’]|de\\s|d\\s|of\\s))?` +
+  `(?:\\s+(?:d[‘’’]|de\\s|d\\s|of\\s))?` +
   `(.+?)` +
   `(?:\\s*,\\s*(.+))?$`,
-  'i'
+  ‘i’
 );
 
 const UNICODE_FRACTIONS: Record<string, number> = {
@@ -91,9 +130,13 @@ const UNICODE_FRACTIONS: Record<string, number> = {
 
 function parseQuantity(raw: string | undefined): number | null {
   if (!raw) return null;
-  const uf = UNICODE_FRACTIONS[raw.trim()];
+  const trimmed = raw.trim();
+  const uf = UNICODE_FRACTIONS[trimmed];
   if (uf !== undefined) return uf;
-  const s = raw.replace(',', '.').replace(/\s/g, '');
+  // Handle "1½", "2¼" — integer + unicode fraction
+  const combined = trimmed.match(/^(\d+)([½¼¾⅓⅔⅛])$/);
+  if (combined) return parseInt(combined[1], 10) + (UNICODE_FRACTIONS[combined[2]] ?? 0);
+  const s = trimmed.replace(',', '.').replace(/\s/g, '');
   if (s.includes('/')) {
     const [n, d] = s.split('/');
     const val = parseFloat(n) / parseFloat(d);
