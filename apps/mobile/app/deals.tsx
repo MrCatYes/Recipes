@@ -45,6 +45,16 @@ export default function DealsScreen() {
   const [category, setCategory] = useState<string | null>(null);
   const [sort, setSort] = useState<SortMode>('price');
   const [recipeCat, setRecipeCat] = useState<string | null>(null);
+  const ALL_CHAINS: StoreChain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
+  const [chainFilter, setChainFilter] = useState<Set<StoreChain>>(new Set(selectedStores));
+
+  const toggleChain = (c: StoreChain) => {
+    setChainFilter(prev => {
+      const next = new Set(prev);
+      next.has(c) ? next.delete(c) : next.add(c);
+      return next;
+    });
+  };
 
   const load = useCallback(async () => {
     setError(null);
@@ -67,14 +77,15 @@ export default function DealsScreen() {
 
   const onRefresh = () => { setRefreshing(true); load(); };
 
-  // Categories present in the (store-filtered) data
+  // Categories present in the (chain-filtered) data
+  const activeChains = chainFilter.size > 0 ? chainFilter : new Set(selectedStores);
   const categories = Array.from(
-    new Set(items.filter(i => selectedStores.includes(i.chain)).map(i => i.category).filter(Boolean) as string[])
+    new Set(items.filter(i => activeChains.has(i.chain as StoreChain)).map(i => i.category).filter(Boolean) as string[])
   ).sort();
 
-  // Apply store + category filters
+  // Apply chain + category filters
   const filtered = items.filter(
-    (i) => selectedStores.includes(i.chain) && (category == null || i.category === category)
+    (i) => activeChains.has(i.chain as StoreChain) && (category == null || i.category === category)
   );
 
   // Build sections by sort mode
@@ -170,6 +181,22 @@ export default function DealsScreen() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       ListHeaderComponent={
         <View>
+          {/* Quick chain toggles */}
+          <View style={styles.chainRow}>
+            {ALL_CHAINS.map(c => {
+              const on = activeChains.has(c);
+              return (
+                <TouchableOpacity
+                  key={c}
+                  style={[styles.chainToggle, on && { backgroundColor: STORE_COLORS[c] }]}
+                  onPress={() => toggleChain(c)}
+                >
+                  <Text style={[styles.chainToggleText, on && { color: '#fff' }]}>{c}</Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
           {/* Stats summary */}
           <View style={styles.statsBar}>
             <View style={styles.stat}>
@@ -345,6 +372,9 @@ const styles = StyleSheet.create({
   regPrice:      { fontSize: 12, color: '#C62828', textDecorationLine: 'line-through' },
   savings:       { fontSize: 11, color: '#E65100', fontWeight: '600' },
 
+  chainRow:      { flexDirection: 'row', justifyContent: 'center', gap: 6, paddingHorizontal: 16, paddingTop: 12 },
+  chainToggle:   { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14, borderWidth: 1.5, borderColor: '#ddd' },
+  chainToggleText: { fontSize: 11, fontWeight: '700', color: '#999' },
   statsBar:      { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 12, paddingHorizontal: 16, backgroundColor: '#fff', marginHorizontal: 16, marginTop: 12, borderRadius: 12 },
   stat:          { alignItems: 'center' },
   statValue:     { fontSize: 20, fontWeight: '700', color: '#333' },
