@@ -18,6 +18,14 @@ const DIFFICULTY_COLORS: Record<RecipeDifficulty, string> = {
 };
 const DIFFICULTIES: RecipeDifficulty[] = ['débutant', 'confirmé', 'expert'];
 
+const SUGGESTED_RECIPES = [
+  { name: 'Pâté chinois classique', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5765-pate-chinois' },
+  { name: 'Soupe poulet et nouilles', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5413-soupe-au-poulet-et-aux-nouilles' },
+  { name: 'Sauce à spaghetti', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5765-sauce-a-spaghetti' },
+  { name: 'Poulet général Tao', source: 'SOS Cuisine', url: 'https://www.soscuisine.com/recettes/poulet-general-tao' },
+  { name: 'Macaroni au fromage', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5762-macaroni-au-fromage' },
+];
+
 type Sort = 'price' | 'promos' | 'recent';
 const SORTS: Array<{ key: Sort; label: string }> = [
   { key: 'price', label: 'Prix' },
@@ -168,7 +176,23 @@ export default function RecipesScreen() {
       ListEmptyComponent={
         loading
           ? <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#2E7D32" />
-          : <Text style={styles.empty}>Aucune recette. Colle une URL pour en ajouter une.</Text>
+          : <View style={styles.emptyBlock}>
+              <Text style={styles.empty}>Aucune recette. Colle une URL pour en ajouter une.</Text>
+              <Text style={styles.suggestTitle}>Suggestions populaires :</Text>
+              {SUGGESTED_RECIPES.map((s) => (
+                <TouchableOpacity
+                  key={s.url}
+                  style={styles.suggestCard}
+                  onPress={() => { setUrl(s.url); }}
+                >
+                  <Ionicons name="add-circle-outline" size={20} color="#2E7D32" />
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.suggestName}>{s.name}</Text>
+                    <Text style={styles.suggestSrc}>{s.source}</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
       }
       renderItem={({ item }) => (
         <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={() => router.push(`/recipe/${item.id}`)}>
@@ -249,4 +273,9 @@ const styles = StyleSheet.create({
   cardPromo:     { fontSize: 12, color: '#E65100', fontWeight: '600' },
   searchFilterRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 16, marginBottom: 8, backgroundColor: '#fff', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, borderColor: '#eee' },
   searchFilter:  { flex: 1, fontSize: 14, paddingVertical: 2 },
+  emptyBlock:    { paddingHorizontal: 16, paddingTop: 20 },
+  suggestTitle:  { fontSize: 15, fontWeight: '600', color: '#333', marginTop: 20, marginBottom: 10 },
+  suggestCard:   { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#fff', borderRadius: 10, padding: 12, marginBottom: 8, borderWidth: 1, borderColor: '#E8F5E9' },
+  suggestName:   { fontSize: 14, fontWeight: '600', color: '#333' },
+  suggestSrc:    { fontSize: 11, color: '#999', marginTop: 1 },
 });
