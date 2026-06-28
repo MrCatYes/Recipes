@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { ALL_STORES, useStores, type StoreChain } from '../lib/store-context';
 import { useAuth } from '../lib/auth-context';
 import { getCurrentCoords } from '../lib/location';
-import { getNearbyStores } from '../lib/api';
+import { getNearbyStores, API_BASE } from '../lib/api';
 import type { NearbyStore } from '@epicerie/shared-types';
 
 const STORE_COLORS: Record<StoreChain, string> = {
@@ -19,6 +19,13 @@ export default function SettingsScreen() {
 
   const [nearby, setNearby] = useState<NearbyStore[]>([]);
   const [locating, setLocating] = useState(false);
+  const [stats, setStats] = useState<{
+    totalItems: number; matchedToProducts: number; matchRate: string; lastCrawl: string | null;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch(`${API_BASE}/flyers/stats`).then(r => r.json()).then(setStats).catch(() => {});
+  }, []);
 
   async function useMyLocation() {
     setLocating(true);
@@ -104,10 +111,6 @@ export default function SettingsScreen() {
           <Text style={styles.aboutValue}>1.0.0-beta</Text>
         </View>
         <View style={styles.aboutRow}>
-          <Text style={styles.aboutLabel}>Produits</Text>
-          <Text style={styles.aboutValue}>288+ articles</Text>
-        </View>
-        <View style={styles.aboutRow}>
           <Text style={styles.aboutLabel}>Chaînes</Text>
           <Text style={styles.aboutValue}>IGA, Metro, Maxi, Super C, Walmart, Costco</Text>
         </View>
@@ -115,6 +118,26 @@ export default function SettingsScreen() {
           <Text style={styles.aboutLabel}>Données</Text>
           <Text style={styles.aboutValue}>Circulaires Flipp (hebdomadaire)</Text>
         </View>
+        {stats && (
+          <>
+            <View style={styles.aboutRow}>
+              <Text style={styles.aboutLabel}>Spéciaux en base</Text>
+              <Text style={styles.aboutValue}>{stats.totalItems.toLocaleString()} items</Text>
+            </View>
+            <View style={styles.aboutRow}>
+              <Text style={styles.aboutLabel}>Taux de correspondance</Text>
+              <Text style={styles.aboutValue}>{stats.matchRate}</Text>
+            </View>
+            {stats.lastCrawl && (
+              <View style={styles.aboutRow}>
+                <Text style={styles.aboutLabel}>Dernière mise à jour</Text>
+                <Text style={styles.aboutValue}>
+                  {new Date(stats.lastCrawl).toLocaleDateString('fr-CA')}
+                </Text>
+              </View>
+            )}
+          </>
+        )}
       </View>
     </ScrollView>
   );
