@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,10 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
+  ScrollView,
 } from 'react-native';
 import type { GetPricesResponse, StoreChain } from '@epicerie/shared-types';
-import { getProductPrices } from '../lib/api';
+import { getProductPrices, getProductCategories } from '../lib/api';
 import { useStores } from '../lib/store-context';
 
 const CHAIN_COLORS: Record<StoreChain, string> = {
@@ -26,14 +27,20 @@ export default function CompareScreen() {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<GetPricesResponse | null>(null);
+  const [categories, setCategories] = useState<Array<{ category: string; count: number }>>([]);
   const { selectedStores } = useStores();
 
-  async function search() {
-    if (!query.trim()) return;
+  useEffect(() => {
+    getProductCategories().then(setCategories).catch(() => {});
+  }, []);
+
+  async function search(override?: string) {
+    const term = (override ?? query).trim();
+    if (!term) return;
     setLoading(true);
     setData(null);
     try {
-      setData(await getProductPrices(query.trim()));
+      setData(await getProductPrices(term));
     } catch (e) {
       Alert.alert('Erreur', String(e));
     } finally {
@@ -56,6 +63,22 @@ export default function CompareScreen() {
           <Text style={styles.buttonText}>Chercher</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Quick category chips */}
+      {!data && categories.length > 0 && (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.catScroll}>
+          {categories.map((c) => (
+            <TouchableOpacity
+              key={c.category}
+              style={styles.catChip}
+              onPress={() => { setQuery(c.category); search(c.category); }}
+            >
+              <Text style={styles.catChipText}>{c.category}</Text>
+              <Text style={styles.catChipCount}>{c.count}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      )}
 
       {loading && <ActivityIndicator style={styles.loader} size="large" color="#2E7D32" />}
 
@@ -218,4 +241,16 @@ const styles = StyleSheet.create({
   },
   freshnessText: { color: '#999', fontSize: 11, marginTop: 2 },
   staleText: { color: '#E53935' },
+  catScroll: { paddingHorizontal: 16, paddingBottom: 8, gap: 8 },
+  catChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E8F5E9',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    gap: 4,
+  },
+  catChipText: { fontSize: 13, fontWeight: '600', color: '#2E7D32' },
+  catChipCount: { fontSize: 11, color: '#66BB6A' },
 });
