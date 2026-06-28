@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { prisma } from '../db';
 import { searchProducts, getProductPrices } from '../services/product.service';
+import { findSubstitutions } from '../services/substitution.service';
 
 export async function productsRoutes(app: FastifyInstance) {
   // GET /products?q=farine&category=Farine&limit=20
@@ -31,6 +32,13 @@ export async function productsRoutes(app: FastifyInstance) {
     const result = await getProductPrices(req.params.id);
     if (!result) return reply.notFound('Product not found');
     return result;
+  });
+
+  // GET /products/:id/substitutions?chains=Maxi,IGA
+  app.get<{ Params: { id: string } }>('/products/:id/substitutions', async (req, reply) => {
+    const chainsParam = (req.query as Record<string, string>).chains ?? '';
+    const chains = chainsParam ? chainsParam.split(',') : ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
+    return findSubstitutions(req.params.id, chains);
   });
 
   // GET /products/prices?q=farine  (search + best prices in one call for compare screen)
