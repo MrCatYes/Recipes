@@ -287,7 +287,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Carotte', brand: null, category: 'Légumes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['carottes', 'carrots'],
+    include: ['carottes', 'carotte', 'carrots', 'carrot'],
     exclude: ['jus', 'juice', 'gâteau', 'cake', 'râpées', 'mini', 'naines'],
     queries: ['carottes', 'carrots'],
     pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
@@ -399,7 +399,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Épinards', brand: null, category: 'Légumes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['épinards', 'epinards', 'spinach'],
+    include: ['épinards', 'épinard', 'epinards', 'epinard', 'spinach'],
     exclude: ['crème', 'cream', 'trempette', 'dip', 'surgelés en bloc'],
     queries: ['épinards', 'spinach'],
     pkg: { size: 300, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
@@ -889,6 +889,66 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['limonade', 'lemonade'],
     queries: ['jus de citron', 'lemon juice'],
     pkg: { size: 250, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+
+  // ─── Sauce for pasta ────────────────────────────────────────────────────────────
+  {
+    name: 'Sauce pour pâtes', brand: null, category: 'Conserves',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['sauce pour pâtes', 'sauce pour pâte', 'pasta sauce', 'sauce à spaghetti', 'sauce spaghetti', 'sauce marinara', 'sauce rosée', 'sauce alfredo', 'primo sauce', 'classico', 'ragu', 'ragù'],
+    exclude: ['pâte de tomate', 'tomate en dés'],
+    queries: ['sauce pâtes', 'pasta sauce'],
+    pkg: { size: 650, unit: 'ml' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
+  },
+
+  // ─── More produce additions ───────────────────────────────────────────────────
+  {
+    name: 'Aubergine', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['aubergine', 'eggplant'],
+    exclude: ['parmigiana surgelée'],
+    queries: ['aubergine', 'eggplant'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+  {
+    name: 'Coriandre fraîche', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['coriandre', 'cilantro', 'coriandre fraîche'],
+    exclude: ['moulue', 'ground', 'graines'],
+    queries: ['coriandre', 'cilantro'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 99, IGA: 119, Metro: 109 },
+  },
+  {
+    name: 'Maïs en épi', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['maïs en épi', 'corn on the cob', 'épi de maïs', 'épis de maïs', "blé d'inde"],
+    exclude: ['conserve', 'surgelé', 'grains', 'farine'],
+    queries: ["blé d'inde", 'corn cob'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 69, IGA: 79, Metro: 75 },
+  },
+  {
+    name: 'Melon d\'eau', brand: null, category: 'Fruits',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ["melon d'eau", 'watermelon', 'pastèque'],
+    exclude: ['jus', 'saveur'],
+    queries: ["melon d'eau", 'watermelon'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 499, IGA: 599, Metro: 549 },
+  },
+  {
+    name: 'Raisin', brand: null, category: 'Fruits',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['raisins', 'raisin vert', 'raisin rouge', 'grapes', 'raisin sans pépins'],
+    exclude: ['sec', 'dried', 'jus', 'vinaigre', 'vin'],
+    queries: ['raisins', 'grapes'],
+    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Pêche', brand: null, category: 'Fruits',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['pêche', 'pêches', 'peach', 'peaches', 'nectarine'],
+    exclude: ['conserve', 'sirop', 'jus'],
+    queries: ['pêches', 'peaches'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 129, IGA: 149, Metro: 139 },
   },
 
   // ─── Additional high-frequency flyer items ────────────────────────────────────
