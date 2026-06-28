@@ -6,7 +6,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import type { RecipeWithCost } from '@epicerie/shared-types';
-import { getRecipeCost } from '../../lib/api';
+import { getRecipeCost, getProductSubstitutions } from '../../lib/api';
 import { useStores, type StoreChain } from '../../lib/store-context';
 
 const STORE_COLORS: Record<StoreChain, string> = {
@@ -25,11 +25,32 @@ export default function RecipeDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [servingsMultiplier, setServingsMultiplier] = useState(1);
+  const [substitutions, setSubstitutions] = useState<
+    Array<{ ingredientId: string; originalName: string; substituteName: string; savingsCents: number; reason: string }>
+  >([]);
 
   useEffect(() => {
     if (!id) return;
     getRecipeCost(id)
-      .then(setRecipe)
+      .then((r) => {
+        setRecipe(r);
+        // Fetch substitutions for matched ingredients
+        const matched = r.ingredients.filter(i => i.productId);
+        Promise.allSettled(
+          matched.map(i =>
+            getProductSubstitutions(i.productId!, selectedStores).then(subs =>
+              subs
+                .filter(s => s.savingsCents > 0)
+                .map(s => ({ ingredientId: i.id, ...s }))
+            )
+          )
+        ).then(results => {
+          const all = results
+            .filter((r): r is PromiseFulfilledResult<typeof substitutions> => r.status === 'fulfilled')
+            .flatMap(r => r.value);
+          setSubstitutions(all);
+        });
+      })
       .catch((e) => setError(String(e)))
       .finally(() => setLoading(false));
   }, [id]);
@@ -148,6 +169,25 @@ export default function RecipeDetail() {
             );
           })}
 
+          {/* Substitution suggestions */}
+          {substitutions.length > 0 && (
+            <>
+              <Text style={styles.section}>💡 Substituts moins chers</Text>
+              {substitutions.map((s, i) => (
+                <View key={i} style={styles.subRow}>
+                  <View style={styles.subInfo}>
+                    <Text style={styles.subOriginal}>{s.originalName}</Text>
+                    <Ionicons name="arrow-forward" size={14} color="#999" />
+                    <Text style={styles.subReplace}>{s.substituteName}</Text>
+                  </View>
+                  <View style={styles.subSaving}>
+                    <Text style={styles.subSavingText}>-{formatCents(s.savingsCents)}</Text>
+                  </View>
+                </View>
+              ))}
+            </>
+          )}
+
           {/* Instructions */}
           {recipe.instructions.length > 0 && (
             <>
@@ -216,6 +256,12 @@ const styles = StyleSheet.create({
   stepRow:       { flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 6, gap: 10 },
   stepNum:       { width: 22, height: 22, borderRadius: 11, backgroundColor: '#2E7D32', color: '#fff', textAlign: 'center', lineHeight: 22, fontSize: 12, fontWeight: '700', overflow: 'hidden' },
   stepText:      { flex: 1, fontSize: 14, lineHeight: 20, color: '#333' },
+  subRow:        { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 8, backgroundColor: '#FFF8E1', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#FFE082' },
+  subInfo:       { flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 },
+  subOriginal:   { fontSize: 13, color: '#999', textDecorationLine: 'line-through' },
+  subReplace:    { fontSize: 13, color: '#E65100', fontWeight: '600' },
+  subSaving:     { backgroundColor: '#2E7D32', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
+  subSavingText: { color: '#fff', fontSize: 11, fontWeight: '700' },
   sourceBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#2E7D32', margin: 16, borderRadius: 10, paddingVertical: 14 },
   sourceBtnText: { color: '#fff', fontWeight: '600', fontSize: 15 },
 });
