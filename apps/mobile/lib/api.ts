@@ -153,6 +153,27 @@ export function getProductPrices(q: string) {
   return apiFetch<GetPricesResponse>(`/products/prices?q=${encodeURIComponent(q)}`);
 }
 
+export function getProductHistory(productId: string, days = 90) {
+  return apiFetch<{
+    prices: Array<{ date: string; priceCents: number; chain: string; source: string }>;
+    flyerPrices: Array<{ date: string; promoPriceCents: number; regularPriceCents: number | null; chain: string }>;
+  }>(`/products/${productId}/history?days=${days}`);
+}
+
+export function getProductSubstitutions(productId: string, chains: string[]) {
+  return apiFetch<Array<{
+    originalName: string;
+    substituteName: string;
+    substituteProductId: string;
+    reason: string;
+    savingsCents: number;
+  }>>(`/products/${productId}/substitutions?chains=${chains.join(',')}`);
+}
+
+export function getProductCategories() {
+  return apiFetch<Array<{ category: string; count: number }>>('/products/categories');
+}
+
 export function getFlyers(chains?: string[]) {
   const qs = chains?.length ? `?chains=${chains.join(',')}` : '';
   return apiFetch<GetFlyersResponse>(`/flyers${qs}`);
