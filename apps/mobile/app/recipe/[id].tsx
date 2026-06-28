@@ -24,6 +24,7 @@ export default function RecipeDetail() {
   const [recipe, setRecipe] = useState<RecipeWithCost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [servingsMultiplier, setServingsMultiplier] = useState(1);
 
   useEffect(() => {
     if (!id) return;
@@ -33,6 +34,8 @@ export default function RecipeDetail() {
       .finally(() => setLoading(false));
   }, [id]);
 
+  const adjustedServings = recipe ? Math.round(recipe.servings * servingsMultiplier) : 0;
+
   // Per-store totals: prorata (cost of amounts used) + package (buy full formats)
   const summaries = (() => {
     if (!recipe) return [];
@@ -41,8 +44,8 @@ export default function RecipeDetail() {
     for (const ing of recipe.ingredients) {
       for (const p of ing.costByStore) {
         if (!selectedStores.includes(p.chain as StoreChain)) continue;
-        prorata.set(p.chain, (prorata.get(p.chain) ?? 0) + p.priceCents);
-        pkg.set(p.chain, (pkg.get(p.chain) ?? 0) + p.packagePriceCents);
+        prorata.set(p.chain, (prorata.get(p.chain) ?? 0) + Math.round(p.priceCents * servingsMultiplier));
+        pkg.set(p.chain, (pkg.get(p.chain) ?? 0) + Math.round(p.packagePriceCents * servingsMultiplier));
       }
     }
     return Array.from(prorata.entries())
@@ -76,9 +79,28 @@ export default function RecipeDetail() {
                 <Text style={styles.diffBadgeText}>{recipe.difficulty}</Text>
               </View>
             )}
-            <Text style={styles.metaText}>{recipe.servings} portions</Text>
-            {recipe.prepTimeMinutes != null && <Text style={styles.metaText}>· prép {recipe.prepTimeMinutes} min</Text>}
+            {recipe.prepTimeMinutes != null && <Text style={styles.metaText}>prép {recipe.prepTimeMinutes} min</Text>}
             {recipe.cookTimeMinutes != null && <Text style={styles.metaText}>· cuisson {recipe.cookTimeMinutes} min</Text>}
+          </View>
+
+          {/* Servings adjuster */}
+          <View style={styles.servingsRow}>
+            <Text style={styles.servingsLabel}>Portions :</Text>
+            <TouchableOpacity
+              style={styles.servingsBtn}
+              onPress={() => setServingsMultiplier(m => Math.max(0.5, m - 0.5))}
+            >
+              <Ionicons name="remove" size={18} color="#2E7D32" />
+            </TouchableOpacity>
+            <Text style={styles.servingsValue}>
+              {Math.round(recipe.servings * servingsMultiplier)}
+            </Text>
+            <TouchableOpacity
+              style={styles.servingsBtn}
+              onPress={() => setServingsMultiplier(m => m + 0.5)}
+            >
+              <Ionicons name="add" size={18} color="#2E7D32" />
+            </TouchableOpacity>
           </View>
 
           {/* Hero: total recipe cost */}
@@ -87,7 +109,7 @@ export default function RecipeDetail() {
               <Text style={styles.heroLabel}>Coût total de la recette</Text>
               <Text style={styles.heroTotal}>{formatCents(best.prorata)}</Text>
               <Text style={styles.heroSub}>
-                {formatCents(Math.round(best.prorata / recipe.servings))} / portion · meilleur prix chez {best.chain}
+                {formatCents(Math.round(best.prorata / adjustedServings))} / portion · meilleur prix chez {best.chain}
               </Text>
               <Text style={styles.heroPkg}>
                 ≈ {formatCents(best.pkg)} si tu achètes les formats complets
@@ -169,6 +191,10 @@ const styles = StyleSheet.create({
   metaText:      { color: '#666', fontSize: 13 },
   diffBadge:     { borderRadius: 4, paddingHorizontal: 7, paddingVertical: 2 },
   diffBadgeText: { color: '#fff', fontSize: 11, fontWeight: '700', textTransform: 'capitalize' },
+  servingsRow:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingVertical: 10 },
+  servingsLabel: { fontSize: 14, fontWeight: '600', color: '#333' },
+  servingsBtn:   { width: 32, height: 32, borderRadius: 16, borderWidth: 1.5, borderColor: '#2E7D32', alignItems: 'center', justifyContent: 'center' },
+  servingsValue: { fontSize: 20, fontWeight: '700', color: '#2E7D32', minWidth: 30, textAlign: 'center' },
   hero:          { backgroundColor: '#E8F5E9', margin: 16, borderRadius: 12, padding: 16, alignItems: 'center' },
   heroLabel:     { fontSize: 13, color: '#2E7D32', fontWeight: '600' },
   heroTotal:     { fontSize: 34, fontWeight: '800', color: '#1B5E20', marginTop: 2 },
