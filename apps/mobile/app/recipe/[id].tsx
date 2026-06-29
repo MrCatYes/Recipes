@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, Image, ActivityIndicator,
-  TouchableOpacity, Linking, Alert,
+  TouchableOpacity, Linking, Alert, Share,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -28,6 +28,24 @@ export default function RecipeDetail() {
   const [error, setError] = useState<string | null>(null);
   const [servingsMultiplier, setServingsMultiplier] = useState(1);
   const [addingToList, setAddingToList] = useState(false);
+
+  async function handleShare() {
+    if (!recipe) return;
+    const cost = recipe.ingredients.reduce((sum, i) => {
+      const cheapest = i.costByStore.sort((a, b) => a.priceCents - b.priceCents)[0];
+      return sum + (cheapest?.priceCents ?? 0);
+    }, 0);
+    const msg = [
+      `🍽 ${recipe.title}`,
+      `👤 ${recipe.servings} portions`,
+      cost > 0 ? `💰 ~${(cost / 100).toFixed(2)} $` : '',
+      recipe.sourceUrl ? `\n🔗 ${recipe.sourceUrl}` : '',
+      '\nPartagé via Épicerie',
+    ].filter(Boolean).join('\n');
+    try {
+      await Share.share({ message: msg });
+    } catch { /* cancelled */ }
+  }
 
   async function handleAddToList() {
     if (!recipe) return;
@@ -110,6 +128,9 @@ export default function RecipeDetail() {
         <Text style={styles.headerTitle} numberOfLines={1}>Recette</Text>
         <TouchableOpacity onPress={() => id && toggleFavorite(id)} style={styles.back}>
           <Ionicons name={id && isFavorite(id) ? 'heart' : 'heart-outline'} size={24} color={id && isFavorite(id) ? '#FF8A80' : '#fff'} />
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleShare} style={styles.back}>
+          <Ionicons name="share-outline" size={22} color="#fff" />
         </TouchableOpacity>
       </View>
 
