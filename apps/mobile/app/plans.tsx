@@ -175,6 +175,15 @@ export default function PlansScreen() {
               Meilleur: <Text style={styles.costValue}>{activePlan.cheapestStore} — {formatPrice(activePlan.cheapestTotalCents)}</Text>
             </Text>
           )}
+          {activePlan.entries.length > 0 && (() => {
+            const totalServings = activePlan.entries.reduce((s, e) => s + e.servings, 0);
+            const cheapest = activePlan.cheapestTotalCents;
+            return totalServings > 0 && cheapest != null ? (
+              <Text style={styles.perPortionLabel}>
+                {formatPrice(Math.round(cheapest / totalServings))} / portion · {totalServings} portions total
+              </Text>
+            ) : null;
+          })()}
         </View>
 
         {/* Actions */}
@@ -340,6 +349,7 @@ const styles = StyleSheet.create({
   costRow:         { marginBottom: 10 },
   costLabel:       { fontSize: 13, color: '#555' },
   costValue:       { fontWeight: '700', color: GREEN },
+  perPortionLabel: { fontSize: 12, color: '#888', marginTop: 2 },
   // Actions
   actionRow:       { flexDirection: 'row', gap: 10, marginBottom: 14 },
   actionBtn:       { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: GREEN, borderRadius: 10, paddingVertical: 12 },
