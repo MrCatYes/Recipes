@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  ActivityIndicator, FlatList, Alert, Image, RefreshControl,
+  ActivityIndicator, FlatList, Alert, Image, RefreshControl, Animated,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -32,6 +32,39 @@ const SUGGESTED_RECIPES = [
   { name: 'Pouding chômeur', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5780-pouding-chomeur' },
   { name: 'Boeuf bourguignon', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5410-boeuf-bourguignon' },
 ];
+
+function SkeletonCard() {
+  const opacity = useRef(new Animated.Value(0.3)).current;
+  useEffect(() => {
+    const anim = Animated.loop(
+      Animated.sequence([
+        Animated.timing(opacity, { toValue: 1, duration: 800, useNativeDriver: true }),
+        Animated.timing(opacity, { toValue: 0.3, duration: 800, useNativeDriver: true }),
+      ]),
+    );
+    anim.start();
+    return () => anim.stop();
+  }, []);
+
+  return (
+    <View style={styles.card}>
+      <Animated.View style={[styles.cardImg, { opacity, backgroundColor: '#ddd' }]} />
+      <View style={styles.cardBody}>
+        <Animated.View style={{ opacity, backgroundColor: '#ddd', height: 14, borderRadius: 4, width: '70%', marginBottom: 6 }} />
+        <Animated.View style={{ opacity, backgroundColor: '#ddd', height: 10, borderRadius: 4, width: '50%', marginBottom: 6 }} />
+        <Animated.View style={{ opacity, backgroundColor: '#ddd', height: 10, borderRadius: 4, width: '35%' }} />
+      </View>
+    </View>
+  );
+}
+
+function SkeletonList() {
+  return (
+    <View style={{ paddingTop: 8 }}>
+      {Array.from({ length: 5 }).map((_, i) => <SkeletonCard key={i} />)}
+    </View>
+  );
+}
 
 type Sort = 'price' | 'promos' | 'recent' | 'favorites';
 const SORTS: Array<{ key: Sort; label: string }> = [
@@ -217,7 +250,7 @@ export default function RecipesScreen() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} />}
       ListEmptyComponent={
         loading
-          ? <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#2E7D32" />
+          ? <SkeletonList />
           : sort === 'favorites'
           ? <View style={styles.emptyBlock}>
               <Ionicons name="heart-outline" size={48} color="#ccc" style={{ alignSelf: 'center', marginTop: 40 }} />
