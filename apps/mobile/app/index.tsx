@@ -164,6 +164,18 @@ export default function RecipesScreen() {
           );
         })}
       </View>
+
+      {/* Recipe count */}
+      {!loading && (
+        <Text style={styles.countLabel}>
+          {(() => {
+            let list = recipes;
+            if (sort === 'favorites') list = list.filter(r => isFavorite(r.id));
+            if (searchQuery.trim()) list = list.filter(r => r.title.toLowerCase().includes(searchQuery.toLowerCase()));
+            return `${list.length} recette${list.length !== 1 ? 's' : ''}`;
+          })()}
+        </Text>
+      )}
     </View>
   );
 
@@ -182,6 +194,15 @@ export default function RecipesScreen() {
       ListEmptyComponent={
         loading
           ? <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#2E7D32" />
+          : sort === 'favorites'
+          ? <View style={styles.emptyBlock}>
+              <Ionicons name="heart-outline" size={48} color="#ccc" style={{ alignSelf: 'center', marginTop: 40 }} />
+              <Text style={styles.empty}>Aucun favori. Appuie sur le coeur pour en ajouter.</Text>
+            </View>
+          : searchQuery.trim()
+          ? <View style={styles.emptyBlock}>
+              <Text style={styles.empty}>Aucune recette pour « {searchQuery} ».</Text>
+            </View>
           : <View style={styles.emptyBlock}>
               <Text style={styles.empty}>Aucune recette. Colle une URL pour en ajouter une.</Text>
               <Text style={styles.suggestTitle}>Suggestions populaires :</Text>
@@ -281,6 +302,7 @@ const styles = StyleSheet.create({
   cardPromo:     { fontSize: 12, color: '#E65100', fontWeight: '600' },
   searchFilterRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 16, marginBottom: 8, backgroundColor: '#fff', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, borderColor: '#eee' },
   searchFilter:  { flex: 1, fontSize: 14, paddingVertical: 2 },
+  countLabel:    { fontSize: 12, color: '#999', paddingHorizontal: 16, paddingBottom: 6 },
   emptyBlock:    { paddingHorizontal: 16, paddingTop: 20 },
   suggestTitle:  { fontSize: 15, fontWeight: '600', color: '#333', marginTop: 20, marginBottom: 10 },
   suggestCard:   { flexDirection: 'row', alignItems: 'center', gap: 10, backgroundColor: '#fff', borderRadius: 10, padding: 12, marginBottom: 8, borderWidth: 1, borderColor: '#E8F5E9' },

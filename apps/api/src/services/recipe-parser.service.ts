@@ -176,6 +176,23 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     // Marmiton / Cuisinez
     '.recipe-ingredients__list__item',
     '.recipe-ingredient-qty',
+    // Trois fois par jour
+    '.recipe-detail__ingredients li',
+    '.ingredients-section li',
+    // Coup de pouce / Châtelaine
+    '.field-ingredients li',
+    '.recipe-detail-ingredients li',
+    // Recettes du Québec
+    '.recette-ingredients li',
+    '.recipeIngredients li',
+    // Cuisinez.com / 5ingredients15minutes
+    '.entry-ingredients li',
+    '.recipe-card__ingredients li',
+    // Mordu (Radio-Canada)
+    '.recipe-content__ingredients li',
+    '[data-testid="ingredient-list"] li',
+    // Bob le Chef
+    '.single-recipe-ingredients li',
     // Generic fallback
     'ul[class*="recette"] li',
     'ul[class*="recipe"] li',
@@ -203,6 +220,15 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     '.c-steps li',
     '.mntl-sc-block-group--LI',
     '.recipe-steps__list__item',
+    // QC sites
+    '.recipe-detail__steps li',
+    '.recipe-detail-steps li',
+    '.recette-preparation li',
+    '.recipe-content__steps li',
+    '.single-recipe-preparation li',
+    '.entry-instructions li',
+    '.recipe-card__directions li',
+    '.field-preparation li',
     'ol[class*="recette"] li',
     'ol[class*="recipe"] li',
   ];
