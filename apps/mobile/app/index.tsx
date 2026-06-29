@@ -7,7 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import type { RecipeSummary, RecipeDifficulty } from '@epicerie/shared-types';
-import { parseRecipe, getRecipes } from '../lib/api';
+import { parseRecipe, getRecipes, deleteRecipe } from '../lib/api';
 import { useStores, type StoreChain } from '../lib/store-context';
 import { useFavorites } from '../lib/favorites-context';
 
@@ -280,7 +280,25 @@ export default function RecipesScreen() {
             </View>
       }
       renderItem={({ item }) => (
-        <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={() => router.push(`/recipe/${item.id}`)}>
+        <TouchableOpacity
+          style={styles.card}
+          activeOpacity={0.7}
+          onPress={() => router.push(`/recipe/${item.id}`)}
+          onLongPress={() => {
+            Alert.alert('Supprimer', `Supprimer « ${item.title} » ?`, [
+              { text: 'Annuler', style: 'cancel' },
+              {
+                text: 'Supprimer', style: 'destructive',
+                onPress: async () => {
+                  try {
+                    await deleteRecipe(item.id);
+                    setRecipes(prev => prev.filter(r => r.id !== item.id));
+                  } catch (e) { Alert.alert('Erreur', String(e)); }
+                },
+              },
+            ]);
+          }}
+        >
           {item.imageUrl
             ? <Image source={{ uri: item.imageUrl }} style={styles.cardImg} />
             : <View style={[styles.cardImg, styles.cardImgEmpty]}><Ionicons name="restaurant" size={24} color="#ccc" /></View>}
