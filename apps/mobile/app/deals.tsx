@@ -230,34 +230,54 @@ export default function DealsScreen() {
           {(() => {
             const withSavings = filtered.filter(i => i.regularPriceCents != null && i.regularPriceCents > i.promoPriceCents);
             const totalSavings = withSavings.reduce((s, i) => s + (i.regularPriceCents! - i.promoPriceCents), 0);
-            const maxSaving = withSavings.reduce((m, i) => Math.max(m, i.regularPriceCents! - i.promoPriceCents), 0);
+            const bestDeal = withSavings.length > 0
+              ? withSavings.reduce((best, i) => {
+                  const s = i.regularPriceCents! - i.promoPriceCents;
+                  return s > (best.regularPriceCents! - best.promoPriceCents) ? i : best;
+                })
+              : null;
+            const maxSaving = bestDeal ? bestDeal.regularPriceCents! - bestDeal.promoPriceCents : 0;
+            const bestPct = bestDeal ? Math.round((maxSaving / bestDeal.regularPriceCents!) * 100) : 0;
             return (
-              <View style={styles.statsBar}>
-                <View style={styles.stat}>
-                  <Text style={styles.statValue}>{filtered.length}</Text>
-                  <Text style={styles.statLabel}>Spéciaux</Text>
-                </View>
-                <View style={styles.stat}>
-                  <Text style={[styles.statValue, { color: '#2E7D32' }]}>
-                    {withSavings.length}
-                  </Text>
-                  <Text style={styles.statLabel}>Avec rabais</Text>
-                </View>
-                <View style={styles.stat}>
-                  <Text style={[styles.statValue, { color: '#E65100' }]}>
-                    {formatCents(totalSavings)}
-                  </Text>
-                  <Text style={styles.statLabel}>Économies totales</Text>
-                </View>
-                {maxSaving > 0 && (
+              <>
+                <View style={styles.statsBar}>
                   <View style={styles.stat}>
-                    <Text style={[styles.statValue, { color: '#C62828' }]}>
-                      {formatCents(maxSaving)}
+                    <Text style={styles.statValue}>{filtered.length}</Text>
+                    <Text style={styles.statLabel}>Spéciaux</Text>
+                  </View>
+                  <View style={styles.stat}>
+                    <Text style={[styles.statValue, { color: '#2E7D32' }]}>
+                      {withSavings.length}
                     </Text>
-                    <Text style={styles.statLabel}>Meilleur rabais</Text>
+                    <Text style={styles.statLabel}>Avec rabais</Text>
+                  </View>
+                  <View style={styles.stat}>
+                    <Text style={[styles.statValue, { color: '#E65100' }]}>
+                      {formatCents(totalSavings)}
+                    </Text>
+                    <Text style={styles.statLabel}>Économies totales</Text>
+                  </View>
+                </View>
+                {bestDeal && (
+                  <View style={styles.bestDealCard}>
+                    <View style={styles.bestDealBadge}>
+                      <Ionicons name="trophy" size={14} color="#fff" />
+                      <Text style={styles.bestDealBadgeText}>Meilleur rabais</Text>
+                    </View>
+                    <Text style={styles.bestDealName} numberOfLines={2}>{bestDeal.rawText}</Text>
+                    <View style={styles.bestDealPrices}>
+                      <Text style={styles.bestDealPromo}>{formatCents(bestDeal.promoPriceCents)}</Text>
+                      <Text style={styles.bestDealReg}>{formatCents(bestDeal.regularPriceCents!)}</Text>
+                      <View style={styles.bestDealSavings}>
+                        <Text style={styles.bestDealSavingsText}>-{formatCents(maxSaving)} ({bestPct}%)</Text>
+                      </View>
+                    </View>
+                    <View style={[styles.miniTag, { backgroundColor: STORE_COLORS[bestDeal.chain as StoreChain] ?? '#666', alignSelf: 'flex-start' }]}>
+                      <Text style={styles.miniTagText}>{bestDeal.chain}</Text>
+                    </View>
                   </View>
                 )}
-              </View>
+              </>
             );
           })()}
 
@@ -367,7 +387,12 @@ export default function DealsScreen() {
               {hasReg && (
                 <>
                   <Text style={styles.regPrice}>{formatCents(item.regularPriceCents!)}</Text>
-                  <Text style={styles.savings}>-{formatCents(savings)} ({savingsPct}%)</Text>
+                  <View style={styles.savingsRow}>
+                    <Text style={styles.savings}>-{formatCents(savings)}</Text>
+                    <View style={[styles.pctBadge, savingsPct >= 40 && styles.pctBadgeHot]}>
+                      <Text style={[styles.pctBadgeText, savingsPct >= 40 && { color: '#fff' }]}>-{savingsPct}%</Text>
+                    </View>
+                  </View>
                 </>
               )}
             </View>
@@ -419,7 +444,11 @@ const styles = StyleSheet.create({
   rowRight:      { alignItems: 'flex-end' },
   promoPrice:    { fontSize: 17, fontWeight: '700', color: '#2E7D32' },
   regPrice:      { fontSize: 12, color: '#C62828', textDecorationLine: 'line-through' },
+  savingsRow:    { flexDirection: 'row', alignItems: 'center', gap: 4 },
   savings:       { fontSize: 11, color: '#E65100', fontWeight: '600' },
+  pctBadge:      { backgroundColor: '#FFF3E0', borderRadius: 4, paddingHorizontal: 4, paddingVertical: 1 },
+  pctBadgeHot:   { backgroundColor: '#E65100' },
+  pctBadgeText:  { fontSize: 10, fontWeight: '700', color: '#E65100' },
 
   weekLabel:     { textAlign: 'center', fontSize: 13, fontWeight: '600', color: '#555', paddingTop: 12 },
   chainRow:      { flexDirection: 'row', justifyContent: 'center', gap: 6, paddingHorizontal: 16, paddingTop: 8 },
@@ -429,6 +458,16 @@ const styles = StyleSheet.create({
   stat:          { alignItems: 'center' },
   statValue:     { fontSize: 20, fontWeight: '700', color: '#333' },
   statLabel:     { fontSize: 11, color: '#888', marginTop: 2 },
+
+  bestDealCard:  { marginHorizontal: 16, marginTop: 10, backgroundColor: '#FFF8E1', borderRadius: 12, padding: 12, borderWidth: 1.5, borderColor: '#FFD54F' },
+  bestDealBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#F9A825', alignSelf: 'flex-start', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3, marginBottom: 6 },
+  bestDealBadgeText: { color: '#fff', fontSize: 11, fontWeight: '700' },
+  bestDealName:  { fontSize: 14, fontWeight: '600', color: '#333', marginBottom: 6 },
+  bestDealPrices:{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4 },
+  bestDealPromo: { fontSize: 20, fontWeight: '800', color: '#2E7D32' },
+  bestDealReg:   { fontSize: 14, color: '#C62828', textDecorationLine: 'line-through' },
+  bestDealSavings: { backgroundColor: '#E65100', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
+  bestDealSavingsText: { color: '#fff', fontSize: 12, fontWeight: '700' },
 
   recipesBlock:  { paddingTop: 16, paddingBottom: 4 },
   blockTitle:    { fontSize: 17, fontWeight: '700', paddingHorizontal: 16, color: '#1B5E20' },
