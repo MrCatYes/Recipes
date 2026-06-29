@@ -249,12 +249,13 @@ export class IngredientMatcherService {
     const results: Array<ParsedIngredient & { needsClaude: boolean }> = [];
 
     for (const raw of rawIngredients) {
+      const cleaned = cleanRawText(raw);
       const parsed = parseIngredientRegex(raw);
       let productId: string | null = null;
       let confidence = 0;
 
       // 1. Catalog keyword aliases (e.g. "poudre à pâte" → "Levure chimique").
-      const kw = ruleMatch(raw, this.products);
+      const kw = ruleMatch(cleaned, this.products);
       if (kw) {
         productId = kw.id;
         confidence = 0.95;
