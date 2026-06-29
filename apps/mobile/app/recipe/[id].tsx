@@ -206,10 +206,15 @@ export default function RecipeDetail() {
               .sort((a, b) => a.priceCents - b.priceCents);
             const cheapest = prices[0];
             const priceDiff = prices.length >= 2 ? prices[prices.length - 1].priceCents - prices[0].priceCents : 0;
+            const matched = !!ing.productId;
             return (
               <View key={ing.id} style={styles.ingRow}>
+                <View style={[styles.ingDot, { backgroundColor: matched ? '#4CAF50' : '#E0E0E0' }]} />
                 <View style={styles.ingLeft}>
                   <Text style={styles.ingText}>{ing.rawText}</Text>
+                  {matched && ing.product?.name && (
+                    <Text style={styles.ingProduct}>≈ {ing.product.name}</Text>
+                  )}
                   {cheapest && prices.length > 1 && priceDiff > 10 && (
                     <Text style={styles.ingBestChain}>
                       Meilleur: {cheapest.chain} ({formatCents(cheapest.priceCents)})
@@ -225,6 +230,16 @@ export default function RecipeDetail() {
               </View>
             );
           })}
+          {/* Match rate indicator */}
+          {(() => {
+            const matched = recipe.ingredients.filter(i => i.productId).length;
+            const total = recipe.ingredients.length;
+            return total > 0 ? (
+              <Text style={styles.matchRate}>
+                {matched}/{total} ingrédients identifiés ({Math.round(matched / total * 100)}%)
+              </Text>
+            ) : null;
+          })()}
 
           {/* Substitution suggestions */}
           {substitutions.length > 0 && (
@@ -345,10 +360,13 @@ const styles = StyleSheet.create({
   totalPriceBest:{ fontSize: 17 },
   totalPkg:      { fontSize: 11, color: '#999' },
   section:       { fontSize: 16, fontWeight: '700', paddingHorizontal: 16, marginTop: 14, marginBottom: 6 },
-  ingRow:        { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#eee' },
+  ingRow:        { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#eee', gap: 8 },
+  ingDot:        { width: 8, height: 8, borderRadius: 4 },
   ingLeft:       { flex: 1, marginRight: 8 },
   ingText:       { fontSize: 14 },
+  ingProduct:    { fontSize: 11, color: '#888', marginTop: 1 },
   ingBestChain:  { fontSize: 10, color: '#2E7D32', marginTop: 1 },
+  matchRate:     { fontSize: 12, color: '#888', textAlign: 'center', paddingVertical: 8 },
   ingPriceWrap:  { alignItems: 'flex-end', gap: 1 },
   ingPrice:      { fontSize: 14, color: '#2E7D32', fontWeight: '600' },
   ingPromo:      { fontSize: 8, color: '#FF6F00', fontWeight: '700' },
