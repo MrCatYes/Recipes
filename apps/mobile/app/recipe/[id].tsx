@@ -230,6 +230,12 @@ export default function RecipeDetail() {
           {substitutions.length > 0 && (
             <>
               <Text style={styles.section}>💡 Substituts moins chers</Text>
+              <View style={styles.subSummary}>
+                <Text style={styles.subSummaryText}>
+                  {substitutions.length} substitution{substitutions.length > 1 ? 's' : ''} possible{substitutions.length > 1 ? 's' : ''} — économie totale de{' '}
+                  <Text style={{ fontWeight: '700' }}>{formatCents(substitutions.reduce((s, x) => s + x.savingsCents, 0))}</Text>
+                </Text>
+              </View>
               {substitutions.map((s, i) => (
                 <View key={i} style={styles.subRow}>
                   <View style={styles.subInfo}>
@@ -350,6 +356,8 @@ const styles = StyleSheet.create({
   stepRow:       { flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 6, gap: 10 },
   stepNum:       { width: 22, height: 22, borderRadius: 11, backgroundColor: '#2E7D32', color: '#fff', textAlign: 'center', lineHeight: 22, fontSize: 12, fontWeight: '700', overflow: 'hidden' },
   stepText:      { flex: 1, fontSize: 14, lineHeight: 20, color: '#333' },
+  subSummary:    { backgroundColor: '#E8F5E9', borderRadius: 8, padding: 10, marginHorizontal: 16, marginBottom: 6 },
+  subSummaryText:{ fontSize: 13, color: '#2E7D32' },
   subRow:        { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 8, backgroundColor: '#FFF8E1', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#FFE082' },
   subInfo:       { flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 },
   subOriginal:   { fontSize: 13, color: '#999', textDecorationLine: 'line-through' },
