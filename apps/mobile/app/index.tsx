@@ -131,12 +131,24 @@ export default function RecipesScreen() {
 
   async function handleParse() {
     if (!url.trim()) return;
+    const urls = url.trim().split(/[\n\s]+/).filter(u => u.startsWith('http'));
+    if (urls.length === 0) return;
     setParsing(true);
     try {
-      const data = await parseRecipe(url.trim());
-      setUrl('');
-      await load();
-      router.push(`/recipe/${data.recipe.id}`);
+      if (urls.length === 1) {
+        const data = await parseRecipe(urls[0]);
+        setUrl('');
+        await load();
+        router.push(`/recipe/${data.recipe.id}`);
+      } else {
+        let ok = 0, fail = 0;
+        for (const u of urls) {
+          try { await parseRecipe(u); ok++; } catch { fail++; }
+        }
+        setUrl('');
+        await load();
+        Alert.alert('Import terminé', `${ok} recette(s) ajoutée(s)${fail > 0 ? `, ${fail} échouée(s)` : ''}.`);
+      }
     } catch (e) {
       Alert.alert('Erreur', String(e));
     } finally {
