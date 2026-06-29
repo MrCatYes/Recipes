@@ -1096,7 +1096,6 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['beurre', 'butter'],
     pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 699, IGA: 749, Metro: 729 }, densityGPerMl: 0.96,
   },
-];
 
   // ─── More commonly needed recipe items ──────────────────────────────────────
   {
