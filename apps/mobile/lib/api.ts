@@ -80,30 +80,38 @@ async function tryRefresh(): Promise<boolean> {
 }
 
 async function apiFetch<T>(path: string, init: RequestInit = {}, timeoutMs = 15_000): Promise<T> {
-  try {
-    let res = await rawFetch(path, init, timeoutMs);
+  const maxRetries = init.method === 'GET' || !init.method ? 2 : 0;
 
-    // Auto-refresh once on 401 (skip the auth endpoints themselves)
-    if (res.status === 401 && accessToken && !path.startsWith('/auth/')) {
-      if (await tryRefresh()) {
-        res = await rawFetch(path, init, timeoutMs);
-      } else {
-        onAuthLost?.();
+  for (let attempt = 0; ; attempt++) {
+    try {
+      let res = await rawFetch(path, init, timeoutMs);
+
+      if (res.status === 401 && accessToken && !path.startsWith('/auth/')) {
+        if (await tryRefresh()) {
+          res = await rawFetch(path, init, timeoutMs);
+        } else {
+          onAuthLost?.();
+        }
       }
-    }
 
-    if (!res.ok) {
-      const body = await res.text().catch(() => '');
-      let msg = body || `HTTP ${res.status}`;
-      try { msg = JSON.parse(body).message ?? msg; } catch { /* keep */ }
-      throw new ApiError(res.status, msg);
+      if (!res.ok) {
+        const body = await res.text().catch(() => '');
+        let msg = body || `HTTP ${res.status}`;
+        try { msg = JSON.parse(body).message ?? msg; } catch { /* keep */ }
+        throw new ApiError(res.status, msg);
+      }
+      return (res.status === 204 ? undefined : await res.json()) as T;
+    } catch (e) {
+      if (e instanceof ApiError) throw e;
+      if (attempt < maxRetries) {
+        await new Promise(r => setTimeout(r, 1000 * (attempt + 1)));
+        continue;
+      }
+      if (e instanceof Error && e.name === 'AbortError') {
+        throw new Error('Délai dépassé — le serveur met trop de temps à répondre.');
+      }
+      throw e;
     }
-    return (res.status === 204 ? undefined : await res.json()) as T;
-  } catch (e) {
-    if (e instanceof Error && e.name === 'AbortError') {
-      throw new Error('Délai dépassé — le serveur met trop de temps à répondre.');
-    }
-    throw e;
   }
 }
 
