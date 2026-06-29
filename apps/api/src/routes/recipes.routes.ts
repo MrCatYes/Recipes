@@ -196,4 +196,41 @@ export async function recipesRoutes(app: FastifyInstance) {
     if (!recipe) return reply.notFound('Recipe not found');
     return recipe;
   });
+
+  // DELETE /recipes/:id  → delete recipe and its ingredients
+  app.delete<{ Params: { id: string } }>('/recipes/:id', async (req, reply) => {
+    const { id } = req.params;
+    const exists = await prisma.recipe.findUnique({ where: { id } });
+    if (!exists) return reply.notFound('Recipe not found');
+
+    await prisma.ingredient.deleteMany({ where: { recipeId: id } });
+    await prisma.mealPlanEntry.deleteMany({ where: { recipeId: id } });
+    await prisma.recipe.delete({ where: { id } });
+
+    return reply.code(204).send();
+  });
+
+  // GET /recipes/search?q=poulet  → search recipes by title or ingredient text
+  app.get('/recipes/search', async (req, reply) => {
+    const schema = z.object({ q: z.string().min(1) });
+    const parsed = schema.safeParse(req.query);
+    if (!parsed.success) return reply.badRequest(parsed.error.message);
+
+    const q = parsed.data.q;
+    const recipes = await prisma.recipe.findMany({
+      where: {
+        OR: [
+          { title: { contains: q, mode: 'insensitive' } },
+          { ingredients: { some: { rawText: { contains: q, mode: 'insensitive' } } } },
+        ],
+      },
+      select: {
+        id: true, title: true, category: true, difficulty: true,
+        servings: true, imageUrl: true, sourceUrl: true,
+      },
+      take: 20,
+      orderBy: { createdAt: 'desc' },
+    });
+    return { recipes };
+  });
 }

@@ -188,6 +188,16 @@ export function getRecipeCost(id: string) {
   return apiFetch<RecipeWithCost>(`/recipes/${id}/cost`);
 }
 
+export function deleteRecipe(id: string) {
+  return apiFetch<void>(`/recipes/${id}`, { method: 'DELETE' });
+}
+
+export function searchRecipes(q: string) {
+  return apiFetch<{ recipes: Array<{ id: string; title: string; category: string | null; imageUrl: string | null }> }>(
+    `/recipes/search?q=${encodeURIComponent(q)}`
+  );
+}
+
 export function getRecipes(opts: { category?: string; difficulty?: string; chains?: string[]; sort?: string } = {}) {
   const q = new URLSearchParams();
   if (opts.category) q.set('category', opts.category);

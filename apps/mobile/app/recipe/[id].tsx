@@ -6,7 +6,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import type { RecipeWithCost } from '@epicerie/shared-types';
-import { getRecipeCost, getProductSubstitutions, createShoppingList, addListItem } from '../../lib/api';
+import { getRecipeCost, getProductSubstitutions, createShoppingList, addListItem, deleteRecipe } from '../../lib/api';
 import { useStores, type StoreChain } from '../../lib/store-context';
 import { useFavorites } from '../../lib/favorites-context';
 
@@ -286,6 +286,26 @@ export default function RecipeDetail() {
                   <Text style={styles.listBtnText}>Ajouter à la liste d'épicerie</Text>
                 </>}
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.deleteBtn}
+            onPress={() => {
+              Alert.alert('Supprimer', `Supprimer "${recipe.title}" ?`, [
+                { text: 'Annuler', style: 'cancel' },
+                { text: 'Supprimer', style: 'destructive', onPress: async () => {
+                  try {
+                    await deleteRecipe(recipe.id);
+                    router.back();
+                  } catch (e) {
+                    Alert.alert('Erreur', String(e));
+                  }
+                }},
+              ]);
+            }}
+          >
+            <Ionicons name="trash-outline" size={18} color="#C62828" />
+            <Text style={styles.deleteBtnText}>Supprimer cette recette</Text>
+          </TouchableOpacity>
         </ScrollView>
       )}
     </View>
@@ -346,4 +366,6 @@ const styles = StyleSheet.create({
   sourceBtnText: { color: '#fff', fontWeight: '600', fontSize: 15 },
   listBtn:       { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#E8F5E9', marginHorizontal: 16, marginTop: 8, marginBottom: 16, borderRadius: 10, paddingVertical: 14, borderWidth: 1.5, borderColor: '#2E7D32' },
   listBtnText:   { color: '#2E7D32', fontWeight: '600', fontSize: 15 },
+  deleteBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, marginTop: 8, marginBottom: 20 },
+  deleteBtnText: { color: '#C62828', fontWeight: '500', fontSize: 14 },
 });
