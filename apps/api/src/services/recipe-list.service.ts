@@ -10,7 +10,7 @@ function getWeekMonday(): Date {
   return d;
 }
 
-export type RecipeSort = 'price' | 'promos' | 'recent';
+export type RecipeSort = 'price' | 'promos' | 'recent' | 'time';
 
 export async function listRecipes(
   opts: { category?: string; difficulty?: string; chains?: StoreChain[]; sort?: RecipeSort } = {},
@@ -75,9 +75,8 @@ export async function listRecipes(
 
   summaries.sort((a, b) => {
     if (sort === 'promos') return b.promoIngredientCount - a.promoIngredientCount;
-    if (sort === 'price') {
-      return (a.cheapestTotalCents ?? Infinity) - (b.cheapestTotalCents ?? Infinity);
-    }
+    if (sort === 'price') return (a.cheapestTotalCents ?? Infinity) - (b.cheapestTotalCents ?? Infinity);
+    if (sort === 'time') return (a.totalTimeMinutes ?? Infinity) - (b.totalTimeMinutes ?? Infinity);
     return 0; // recent = keep createdAt desc order
   });
 

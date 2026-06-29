@@ -66,10 +66,11 @@ function SkeletonList() {
   );
 }
 
-type Sort = 'price' | 'promos' | 'recent' | 'favorites';
+type Sort = 'price' | 'promos' | 'recent' | 'time' | 'favorites';
 const SORTS: Array<{ key: Sort; label: string }> = [
   { key: 'price', label: 'Prix' },
   { key: 'promos', label: 'En spécial' },
+  { key: 'time', label: 'Rapide' },
   { key: 'recent', label: 'Récent' },
   { key: 'favorites', label: 'Favoris' },
 ];
@@ -111,7 +112,7 @@ export default function RecipesScreen() {
         category: category ?? undefined,
         difficulty: difficulty ?? undefined,
         chains: selectedStores,
-        sort,
+        sort: sort === 'favorites' ? 'price' : sort,
       });
       setRecipes(data.recipes);
       setCategories(data.categories);

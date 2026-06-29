@@ -24,7 +24,7 @@ export async function recipesRoutes(app: FastifyInstance) {
       category: z.string().optional(),
       difficulty: z.enum(['débutant', 'confirmé', 'expert']).optional(),
       chains: z.string().optional(),
-      sort: z.enum(['price', 'promos', 'recent']).optional().default('price'),
+      sort: z.enum(['price', 'promos', 'recent', 'time']).optional().default('price'),
     });
     const parsed = schema.safeParse(req.query);
     if (!parsed.success) return reply.badRequest(parsed.error.message);
