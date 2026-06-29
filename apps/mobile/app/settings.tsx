@@ -20,7 +20,9 @@ export default function SettingsScreen() {
   const [nearby, setNearby] = useState<NearbyStore[]>([]);
   const [locating, setLocating] = useState(false);
   const [stats, setStats] = useState<{
-    totalItems: number; matchedToProducts: number; matchRate: string; lastCrawl: string | null;
+    totalItems: number; matchedToProducts: number; matchRate: string;
+    productCount?: number; recipeCount?: number; storeCount?: number;
+    lastCrawl: string | null;
   } | null>(null);
 
   useEffect(() => {
@@ -128,6 +130,24 @@ export default function SettingsScreen() {
               <Text style={styles.aboutLabel}>Taux de correspondance</Text>
               <Text style={styles.aboutValue}>{stats.matchRate}</Text>
             </View>
+            {stats.productCount != null && (
+              <View style={styles.aboutRow}>
+                <Text style={styles.aboutLabel}>Produits en catalogue</Text>
+                <Text style={styles.aboutValue}>{stats.productCount}</Text>
+              </View>
+            )}
+            {stats.recipeCount != null && (
+              <View style={styles.aboutRow}>
+                <Text style={styles.aboutLabel}>Recettes enregistrées</Text>
+                <Text style={styles.aboutValue}>{stats.recipeCount}</Text>
+              </View>
+            )}
+            {stats.storeCount != null && (
+              <View style={styles.aboutRow}>
+                <Text style={styles.aboutLabel}>Magasins indexés</Text>
+                <Text style={styles.aboutValue}>{stats.storeCount}</Text>
+              </View>
+            )}
             {stats.lastCrawl && (
               <View style={styles.aboutRow}>
                 <Text style={styles.aboutLabel}>Dernière mise à jour</Text>
