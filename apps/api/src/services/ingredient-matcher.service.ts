@@ -168,15 +168,15 @@ const UNIT_ALTERNATIVES = [
 
 const UNIT_RX = UNIT_ALTERNATIVES.join('|');
 
-// Matches: [qty] [unit] [de/d’/of] [name] [, notes]
+// Matches: [qty] [unit] [de/d'/of] [name] [, notes]
 // Supports: "1½ tasse", "2 1/4 tasses", "½", "250 ml", etc.
 const INGREDIENT_RX = new RegExp(
   `^(\\d+[½¼¾⅓⅔⅛]|[½¼¾⅓⅔⅛]|\\d+(?:[,.]\\d+)?(?:\\s*/\\s*\\d+(?:[,.]\\d+)?)?)?` +
   `(?:\\s+(${UNIT_RX}))?` +
-  `(?:\\s+(?:d[‘’’]|de\\s|d\\s|of\\s))?` +
+  `(?:\\s+(?:d[''']|de\\s|d\\s|of\\s))?` +
   `(.+?)` +
   `(?:\\s*,\\s*(.+))?$`,
-  ‘i’
+  'i'
 );
 
 const UNICODE_FRACTIONS: Record<string, number> = {
