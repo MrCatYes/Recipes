@@ -198,22 +198,39 @@ export default function DealsScreen() {
           </View>
 
           {/* Stats summary */}
-          <View style={styles.statsBar}>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{filtered.length}</Text>
-              <Text style={styles.statLabel}>Spéciaux</Text>
-            </View>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{new Set(filtered.map(i => i.chain)).size}</Text>
-              <Text style={styles.statLabel}>Chaînes</Text>
-            </View>
-            <View style={styles.stat}>
-              <Text style={[styles.statValue, { color: '#2E7D32' }]}>
-                {filtered.filter(i => i.regularPriceCents != null && i.regularPriceCents > i.promoPriceCents).length}
-              </Text>
-              <Text style={styles.statLabel}>Avec rabais</Text>
-            </View>
-          </View>
+          {(() => {
+            const withSavings = filtered.filter(i => i.regularPriceCents != null && i.regularPriceCents > i.promoPriceCents);
+            const totalSavings = withSavings.reduce((s, i) => s + (i.regularPriceCents! - i.promoPriceCents), 0);
+            const maxSaving = withSavings.reduce((m, i) => Math.max(m, i.regularPriceCents! - i.promoPriceCents), 0);
+            return (
+              <View style={styles.statsBar}>
+                <View style={styles.stat}>
+                  <Text style={styles.statValue}>{filtered.length}</Text>
+                  <Text style={styles.statLabel}>Spéciaux</Text>
+                </View>
+                <View style={styles.stat}>
+                  <Text style={[styles.statValue, { color: '#2E7D32' }]}>
+                    {withSavings.length}
+                  </Text>
+                  <Text style={styles.statLabel}>Avec rabais</Text>
+                </View>
+                <View style={styles.stat}>
+                  <Text style={[styles.statValue, { color: '#E65100' }]}>
+                    {formatCents(totalSavings)}
+                  </Text>
+                  <Text style={styles.statLabel}>Économies totales</Text>
+                </View>
+                {maxSaving > 0 && (
+                  <View style={styles.stat}>
+                    <Text style={[styles.statValue, { color: '#C62828' }]}>
+                      {formatCents(maxSaving)}
+                    </Text>
+                    <Text style={styles.statLabel}>Meilleur rabais</Text>
+                  </View>
+                )}
+              </View>
+            );
+          })()}
 
           {promoRecipes.length > 0 && (
             <View style={styles.recipesBlock}>
