@@ -201,7 +201,7 @@ export async function crawlFlippFlyers(): Promise<{
   const products = await prisma.product.findMany();
   const productsByName = new Map(products.map(p => [p.name, p]));
   const fuse = new Fuse(products, {
-    keys: ['name'],
+    keys: ['name', 'brand'],
     threshold: 0.35,
     includeScore: true,
   });
@@ -238,7 +238,7 @@ export async function crawlFlippFlyers(): Promise<{
 
           // Match to product: keyword rules first (fast), fuzzy fallback
           let productId: string | null = null;
-          const searchName = [item.name, item.description].filter(Boolean).join(' ').toLowerCase();
+          const searchName = [item.name, item.brand, item.description].filter(Boolean).join(' ').toLowerCase();
           if (searchName.length > 2) {
             // Keyword match via catalog include/exclude rules
             for (const cat of CATALOG) {
