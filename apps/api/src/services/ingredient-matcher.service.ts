@@ -202,8 +202,19 @@ function parseQuantity(raw: string | undefined): number | null {
   return isNaN(val) ? null : val;
 }
 
+function cleanRawText(raw: string): string {
+  return raw
+    .replace(/\t+/g, ' ')
+    .replace(/\(facultatif\)/gi, '')
+    .replace(/\(optional\)/gi, '')
+    .replace(/\(au go[uû]t\)/gi, '')
+    .replace(/\([^)]*(?:tasse|c\.\s*[àa]\s*(?:soupe|th[ée])|oz|ml|g|lb|po)[^)]*\)/gi, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 export function parseIngredientRegex(raw: string): RegexParseResult {
-  const text = raw.trim();
+  const text = cleanRawText(raw);
   const m = text.match(INGREDIENT_RX);
   if (!m) return { quantity: null, unit: null, productName: text, notes: null };
 
