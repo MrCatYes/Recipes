@@ -238,6 +238,13 @@ export function deleteListItem(listId: string, itemId: string) {
   return apiFetch<void>(`/lists/${listId}/items/${itemId}`, { method: 'DELETE' });
 }
 
+export function addRecipeToList(listId: string, recipeId: string, servings?: number) {
+  return apiFetch<{ added: number; list: ShoppingListWithCost }>(
+    `/lists/${listId}/add-recipe`,
+    { method: 'POST', body: JSON.stringify({ recipeId, servings }) },
+  );
+}
+
 // ─── Meal Plans ──────────────────────────────────────────────────────────────
 
 export function getMealPlans() {

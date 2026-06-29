@@ -94,12 +94,16 @@ export async function computeListCost(listId: string): Promise<ShoppingListWithC
  * Append a recipe's ingredients to a list (skips ingredients already present
  * for the same product). Returns number of items added.
  */
-export async function addRecipeToList(listId: string, recipeId: string): Promise<number> {
+export async function addRecipeToList(listId: string, recipeId: string, targetServings?: number): Promise<number> {
   const recipe = await prisma.recipe.findUnique({
     where: { id: recipeId },
     include: { ingredients: { orderBy: { sortOrder: 'asc' } } },
   });
   if (!recipe) return 0;
+
+  const scale = targetServings && recipe.servings > 0
+    ? targetServings / recipe.servings
+    : 1;
 
   const existing = await prisma.shoppingListItem.findMany({
     where: { listId, productId: { not: null } },
@@ -112,7 +116,6 @@ export async function addRecipeToList(listId: string, recipeId: string): Promise
   });
   let order = (maxOrder._max.sortOrder ?? -1) + 1;
 
-  // Resolve product categories for aisle grouping
   const productIds = recipe.ingredients.map((i) => i.productId).filter(Boolean) as string[];
   const products = await prisma.product.findMany({
     where: { id: { in: productIds } }, select: { id: true, category: true },
@@ -123,16 +126,19 @@ export async function addRecipeToList(listId: string, recipeId: string): Promise
   if (!toAdd.length) return 0;
 
   await prisma.shoppingListItem.createMany({
-    data: toAdd.map((ing) => ({
-      listId,
-      productId: ing.productId,
-      rawText: ing.rawText,
-      quantity: ing.parsedQuantity,
-      unit: ing.parsedUnit,
-      category: ing.productId ? catById.get(ing.productId) ?? null : null,
-      recipeId: recipe.id,
-      sortOrder: order++,
-    })),
+    data: toAdd.map((ing) => {
+      const qty = ing.parsedQuantity != null ? Math.round(ing.parsedQuantity * scale * 100) / 100 : null;
+      return {
+        listId,
+        productId: ing.productId,
+        rawText: ing.rawText,
+        quantity: qty,
+        unit: ing.parsedUnit,
+        category: ing.productId ? catById.get(ing.productId) ?? null : null,
+        recipeId: recipe.id,
+        sortOrder: order++,
+      };
+    }),
   });
   return toAdd.length;
 }

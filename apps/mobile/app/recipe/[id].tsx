@@ -6,7 +6,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import type { RecipeWithCost } from '@epicerie/shared-types';
-import { getRecipeCost, getProductSubstitutions, createShoppingList, addListItem, deleteRecipe } from '../../lib/api';
+import { getRecipeCost, getProductSubstitutions, createShoppingList, addRecipeToList, deleteRecipe } from '../../lib/api';
 import { useStores, type StoreChain } from '../../lib/store-context';
 import { useFavorites } from '../../lib/favorites-context';
 
@@ -52,15 +52,9 @@ export default function RecipeDetail() {
     setAddingToList(true);
     try {
       const list = await createShoppingList(recipe.title);
-      for (const ing of recipe.ingredients) {
-        await addListItem(list.id, {
-          rawText: ing.rawText,
-          productId: ing.productId ?? undefined,
-          quantity: ing.parsedQuantity ? Math.round(ing.parsedQuantity * servingsMultiplier * 100) / 100 : undefined,
-          unit: ing.parsedUnit ?? undefined,
-        });
-      }
-      Alert.alert('Liste créée', `"${recipe.title}" ajoutée à tes listes d'épicerie.`);
+      const targetServings = Math.round(recipe.servings * servingsMultiplier);
+      const { added } = await addRecipeToList(list.id, recipe.id, targetServings);
+      Alert.alert('Liste créée', `${added} ingrédient${added !== 1 ? 's' : ''} ajouté${added !== 1 ? 's' : ''} (${targetServings} portions).`);
     } catch (e) {
       Alert.alert('Erreur', String(e));
     } finally {

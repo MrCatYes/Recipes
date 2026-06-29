@@ -133,14 +133,17 @@ export async function shoppingListRoutes(app: FastifyInstance) {
     return computeListCost(req.params.id);
   });
 
-  // POST /lists/:id/add-recipe  { recipeId }  → add recipe ingredients
+  // POST /lists/:id/add-recipe  { recipeId, servings? }  → add recipe ingredients (scaled)
   app.post<{ Params: { id: string } }>('/lists/:id/add-recipe', auth, async (req, reply) => {
     if (!(await ownedList(req.params.id, req.user.sub))) return reply.notFound('Liste introuvable');
-    const schema = z.object({ recipeId: z.string().min(1) });
+    const schema = z.object({
+      recipeId: z.string().min(1),
+      servings: z.number().int().min(1).max(100).optional(),
+    });
     const parsed = schema.safeParse(req.body);
     if (!parsed.success) return reply.badRequest('recipeId requis');
 
-    const added = await addRecipeToList(req.params.id, parsed.data.recipeId);
+    const added = await addRecipeToList(req.params.id, parsed.data.recipeId, parsed.data.servings);
     if (added === 0) {
       const recipe = await prisma.recipe.findUnique({ where: { id: parsed.data.recipeId }, select: { id: true } });
       if (!recipe) return reply.notFound('Recette introuvable');
