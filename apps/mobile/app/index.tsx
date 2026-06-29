@@ -25,6 +25,9 @@ const SUGGESTED_RECIPES = [
   { name: 'Sauce à spaghetti', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5765-sauce-a-spaghetti' },
   { name: 'Poulet général Tao', source: 'SOS Cuisine', url: 'https://www.soscuisine.com/recettes/poulet-general-tao' },
   { name: 'Macaroni au fromage', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5762-macaroni-au-fromage' },
+  { name: 'Tourtière du Lac-St-Jean', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5804-tourtiere-du-lac-saint-jean' },
+  { name: 'Pouding chômeur', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5780-pouding-chomeur' },
+  { name: 'Boeuf bourguignon', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5410-boeuf-bourguignon' },
 ];
 
 type Sort = 'price' | 'promos' | 'recent' | 'favorites';

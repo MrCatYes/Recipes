@@ -90,14 +90,21 @@ export function extractJsonLd(html: string): ParsedRecipe | null {
 
       if (!recipe.name || ingredients.length === 0) continue;
 
+      let prepTime = parseDuration(recipe.prepTime);
+      let cookTime = parseDuration(recipe.cookTime);
+      if (!prepTime && !cookTime) {
+        const totalTime = parseDuration(recipe.totalTime);
+        if (totalTime) cookTime = totalTime;
+      }
+
       return {
         title: String(recipe.name),
         servings: parseServings(recipe.recipeYield ?? recipe['yield']),
         ingredients,
         instructions: parseInstructions(recipe.recipeInstructions),
         imageUrl: parseImageUrl(recipe.image),
-        prepTimeMinutes: parseDuration(recipe.prepTime),
-        cookTimeMinutes: parseDuration(recipe.cookTime),
+        prepTimeMinutes: prepTime,
+        cookTimeMinutes: cookTime,
       };
     } catch {
       // malformed JSON-LD, try next script tag
