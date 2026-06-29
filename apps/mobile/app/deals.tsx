@@ -48,6 +48,7 @@ export default function DealsScreen() {
   const ALL_CHAINS: StoreChain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
   const [chainFilter, setChainFilter] = useState<Set<StoreChain>>(new Set(selectedStores));
   const [searchQuery, setSearchQuery] = useState('');
+  const [weekOf, setWeekOf] = useState<string | null>(null);
 
   const toggleChain = (c: StoreChain) => {
     setChainFilter(prev => {
@@ -65,6 +66,7 @@ export default function DealsScreen() {
         getRecipesByPromos(selectedStores).catch(() => ({ recipes: [] } as Partial<RecipesByPromosResponse>)),
       ]);
       setItems(flyers.items);
+      setWeekOf(flyers.weekOf ?? null);
       setPromoRecipes(recipes.recipes ?? []);
     } catch (e) {
       setError(String(e));
@@ -202,6 +204,12 @@ export default function DealsScreen() {
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       ListHeaderComponent={
         <View>
+          {/* Week indicator */}
+          {weekOf && (
+            <Text style={styles.weekLabel}>
+              Semaine du {new Date(weekOf).toLocaleDateString('fr-CA', { day: 'numeric', month: 'long' })}
+            </Text>
+          )}
           {/* Quick chain toggles */}
           <View style={styles.chainRow}>
             {ALL_CHAINS.map(c => {
@@ -413,7 +421,8 @@ const styles = StyleSheet.create({
   regPrice:      { fontSize: 12, color: '#C62828', textDecorationLine: 'line-through' },
   savings:       { fontSize: 11, color: '#E65100', fontWeight: '600' },
 
-  chainRow:      { flexDirection: 'row', justifyContent: 'center', gap: 6, paddingHorizontal: 16, paddingTop: 12 },
+  weekLabel:     { textAlign: 'center', fontSize: 13, fontWeight: '600', color: '#555', paddingTop: 12 },
+  chainRow:      { flexDirection: 'row', justifyContent: 'center', gap: 6, paddingHorizontal: 16, paddingTop: 8 },
   chainToggle:   { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14, borderWidth: 1.5, borderColor: '#ddd' },
   chainToggleText: { fontSize: 11, fontWeight: '700', color: '#999' },
   statsBar:      { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 12, paddingHorizontal: 16, backgroundColor: '#fff', marginHorizontal: 16, marginTop: 12, borderRadius: 12 },
