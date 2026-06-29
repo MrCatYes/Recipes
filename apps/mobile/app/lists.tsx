@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import {
   View, Text, SectionList, FlatList, TouchableOpacity, TextInput, StyleSheet,
-  ActivityIndicator, Alert, RefreshControl,
+  ActivityIndicator, Alert, RefreshControl, Share,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from 'expo-router';
@@ -100,6 +100,16 @@ export default function ListsScreen() {
     } catch { /* */ }
   }
 
+  async function handleShareList() {
+    if (!activeList) return;
+    const unchecked = activeList.items.filter(i => !i.checked);
+    const lines = unchecked.map(i => `- ${i.rawText}`);
+    const text = `${activeList.name}\n\n${lines.join('\n')}`;
+    try {
+      await Share.share({ message: text, title: activeList.name });
+    } catch { /* */ }
+  }
+
   if (status !== 'authed') {
     return (
       <View style={styles.center}>
@@ -124,7 +134,12 @@ export default function ListsScreen() {
           <Text style={styles.backText}>Mes listes</Text>
         </TouchableOpacity>
 
-        <Text style={styles.listTitle}>{activeList.name}</Text>
+        <View style={styles.titleRow}>
+          <Text style={styles.listTitle}>{activeList.name}</Text>
+          <TouchableOpacity onPress={handleShareList} hitSlop={8}>
+            <Ionicons name="share-outline" size={22} color={GREEN} />
+          </TouchableOpacity>
+        </View>
         <View style={styles.costRow}>
           {activeList.cheapestStore && (
             <Text style={styles.costLabel}>
@@ -251,7 +266,8 @@ const styles = StyleSheet.create({
   emptyText:       { color: '#999', fontSize: 15, textAlign: 'center', marginTop: 16 },
   backRow:         { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 },
   backText:        { color: GREEN, fontWeight: '600', fontSize: 15 },
-  listTitle:       { fontSize: 22, fontWeight: '700', marginBottom: 6 },
+  titleRow:        { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 },
+  listTitle:       { fontSize: 22, fontWeight: '700' },
   costRow:         { marginBottom: 6 },
   costLabel:       { fontSize: 13, color: '#555' },
   costValue:       { fontWeight: '700', color: GREEN },
