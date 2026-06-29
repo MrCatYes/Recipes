@@ -323,6 +323,11 @@ export default function RecipesScreen() {
               )}
             </View>
             <View style={styles.cardFooter}>
+              {item.ingredientCount > 0 && (
+                <Text style={[styles.matchRate, item.matchedIngredientCount === item.ingredientCount && styles.matchRateFull]}>
+                  {item.matchedIngredientCount}/{item.ingredientCount}
+                </Text>
+              )}
               {item.cheapestStore && (
                 <View style={[styles.miniTag, { backgroundColor: STORE_COLORS[item.cheapestStore] }]}>
                   <Text style={styles.miniTagText}>{item.cheapestStore}</Text>
@@ -381,6 +386,8 @@ const styles = StyleSheet.create({
   diffBadge:     { borderRadius: 3, paddingHorizontal: 5, paddingVertical: 1 },
   diffBadgeText: { color: '#fff', fontSize: 9, fontWeight: '700', textTransform: 'capitalize' },
   cardTime:      { fontSize: 11, color: '#666' },
+  matchRate:     { fontSize: 10, color: '#999', fontWeight: '600' },
+  matchRateFull: { color: '#2E7D32' },
   cardFooter:    { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
   miniTag:       { borderRadius: 3, paddingHorizontal: 5, paddingVertical: 1 },
   miniTagText:   { color: '#fff', fontSize: 9, fontWeight: '700' },

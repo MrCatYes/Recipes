@@ -56,6 +56,7 @@ export async function listRecipes(
       .sort((a, b) => a[1] - b[1]);
 
     const promoCount = r.ingredients.filter((i) => i.productId && promoProducts.has(i.productId)).length;
+    const matchedCount = r.ingredients.filter((i) => i.productId).length;
 
     const totalTime = ((r.prepTimeMinutes ?? 0) + (r.cookTimeMinutes ?? 0)) || null;
 
@@ -70,6 +71,8 @@ export async function listRecipes(
       cheapestStore: (totals[0]?.[0] as StoreChain) ?? null,
       cheapestTotalCents: totals[0]?.[1] ?? null,
       promoIngredientCount: promoCount,
+      ingredientCount: r.ingredients.length,
+      matchedIngredientCount: matchedCount,
     });
   }
 

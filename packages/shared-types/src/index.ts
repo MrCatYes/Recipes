@@ -238,6 +238,8 @@ export interface RecipeSummary {
   cheapestStore: StoreChain | null;
   cheapestTotalCents: number | null;
   promoIngredientCount: number;
+  ingredientCount: number;
+  matchedIngredientCount: number;
 }
 
 export interface GetRecipesResponse {
