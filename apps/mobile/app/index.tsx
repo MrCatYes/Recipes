@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import type { RecipeSummary, RecipeDifficulty } from '@epicerie/shared-types';
 import { parseRecipe, getRecipes } from '../lib/api';
 import { useStores, type StoreChain } from '../lib/store-context';
+import { useFavorites } from '../lib/favorites-context';
 
 const STORE_COLORS: Record<StoreChain, string> = {
   Maxi: '#E53935', IGA: '#1565C0', Metro: '#F57C00', SuperC: '#C8102E', Walmart: '#0071CE', Costco: '#003DA5',
@@ -26,16 +27,18 @@ const SUGGESTED_RECIPES = [
   { name: 'Macaroni au fromage', source: 'Ricardo', url: 'https://www.ricardocuisine.com/recettes/5762-macaroni-au-fromage' },
 ];
 
-type Sort = 'price' | 'promos' | 'recent';
+type Sort = 'price' | 'promos' | 'recent' | 'favorites';
 const SORTS: Array<{ key: Sort; label: string }> = [
   { key: 'price', label: 'Prix' },
   { key: 'promos', label: 'En spécial' },
   { key: 'recent', label: 'Récent' },
+  { key: 'favorites', label: 'Favoris' },
 ];
 
 export default function RecipesScreen() {
   const router = useRouter();
   const { selectedStores } = useStores();
+  const { isFavorite, toggleFavorite, favorites } = useFavorites();
   const [url, setUrl] = useState('');
   const [parsing, setParsing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -167,9 +170,12 @@ export default function RecipesScreen() {
   return (
     <FlatList
       style={styles.container}
-      data={searchQuery.trim()
-        ? recipes.filter(r => r.title.toLowerCase().includes(searchQuery.toLowerCase()))
-        : recipes}
+      data={(() => {
+        let list = recipes;
+        if (sort === 'favorites') list = list.filter(r => isFavorite(r.id));
+        if (searchQuery.trim()) list = list.filter(r => r.title.toLowerCase().includes(searchQuery.toLowerCase()));
+        return list;
+      })()}
       keyExtractor={(r) => r.id}
       ListHeaderComponent={header}
       refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} />}
@@ -228,7 +234,9 @@ export default function RecipesScreen() {
               )}
             </View>
           </View>
-          <Ionicons name="chevron-forward" size={20} color="#ccc" />
+          <TouchableOpacity onPress={() => toggleFavorite(item.id)} hitSlop={8} style={{ padding: 4 }}>
+            <Ionicons name={isFavorite(item.id) ? 'heart' : 'heart-outline'} size={22} color={isFavorite(item.id) ? '#E53935' : '#ccc'} />
+          </TouchableOpacity>
         </TouchableOpacity>
       )}
     />

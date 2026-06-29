@@ -8,6 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 import type { RecipeWithCost } from '@epicerie/shared-types';
 import { getRecipeCost, getProductSubstitutions, createShoppingList, addListItem } from '../../lib/api';
 import { useStores, type StoreChain } from '../../lib/store-context';
+import { useFavorites } from '../../lib/favorites-context';
 
 const STORE_COLORS: Record<StoreChain, string> = {
   Maxi: '#E53935', IGA: '#1565C0', Metro: '#F57C00', SuperC: '#C8102E', Walmart: '#0071CE', Costco: '#003DA5',
@@ -21,6 +22,7 @@ export default function RecipeDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
   const { selectedStores } = useStores();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [recipe, setRecipe] = useState<RecipeWithCost | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,6 +108,9 @@ export default function RecipeDetail() {
           <Ionicons name="chevron-back" size={26} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle} numberOfLines={1}>Recette</Text>
+        <TouchableOpacity onPress={() => id && toggleFavorite(id)} style={styles.back}>
+          <Ionicons name={id && isFavorite(id) ? 'heart' : 'heart-outline'} size={24} color={id && isFavorite(id) ? '#FF8A80' : '#fff'} />
+        </TouchableOpacity>
       </View>
 
       {loading && <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#2E7D32" />}
@@ -272,7 +277,7 @@ const styles = StyleSheet.create({
   container:     { flex: 1, backgroundColor: '#f5f5f5' },
   header:        { flexDirection: 'row', alignItems: 'center', backgroundColor: '#2E7D32', paddingTop: 48, paddingBottom: 12, paddingHorizontal: 8, gap: 4 },
   back:          { padding: 4 },
-  headerTitle:   { color: '#fff', fontSize: 18, fontWeight: '600' },
+  headerTitle:   { flex: 1, color: '#fff', fontSize: 18, fontWeight: '600' },
   error:         { color: '#C62828', padding: 16 },
   scroll:        { paddingBottom: 40 },
   image:         { width: '100%', height: 200 },

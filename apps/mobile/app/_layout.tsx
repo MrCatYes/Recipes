@@ -2,12 +2,14 @@ import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { StoreProvider } from '../lib/store-context';
 import { AuthProvider } from '../lib/auth-context';
+import { FavoritesProvider } from '../lib/favorites-context';
 import { ErrorBoundary } from '../lib/ErrorBoundary';
 
 export default function RootLayout() {
   return (
     <ErrorBoundary>
     <AuthProvider>
+    <FavoritesProvider>
     <StoreProvider>
       <Tabs
         screenOptions={{
@@ -76,6 +78,7 @@ export default function RootLayout() {
         <Tabs.Screen name="auth/register" options={{ href: null, headerShown: false }} />
       </Tabs>
     </StoreProvider>
+    </FavoritesProvider>
     </AuthProvider>
     </ErrorBoundary>
   );
