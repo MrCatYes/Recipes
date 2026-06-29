@@ -57,6 +57,8 @@ export async function listRecipes(
 
     const promoCount = r.ingredients.filter((i) => i.productId && promoProducts.has(i.productId)).length;
 
+    const totalTime = ((r.prepTimeMinutes ?? 0) + (r.cookTimeMinutes ?? 0)) || null;
+
     summaries.push({
       id: r.id,
       title: r.title,
@@ -64,6 +66,7 @@ export async function listRecipes(
       difficulty: r.difficulty as RecipeSummary['difficulty'],
       imageUrl: r.imageUrl,
       servings: r.servings,
+      totalTimeMinutes: totalTime,
       cheapestStore: (totals[0]?.[0] as StoreChain) ?? null,
       cheapestTotalCents: totals[0]?.[1] ?? null,
       promoIngredientCount: promoCount,

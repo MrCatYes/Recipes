@@ -234,6 +234,7 @@ export interface RecipeSummary {
   difficulty: RecipeDifficulty | null;
   imageUrl: string | null;
   servings: number;
+  totalTimeMinutes: number | null;
   cheapestStore: StoreChain | null;
   cheapestTotalCents: number | null;
   promoIngredientCount: number;

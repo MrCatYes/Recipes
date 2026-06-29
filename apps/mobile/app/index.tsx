@@ -259,6 +259,16 @@ export default function RecipesScreen() {
                   <Text style={styles.diffBadgeText}>{item.difficulty}</Text>
                 </View>
               )}
+              {item.totalTimeMinutes != null && (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+                  <Ionicons name="time-outline" size={12} color="#666" />
+                  <Text style={styles.cardTime}>
+                    {item.totalTimeMinutes >= 60
+                      ? `${Math.floor(item.totalTimeMinutes / 60)}h${item.totalTimeMinutes % 60 > 0 ? (item.totalTimeMinutes % 60).toString().padStart(2, '0') : ''}`
+                      : `${item.totalTimeMinutes} min`}
+                  </Text>
+                </View>
+              )}
             </View>
             <View style={styles.cardFooter}>
               {item.cheapestStore && (
@@ -318,6 +328,7 @@ const styles = StyleSheet.create({
   cardCat:       { fontSize: 11, color: '#999' },
   diffBadge:     { borderRadius: 3, paddingHorizontal: 5, paddingVertical: 1 },
   diffBadgeText: { color: '#fff', fontSize: 9, fontWeight: '700', textTransform: 'capitalize' },
+  cardTime:      { fontSize: 11, color: '#666' },
   cardFooter:    { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
   miniTag:       { borderRadius: 3, paddingHorizontal: 5, paddingVertical: 1 },
   miniTagText:   { color: '#fff', fontSize: 9, fontWeight: '700' },
