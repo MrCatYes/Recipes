@@ -1652,6 +1652,55 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['gingembre frais', 'fresh ginger'],
     pkg: { size: 100, unit: 'g' }, baseline: { Maxi: 199, IGA: 249, Metro: 229 },
   },
+  // ─── More common staples ───────────────────────────────────────────────────
+  {
+    name: 'Eau', brand: null, category: 'Boissons',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['eau', 'water'],
+    exclude: ['eau de rose', 'eau de fleur', 'eau gazeuse', 'eau minérale', 'soda'],
+    queries: ['eau', 'water'],
+    pkg: { size: 1000, unit: 'ml' }, baseline: { Maxi: 0, IGA: 0, Metro: 0 },
+  },
+  {
+    name: 'Sucre', brand: null, category: 'Épicerie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['sucre', 'sugar'],
+    exclude: ['sucre à glacer', 'cassonade', 'sucre d\'érable', 'sucre brun', 'sucre glace', 'icing sugar', 'powdered sugar'],
+    queries: ['sucre blanc', 'white sugar'],
+    pkg: { size: 2000, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 }, densityGPerMl: 0.85,
+  },
+  {
+    name: 'Lait de beurre', brand: null, category: 'Produits laitiers',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['lait de beurre', 'babeurre', 'buttermilk'],
+    exclude: [],
+    queries: ['lait de beurre', 'buttermilk'],
+    pkg: { size: 1000, unit: 'ml' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
+  },
+  {
+    name: 'Chocolat au lait', brand: null, category: 'Épicerie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['chocolat au lait', 'milk chocolate'],
+    exclude: ['boisson', 'chaud', 'poudre'],
+    queries: ['chocolat au lait', 'milk chocolate'],
+    pkg: { size: 100, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
+    name: 'Nouilles asiatiques', brand: null, category: 'Épicerie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['nouilles', 'noodles', 'ramen', 'udon', 'soba', 'vermicelles de riz', 'rice noodles', 'yet ca mein'],
+    exclude: ['soupe'],
+    queries: ['nouilles asiatiques', 'asian noodles'],
+    pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
+  },
+  {
+    name: 'Persil séché', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['persil séché', 'dried parsley'],
+    exclude: [],
+    queries: ['persil séché', 'dried parsley'],
+    pkg: { size: 15, unit: 'g' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
+  },
 ];
 
 export const CHAINS: Chain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
