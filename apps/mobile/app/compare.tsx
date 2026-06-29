@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,14 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { GetPricesResponse, StoreChain } from '@epicerie/shared-types';
 import { getProductPrices, getProductCategories, getProductHistory } from '../lib/api';
 import { useStores } from '../lib/store-context';
+
+const RECENT_KEY = '@epicerie_recent_searches';
+const MAX_RECENT = 8;
 
 const CHAIN_COLORS: Record<StoreChain, string> = {
   Maxi:    '#E53935',
@@ -32,10 +37,22 @@ export default function CompareScreen() {
     prices: Array<{ date: string; priceCents: number; chain: string }>;
     flyerPrices: Array<{ date: string; promoPriceCents: number; chain: string }>;
   } | null>(null);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const { selectedStores } = useStores();
 
   useEffect(() => {
     getProductCategories().then(setCategories).catch(() => {});
+    AsyncStorage.getItem(RECENT_KEY).then(raw => {
+      if (raw) try { setRecentSearches(JSON.parse(raw)); } catch {}
+    });
+  }, []);
+
+  const addRecent = useCallback((term: string) => {
+    setRecentSearches(prev => {
+      const next = [term, ...prev.filter(s => s !== term)].slice(0, MAX_RECENT);
+      AsyncStorage.setItem(RECENT_KEY, JSON.stringify(next));
+      return next;
+    });
   }, []);
 
   async function search(override?: string) {
@@ -47,6 +64,7 @@ export default function CompareScreen() {
     try {
       const result = await getProductPrices(term);
       setData(result);
+      addRecent(result.product.name);
       getProductHistory(result.product.id, 30).then(setHistory).catch(() => {});
     } catch (e) {
       Alert.alert('Erreur', String(e));
@@ -70,6 +88,25 @@ export default function CompareScreen() {
           <Text style={styles.buttonText}>Chercher</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Recent searches */}
+      {!data && recentSearches.length > 0 && (
+        <View style={styles.recentSection}>
+          <Text style={styles.recentTitle}>Recherches récentes</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.catScroll}>
+            {recentSearches.map((s) => (
+              <TouchableOpacity
+                key={s}
+                style={styles.recentChip}
+                onPress={() => { setQuery(s); search(s); }}
+              >
+                <Ionicons name="time-outline" size={14} color="#666" />
+                <Text style={styles.recentChipText}>{s}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      )}
 
       {/* Quick category chips */}
       {!data && categories.length > 0 && (
@@ -297,4 +334,12 @@ const styles = StyleSheet.create({
   },
   catChipText: { fontSize: 13, fontWeight: '600', color: '#2E7D32' },
   catChipCount: { fontSize: 11, color: '#66BB6A' },
+  recentSection: { paddingBottom: 4 },
+  recentTitle: { fontSize: 13, fontWeight: '600', color: '#888', paddingHorizontal: 16, marginBottom: 6 },
+  recentChip: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    backgroundColor: '#fff', borderRadius: 16, paddingHorizontal: 12, paddingVertical: 6,
+    borderWidth: 1, borderColor: '#eee',
+  },
+  recentChipText: { fontSize: 13, color: '#333' },
 });
