@@ -3,12 +3,15 @@ import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
   ActivityIndicator, FlatList, Alert, Image, RefreshControl,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import type { RecipeSummary, RecipeDifficulty } from '@epicerie/shared-types';
 import { parseRecipe, getRecipes } from '../lib/api';
 import { useStores, type StoreChain } from '../lib/store-context';
 import { useFavorites } from '../lib/favorites-context';
+
+const CACHE_KEY = '@epicerie_recipes_cache';
 
 const STORE_COLORS: Record<StoreChain, string> = {
   Maxi: '#E53935', IGA: '#1565C0', Metro: '#F57C00', SuperC: '#C8102E', Walmart: '#0071CE', Costco: '#003DA5',
@@ -54,6 +57,21 @@ export default function RecipesScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
+  // Load from cache on first mount
+  useEffect(() => {
+    AsyncStorage.getItem(CACHE_KEY).then(raw => {
+      if (raw) {
+        try {
+          const cached = JSON.parse(raw);
+          if (cached.recipes?.length) {
+            setRecipes(cached.recipes);
+            setCategories(cached.categories ?? []);
+          }
+        } catch {}
+      }
+    });
+  }, []);
+
   const load = useCallback(async () => {
     try {
       const data = await getRecipes({
@@ -64,8 +82,11 @@ export default function RecipesScreen() {
       });
       setRecipes(data.recipes);
       setCategories(data.categories);
+      if (!category && !difficulty && sort === 'price') {
+        AsyncStorage.setItem(CACHE_KEY, JSON.stringify(data));
+      }
     } catch {
-      // keep previous
+      // keep previous / cached
     } finally {
       setLoading(false);
       setRefreshing(false);
