@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { GetPricesResponse, StoreChain } from '@epicerie/shared-types';
 import { getProductPrices, getProductCategories, getProductHistory } from '../lib/api';
 import { useStores } from '../lib/store-context';
+import { usePriceAlerts } from '../lib/price-alerts-context';
 
 const RECENT_KEY = '@epicerie_recent_searches';
 const MAX_RECENT = 8;
@@ -39,6 +40,7 @@ export default function CompareScreen() {
   } | null>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const { selectedStores } = useStores();
+  const { hasAlert, addAlert, removeAlert, getAlert } = usePriceAlerts();
 
   useEffect(() => {
     getProductCategories().then(setCategories).catch(() => {});
@@ -129,10 +131,44 @@ export default function CompareScreen() {
       {data && (
         <>
           <View style={styles.productHeader}>
-            <Text style={styles.productName}>{data.product.name}</Text>
-            {data.product.brand && (
-              <Text style={styles.productBrand}>{data.product.brand}</Text>
-            )}
+            <View style={styles.productTitleRow}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.productName}>{data.product.name}</Text>
+                {data.product.brand && (
+                  <Text style={styles.productBrand}>{data.product.brand}</Text>
+                )}
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  if (hasAlert(data.product.id)) {
+                    removeAlert(data.product.id);
+                  } else {
+                    const cheapest = data.prices[0];
+                    addAlert({
+                      productId: data.product.id,
+                      productName: data.product.name,
+                      targetCents: cheapest ? Math.round(cheapest.priceCents * 0.9) : 0,
+                    });
+                    Alert.alert('Alerte créée', `Tu seras averti quand ${data.product.name} descend sous ${formatCents(cheapest ? Math.round(cheapest.priceCents * 0.9) : 0)}.`);
+                  }
+                }}
+                hitSlop={8}
+              >
+                <Ionicons
+                  name={hasAlert(data.product.id) ? 'notifications' : 'notifications-outline'}
+                  size={24}
+                  color={hasAlert(data.product.id) ? '#FF6F00' : '#999'}
+                />
+              </TouchableOpacity>
+            </View>
+            {hasAlert(data.product.id) && (() => {
+              const alert = getAlert(data.product.id);
+              return alert ? (
+                <Text style={styles.alertInfo}>
+                  Alerte si prix &lt; {formatCents(alert.targetCents)}
+                </Text>
+              ) : null;
+            })()}
             {data.prices.length === 0 && (
               <Text style={styles.empty}>Aucun prix disponible pour ce produit.</Text>
             )}
@@ -267,8 +303,10 @@ const styles = StyleSheet.create({
   buttonText: { color: '#fff', fontWeight: '600' },
   loader: { marginTop: 32 },
   productHeader: { paddingHorizontal: 16, paddingBottom: 8 },
+  productTitleRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10 },
   productName: { fontSize: 18, fontWeight: '700' },
   productBrand: { fontSize: 13, color: '#666', marginTop: 2 },
+  alertInfo: { fontSize: 12, color: '#FF6F00', marginTop: 4 },
   empty: { color: '#999', marginTop: 12, fontSize: 14 },
   list: { padding: 16, gap: 10 },
   priceRow: {

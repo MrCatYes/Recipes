@@ -3,6 +3,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { StoreProvider } from '../lib/store-context';
 import { AuthProvider } from '../lib/auth-context';
 import { FavoritesProvider } from '../lib/favorites-context';
+import { PriceAlertsProvider } from '../lib/price-alerts-context';
 import { ErrorBoundary } from '../lib/ErrorBoundary';
 
 export default function RootLayout() {
@@ -10,6 +11,7 @@ export default function RootLayout() {
     <ErrorBoundary>
     <AuthProvider>
     <FavoritesProvider>
+    <PriceAlertsProvider>
     <StoreProvider>
       <Tabs
         screenOptions={{
@@ -78,6 +80,7 @@ export default function RootLayout() {
         <Tabs.Screen name="auth/register" options={{ href: null, headerShown: false }} />
       </Tabs>
     </StoreProvider>
+    </PriceAlertsProvider>
     </FavoritesProvider>
     </AuthProvider>
     </ErrorBoundary>
