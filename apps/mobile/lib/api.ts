@@ -192,6 +192,10 @@ export function deleteRecipe(id: string) {
   return apiFetch<void>(`/recipes/${id}`, { method: 'DELETE' });
 }
 
+export function rematchRecipe(id: string) {
+  return apiFetch<{ updated: number; recipe: RecipeWithCost }>(`/recipes/${id}/rematch`, { method: 'POST' });
+}
+
 export function searchRecipes(q: string) {
   return apiFetch<{ recipes: Array<{ id: string; title: string; category: string | null; imageUrl: string | null }> }>(
     `/recipes/search?q=${encodeURIComponent(q)}`

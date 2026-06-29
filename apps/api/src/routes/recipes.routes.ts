@@ -210,6 +210,37 @@ export async function recipesRoutes(app: FastifyInstance) {
     return reply.code(204).send();
   });
 
+  // POST /recipes/:id/rematch  → re-match ingredients against current product catalog
+  app.post<{ Params: { id: string } }>('/recipes/:id/rematch', async (req, reply) => {
+    const recipe = await prisma.recipe.findUnique({
+      where: { id: req.params.id },
+      include: { ingredients: { orderBy: { sortOrder: 'asc' } } },
+    });
+    if (!recipe) return reply.notFound('Recipe not found');
+
+    const products = await prisma.product.findMany({
+      select: { id: true, name: true, brand: true, category: true, gtin: true, defaultUnit: true, defaultUnitType: true },
+    });
+    const matcher = new IngredientMatcherService(products);
+    const matched = await matcher.matchAll(recipe.ingredients.map(i => i.rawText));
+
+    let updated = 0;
+    for (let i = 0; i < recipe.ingredients.length; i++) {
+      const ing = recipe.ingredients[i];
+      const m = matched[i];
+      if (m?.productId && m.productId !== ing.productId) {
+        await prisma.ingredient.update({
+          where: { id: ing.id },
+          data: { productId: m.productId, parsedQuantity: m.parsedQuantity, parsedUnit: m.parsedUnit },
+        });
+        updated++;
+      }
+    }
+
+    const cost = await computeRecipeCost(recipe.id);
+    return { updated, recipe: cost };
+  });
+
   // GET /recipes/search?q=poulet  → search recipes by title or ingredient text
   app.get('/recipes/search', async (req, reply) => {
     const schema = z.object({ q: z.string().min(1) });

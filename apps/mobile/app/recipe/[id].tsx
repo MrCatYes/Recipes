@@ -6,7 +6,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import type { RecipeWithCost } from '@epicerie/shared-types';
-import { getRecipeCost, getProductSubstitutions, createShoppingList, addRecipeToList, deleteRecipe } from '../../lib/api';
+import { getRecipeCost, getProductSubstitutions, createShoppingList, addRecipeToList, deleteRecipe, rematchRecipe } from '../../lib/api';
 import { useStores, type StoreChain } from '../../lib/store-context';
 import { useFavorites } from '../../lib/favorites-context';
 
@@ -125,6 +125,23 @@ export default function RecipeDetail() {
         </TouchableOpacity>
         <TouchableOpacity onPress={handleShare} style={styles.back}>
           <Ionicons name="share-outline" size={22} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={async () => {
+            if (!id) return;
+            try {
+              const result = await rematchRecipe(id);
+              setRecipe(result.recipe);
+              if (result.updated > 0) {
+                Alert.alert('Mis à jour', `${result.updated} ingrédient(s) nouvellement identifié(s).`);
+              } else {
+                Alert.alert('À jour', 'Tous les ingrédients sont déjà identifiés au mieux.');
+              }
+            } catch (e) { Alert.alert('Erreur', String(e)); }
+          }}
+          style={styles.back}
+        >
+          <Ionicons name="refresh-outline" size={22} color="#fff" />
         </TouchableOpacity>
       </View>
 
