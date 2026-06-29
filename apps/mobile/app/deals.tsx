@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
-  View, Text, StyleSheet, SectionList, FlatList, ActivityIndicator,
+  View, Text, TextInput, StyleSheet, SectionList, FlatList, ActivityIndicator,
   RefreshControl, TouchableOpacity, Image,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -47,6 +47,7 @@ export default function DealsScreen() {
   const [recipeCat, setRecipeCat] = useState<string | null>(null);
   const ALL_CHAINS: StoreChain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
   const [chainFilter, setChainFilter] = useState<Set<StoreChain>>(new Set(selectedStores));
+  const [searchQuery, setSearchQuery] = useState('');
 
   const toggleChain = (c: StoreChain) => {
     setChainFilter(prev => {
@@ -83,10 +84,16 @@ export default function DealsScreen() {
     new Set(items.filter(i => activeChains.has(i.chain as StoreChain)).map(i => i.category).filter(Boolean) as string[])
   ).sort();
 
-  // Apply chain + category filters
-  const filtered = items.filter(
-    (i) => activeChains.has(i.chain as StoreChain) && (category == null || i.category === category)
-  );
+  // Apply chain + category + search filters
+  const filtered = items.filter((i) => {
+    if (!activeChains.has(i.chain as StoreChain)) return false;
+    if (category != null && i.category !== category) return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      return i.rawText.toLowerCase().includes(q) || (i.productName?.toLowerCase().includes(q) ?? false);
+    }
+    return true;
+  });
 
   // Build sections by sort mode
   let sections: Section[];
@@ -139,6 +146,20 @@ export default function DealsScreen() {
 
   const controls = (
     <View style={styles.controls}>
+      {/* Search */}
+      <View style={styles.searchRow}>
+        <Ionicons name="search-outline" size={18} color="#999" />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Chercher dans les spéciaux..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          clearButtonMode="while-editing"
+        />
+        {searchQuery.length > 0 && (
+          <Text style={styles.searchCount}>{filtered.length} résultat{filtered.length !== 1 ? 's' : ''}</Text>
+        )}
+      </View>
       {/* Sort */}
       <View style={styles.sortRow}>
         {SORTS.map((s) => (
@@ -373,6 +394,9 @@ const styles = StyleSheet.create({
 
   // Controls
   controls:      { paddingBottom: 4 },
+  searchRow:     { flexDirection: 'row', alignItems: 'center', gap: 8, marginHorizontal: 16, marginTop: 12, backgroundColor: '#fff', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 6, borderWidth: 1, borderColor: '#eee' },
+  searchInput:   { flex: 1, fontSize: 14, paddingVertical: 2 },
+  searchCount:   { fontSize: 11, color: '#999' },
   sortRow:       { flexDirection: 'row', gap: 8, paddingHorizontal: 16, paddingTop: 12, paddingBottom: 8 },
   sortBtn:       { paddingHorizontal: 14, paddingVertical: 6, borderRadius: 16, backgroundColor: '#eee' },
   sortBtnActive: { backgroundColor: '#2E7D32' },
