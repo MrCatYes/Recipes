@@ -216,7 +216,19 @@ export default function RecipeDetail() {
           )}
 
           {/* Ingredients */}
-          <Text style={styles.section}>Ingrédients</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Text style={styles.section}>Ingrédients</Text>
+            <TouchableOpacity
+              onPress={() => {
+                const text = recipe.ingredients.map(i => `- ${i.rawText}`).join('\n');
+                Share.share({ message: `${recipe.title}\n\n${text}` });
+              }}
+              hitSlop={8}
+              style={{ padding: 4 }}
+            >
+              <Ionicons name="copy-outline" size={20} color="#2E7D32" />
+            </TouchableOpacity>
+          </View>
           {recipe.ingredients.map((ing) => {
             const prices = ing.costByStore
               .filter(p => selectedStores.includes(p.chain as StoreChain))
