@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import {
-  View, Text, FlatList, TouchableOpacity, TextInput, StyleSheet,
+  View, Text, SectionList, FlatList, TouchableOpacity, TextInput, StyleSheet,
   ActivityIndicator, Alert, RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -135,7 +135,10 @@ export default function ListsScreen() {
             <Text style={styles.costSplit}>Multi-magasin: {formatPrice(activeList.estimatedTotalCents)}</Text>
           )}
         </View>
-        <Text style={styles.progressText}>{checked}/{total} cochés</Text>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: total > 0 ? `${Math.round(checked / total * 100)}%` : '0%' }]} />
+        </View>
+        <Text style={styles.progressText}>{checked}/{total} cochés{total > 0 ? ` (${Math.round(checked / total * 100)}%)` : ''}</Text>
 
         {/* Add item */}
         <View style={styles.addRow}>
@@ -152,10 +155,25 @@ export default function ListsScreen() {
           </TouchableOpacity>
         </View>
 
-        <FlatList
-          data={activeList.items.sort((a, b) => (a.checked ? 1 : 0) - (b.checked ? 1 : 0) || a.sortOrder - b.sortOrder)}
+        <SectionList
+          sections={(() => {
+            const sorted = [...activeList.items].sort((a, b) => (a.checked ? 1 : 0) - (b.checked ? 1 : 0) || a.sortOrder - b.sortOrder);
+            const grouped = new Map<string, ShoppingListItemWithCost[]>();
+            for (const item of sorted) {
+              const cat = item.category || 'Autre';
+              if (!grouped.has(cat)) grouped.set(cat, []);
+              grouped.get(cat)!.push(item);
+            }
+            return Array.from(grouped.entries()).map(([title, data]) => ({ title, data }));
+          })()}
           keyExtractor={i => i.id}
           refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={GREEN} />}
+          renderSectionHeader={({ section }) => (
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{section.title}</Text>
+              <Text style={styles.sectionCount}>{section.data.length}</Text>
+            </View>
+          )}
           renderItem={({ item }) => (
             <View style={[styles.itemRow, item.checked && styles.itemChecked]}>
               <TouchableOpacity onPress={() => handleToggle(item)} hitSlop={8}>
@@ -238,6 +256,8 @@ const styles = StyleSheet.create({
   costLabel:       { fontSize: 13, color: '#555' },
   costValue:       { fontWeight: '700', color: GREEN },
   costSplit:       { fontSize: 12, color: '#888' },
+  progressBar:     { height: 6, backgroundColor: '#E0E0E0', borderRadius: 3, marginBottom: 4 },
+  progressFill:    { height: 6, backgroundColor: GREEN, borderRadius: 3 },
   progressText:    { fontSize: 12, color: '#888', marginBottom: 12 },
   addRow:          { flexDirection: 'row', gap: 8, marginBottom: 16 },
   addInput:        { flex: 1, backgroundColor: '#fff', borderRadius: 10, paddingHorizontal: 14, paddingVertical: 12, fontSize: 15 },
@@ -247,6 +267,9 @@ const styles = StyleSheet.create({
   itemText:        { fontSize: 15, fontWeight: '500' },
   itemTextChecked: { textDecorationLine: 'line-through', color: '#999' },
   itemCost:        { fontSize: 12, color: GREEN, marginTop: 2 },
+  sectionHeader:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6, marginTop: 8 },
+  sectionTitle:    { fontSize: 14, fontWeight: '700', color: '#555' },
+  sectionCount:    { fontSize: 12, color: '#999' },
   listCard:        { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 10 },
   listName:        { fontSize: 16, fontWeight: '600' },
   listMeta:        { fontSize: 13, color: '#888', marginTop: 2 },
