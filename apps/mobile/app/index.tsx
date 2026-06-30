@@ -317,7 +317,11 @@ export default function RecipesScreen() {
           <View style={styles.cardBody}>
             <Text style={styles.cardTitle} numberOfLines={2}>{item.title}</Text>
             <View style={styles.cardMeta}>
-              {item.category && <Text style={styles.cardCat}>{item.category}</Text>}
+              {item.category && (
+                <View style={styles.cardCatBadge}>
+                  <Text style={styles.cardCatText}>{item.category}</Text>
+                </View>
+              )}
               {item.difficulty && (
                 <View style={[styles.diffBadge, { backgroundColor: DIFFICULTY_COLORS[item.difficulty] }]}>
                   <Text style={styles.diffBadgeText}>{item.difficulty}</Text>
@@ -395,6 +399,8 @@ const styles = StyleSheet.create({
   cardTitle:     { fontSize: 14, fontWeight: '600' },
   cardMeta:      { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2 },
   cardCat:       { fontSize: 11, color: '#999' },
+  cardCatBadge:  { backgroundColor: '#E8F5E9', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 1 },
+  cardCatText:   { fontSize: 10, color: '#2E7D32', fontWeight: '600' },
   diffBadge:     { borderRadius: 3, paddingHorizontal: 5, paddingVertical: 1 },
   diffBadgeText: { color: '#fff', fontSize: 9, fontWeight: '700', textTransform: 'capitalize' },
   cardTime:      { fontSize: 11, color: '#666' },
