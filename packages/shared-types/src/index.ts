@@ -214,6 +214,8 @@ export interface PriceWithStore {
 
 export type RecipeDifficulty = 'débutant' | 'confirmé' | 'expert';
 
+export type DietaryTag = 'vegetarien' | 'vegetalien' | 'halal' | 'sans-gluten' | 'sans-lactose' | 'low-calories' | 'casher';
+
 export interface Recipe {
   id: string;
   sourceUrl: string | null;
@@ -223,6 +225,7 @@ export interface Recipe {
   servings: number;
   imageUrl: string | null;
   description: string | null;
+  dietaryTags: string[];
   instructions: string[];
   prepTimeMinutes: number | null;
   cookTimeMinutes: number | null;
@@ -241,6 +244,7 @@ export interface RecipeSummary {
   promoIngredientCount: number;
   ingredientCount: number;
   matchedIngredientCount: number;
+  dietaryTags: string[];
 }
 
 export interface GetRecipesResponse {

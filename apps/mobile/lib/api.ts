@@ -210,10 +210,11 @@ export function searchRecipes(q: string) {
   );
 }
 
-export function getRecipes(opts: { category?: string; difficulty?: string; chains?: string[]; sort?: string } = {}) {
+export function getRecipes(opts: { category?: string; difficulty?: string; dietaryTag?: string; chains?: string[]; sort?: string } = {}) {
   const q = new URLSearchParams();
   if (opts.category) q.set('category', opts.category);
   if (opts.difficulty) q.set('difficulty', opts.difficulty);
+  if (opts.dietaryTag) q.set('dietaryTag', opts.dietaryTag);
   if (opts.chains?.length) q.set('chains', opts.chains.join(','));
   if (opts.sort) q.set('sort', opts.sort);
   const qs = q.toString();

@@ -18,13 +18,14 @@ function parseChains(raw?: string): StoreChain[] | undefined {
 }
 
 export async function recipesRoutes(app: FastifyInstance) {
-  // GET /recipes?category=Dessert&chains=Maxi,IGA&sort=price|promos|recent
+  // GET /recipes?category=Dessert&chains=Maxi,IGA&sort=price|promos|recent&dietaryTag=vegetarien
   app.get('/recipes', async (req, reply) => {
     const schema = z.object({
       category: z.string().optional(),
       difficulty: z.enum(['débutant', 'confirmé', 'expert']).optional(),
       chains: z.string().optional(),
       sort: z.enum(['price', 'promos', 'recent', 'time']).optional().default('price'),
+      dietaryTag: z.string().optional(),
     });
     const parsed = schema.safeParse(req.query);
     if (!parsed.success) return reply.badRequest(parsed.error.message);
@@ -33,6 +34,7 @@ export async function recipesRoutes(app: FastifyInstance) {
       difficulty: parsed.data.difficulty,
       chains: parseChains(parsed.data.chains),
       sort: parsed.data.sort as RecipeSort,
+      dietaryTag: parsed.data.dietaryTag,
     });
   });
   // GET /recipes/by-promos?chains=Maxi,IGA  → recipes whose ingredients are on sale
@@ -117,6 +119,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         servings: rawRecipe.servings,
         imageUrl: rawRecipe.imageUrl,
         description: rawRecipe.description ?? null,
+        dietaryTags: rawRecipe.dietaryTags ?? [],
         instructions: rawRecipe.instructions,
         prepTimeMinutes: rawRecipe.prepTimeMinutes,
         cookTimeMinutes: rawRecipe.cookTimeMinutes,
@@ -128,6 +131,7 @@ export async function recipesRoutes(app: FastifyInstance) {
         servings: rawRecipe.servings,
         imageUrl: rawRecipe.imageUrl,
         description: rawRecipe.description ?? null,
+        dietaryTags: rawRecipe.dietaryTags ?? [],
         instructions: rawRecipe.instructions,
         prepTimeMinutes: rawRecipe.prepTimeMinutes,
         cookTimeMinutes: rawRecipe.cookTimeMinutes,

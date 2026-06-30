@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet,
-  ActivityIndicator, FlatList, Alert, Image, RefreshControl, Animated,
+  ActivityIndicator, FlatList, Alert, Image, RefreshControl, Animated, ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
@@ -87,6 +87,7 @@ export default function RecipesScreen() {
   const [categories, setCategories] = useState<string[]>([]);
   const [category, setCategory] = useState<string | null>(null);
   const [difficulty, setDifficulty] = useState<RecipeDifficulty | null>(null);
+  const [dietaryTag, setDietaryTag] = useState<string | null>(null);
   const [sort, setSort] = useState<Sort>('price');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -111,12 +112,13 @@ export default function RecipesScreen() {
       const data = await getRecipes({
         category: category ?? undefined,
         difficulty: difficulty ?? undefined,
+        dietaryTag: dietaryTag ?? undefined,
         chains: selectedStores,
         sort: sort === 'favorites' ? 'price' : sort,
       });
       setRecipes(data.recipes);
       setCategories(data.categories);
-      if (!category && !difficulty && sort === 'price') {
+      if (!category && !difficulty && !dietaryTag && sort === 'price') {
         AsyncStorage.setItem(CACHE_KEY, JSON.stringify(data));
       }
     } catch {
@@ -125,7 +127,7 @@ export default function RecipesScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [category, difficulty, sort, selectedStores]);
+  }, [category, difficulty, dietaryTag, sort, selectedStores]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -234,6 +236,29 @@ export default function RecipesScreen() {
           );
         })}
       </View>
+
+      {/* Dietary filters */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.dietRow}>
+        {[
+          { key: null,           label: 'Tout' },
+          { key: 'vegetarien',   label: '🥦 Végétarien' },
+          { key: 'vegetalien',   label: '🌱 Végétalien' },
+          { key: 'halal',        label: '☪️ Halal' },
+          { key: 'sans-gluten',  label: '🌾 Sans gluten' },
+          { key: 'sans-lactose', label: '🥛 Sans lactose' },
+        ].map(({ key, label }) => {
+          const active = dietaryTag === key;
+          return (
+            <TouchableOpacity
+              key={key ?? 'all'}
+              style={[styles.dietChip, active && styles.dietChipActive]}
+              onPress={() => setDietaryTag(key)}
+            >
+              <Text style={[styles.dietChipText, active && styles.dietChipTextActive]}>{label}</Text>
+            </TouchableOpacity>
+          );
+        })}
+      </ScrollView>
 
       {/* Recipe count */}
       {!loading && (
@@ -388,9 +413,14 @@ const styles = StyleSheet.create({
   chipText:      { fontSize: 12, color: '#666' },
   chipTextActive:{ color: '#1B5E20', fontWeight: '600' },
   diffRow:       { flexDirection: 'row', gap: 8, paddingHorizontal: 16, paddingBottom: 10 },
-  diffChip:      { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd' },
-  diffChipText:  { fontSize: 11, color: '#666', fontWeight: '600' },
+  diffChip:         { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd' },
+  diffChipText:     { fontSize: 11, color: '#666', fontWeight: '600' },
   diffChipTextActive: { color: '#fff' },
+  dietRow:          { paddingHorizontal: 12, paddingVertical: 6, gap: 6 },
+  dietChip:         { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14, backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd' },
+  dietChipActive:   { backgroundColor: '#1B5E20', borderColor: '#1B5E20' },
+  dietChipText:     { fontSize: 12, color: '#555', fontWeight: '500' },
+  dietChipTextActive: { color: '#fff', fontWeight: '700' },
   empty:         { textAlign: 'center', color: '#999', marginTop: 40, paddingHorizontal: 32 },
   card:          { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', marginHorizontal: 16, marginBottom: 10, borderRadius: 12, padding: 10, gap: 10 },
   cardImg:       { width: 56, height: 56, borderRadius: 8, backgroundColor: '#eee' },

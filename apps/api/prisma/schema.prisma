@@ -276,6 +276,7 @@ model Recipe {
   servings         Int      @default(4)
   imageUrl         String?
   description      String?
+  dietaryTags      String[] // vegetarien | vegetalien | halal | sans-gluten | sans-lactose
   instructions     String[] // array of steps
   prepTimeMinutes  Int?
   cookTimeMinutes  Int?

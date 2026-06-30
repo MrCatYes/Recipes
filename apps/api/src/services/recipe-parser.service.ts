@@ -11,6 +11,43 @@ export interface ParsedRecipe {
   cookTimeMinutes: number | null;
   category: string | null;
   description: string | null;
+  dietaryTags: string[];
+}
+
+const SCHEMA_DIET_MAP: Record<string, string> = {
+  'vegetariandiet':  'vegetarien',
+  'vegandiet':       'vegetalien',
+  'halaldiet':       'halal',
+  'kosherdiet':      'casher',
+  'glutenfreediet':  'sans-gluten',
+  'lowlactosediet':  'sans-lactose',
+  'lowcaloriediet':  'low-calories',
+};
+
+export function parseDietaryTags(raw: unknown, ingredients: string[]): string[] {
+  const tags = new Set<string>();
+
+  // From JSON-LD suitableForDiet
+  const rawArr = Array.isArray(raw) ? raw : raw ? [raw] : [];
+  for (const d of rawArr) {
+    const key = String(d).toLowerCase().replace(/.*\//g, '').replace(/[-_\s]/g, '');
+    if (SCHEMA_DIET_MAP[key]) tags.add(SCHEMA_DIET_MAP[key]);
+  }
+
+  // Auto-detect from ingredient list
+  const text = ingredients.join(' ').toLowerCase();
+  const MEAT = /\b(poulet|chicken|boeuf|beef|porc|pork|bacon|lard|agneau|lamb|dinde|turkey|veau|veal|saumon|salmon|thon|tuna|crevette|shrimp|anchois|anchovies|fruits de mer|seafood|jambon|ham|pepperoni|saucisse|sausage|merguez)\b/;
+  const DAIRY = /\b(lait|milk|beurre|butter|fromage|cheese|crème|cream|yogourt|yogurt|ghee)\b/;
+  const EGG = /\b(oeuf|œuf|egg)\b/;
+  const PORK = /\b(porc|pork|bacon|lard|jambon|ham|pepperoni|saucisse de porc|pancetta)\b/;
+  const GLUTEN = /\b(farine|flour|blé|wheat|orge|barley|seigle|rye|pain|bread|pâtes|pasta|couscous|boulgour|bulgur|semoule)\b/;
+
+  if (!MEAT.test(text)) tags.add('vegetarien');
+  if (!MEAT.test(text) && !DAIRY.test(text) && !EGG.test(text)) tags.add('vegetalien');
+  if (!PORK.test(text)) tags.add('halal');
+  if (!GLUTEN.test(text)) tags.add('sans-gluten');
+
+  return Array.from(tags);
 }
 
 // ─── Pure helpers (exported for testing) ─────────────────────────────────────
@@ -128,16 +165,18 @@ export function extractJsonLd(html: string): ParsedRecipe | null {
 
       const desc = typeof recipe.description === 'string' ? recipe.description.trim() : null;
 
+      const parsedIngredients = ingredients;
       return {
         title: String(recipe.name),
         servings: parseServings(recipe.recipeYield ?? recipe['yield']),
-        ingredients,
+        ingredients: parsedIngredients,
         instructions: parseInstructions(recipe.recipeInstructions),
         imageUrl: parseImageUrl(recipe.image),
         prepTimeMinutes: prepTime,
         cookTimeMinutes: cookTime,
         category,
         description: desc && desc.length > 10 ? desc : null,
+        dietaryTags: parseDietaryTags(recipe.suitableForDiet, parsedIngredients),
       };
     } catch {
       // malformed JSON-LD, try next script tag
@@ -186,6 +225,7 @@ export function extractMicrodata(html: string): ParsedRecipe | null {
     cookTimeMinutes: parseDuration(prop('cookTime').first().attr('content') ?? prop('cookTime').first().attr('datetime') ?? null),
     category: mapCategory(catText) ?? null,
     description: descText.length > 10 ? descText : null,
+    dietaryTags: parseDietaryTags(null, ingredients),
   };
 }
 
@@ -387,6 +427,7 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     cookTimeMinutes,
     category: null,
     description: ogDesc && ogDesc.length > 10 ? ogDesc : null,
+    dietaryTags: parseDietaryTags(null, ingredients),
   };
 }
 
@@ -489,7 +530,11 @@ export class RecipeParserService {
     const content = completion.choices[0]?.message?.content ?? '';
     try {
       const match = content.match(/\{[\s\S]*\}/);
-      if (match) return JSON.parse(match[0]) as ParsedRecipe;
+      if (match) {
+        const parsed = JSON.parse(match[0]) as ParsedRecipe;
+        if (!parsed.dietaryTags) parsed.dietaryTags = parseDietaryTags(null, parsed.ingredients ?? []);
+        return parsed;
+      }
     } catch {
       // fall through
     }
