@@ -6,7 +6,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import type { RecipeWithCost } from '@epicerie/shared-types';
-import { getRecipeCost, getProductSubstitutions, createShoppingList, addRecipeToList, deleteRecipe, rematchRecipe } from '../../lib/api';
+import { getRecipeCost, getProductSubstitutions, createShoppingList, addRecipeToList, getShoppingLists, deleteRecipe, rematchRecipe } from '../../lib/api';
 import { useStores, type StoreChain } from '../../lib/store-context';
 import { useFavorites } from '../../lib/favorites-context';
 
@@ -49,17 +49,45 @@ export default function RecipeDetail() {
 
   async function handleAddToList() {
     if (!recipe) return;
-    setAddingToList(true);
+    const targetServings = Math.round(recipe.servings * servingsMultiplier);
+
+    let lists: Array<{ id: string; name: string }> = [];
     try {
-      const list = await createShoppingList(recipe.title);
-      const targetServings = Math.round(recipe.servings * servingsMultiplier);
-      const { added } = await addRecipeToList(list.id, recipe.id, targetServings);
-      Alert.alert('Liste créée', `${added} ingrédient${added !== 1 ? 's' : ''} ajouté${added !== 1 ? 's' : ''} (${targetServings} portions).`);
-    } catch (e) {
-      Alert.alert('Erreur', String(e));
-    } finally {
-      setAddingToList(false);
+      const res = await getShoppingLists();
+      lists = res.lists;
+    } catch { /* ignore, fall through to create */ }
+
+    const doAdd = async (listId: string) => {
+      setAddingToList(true);
+      try {
+        const { added } = await addRecipeToList(listId, recipe.id, targetServings);
+        Alert.alert('Ajouté', `${added} ingrédient${added !== 1 ? 's' : ''} ajouté${added !== 1 ? 's' : ''} (${targetServings} portions).`);
+      } catch (e) {
+        Alert.alert('Erreur', String(e));
+      } finally {
+        setAddingToList(false);
+      }
+    };
+
+    if (lists.length === 0) {
+      const list = await createShoppingList(recipe.title).catch(() => null);
+      if (list) doAdd(list.id);
+      return;
     }
+
+    const options = lists.map(l => l.name);
+    options.push('+ Nouvelle liste');
+    Alert.alert('Ajouter à une liste', 'Choisir une liste d\'achats :', options.map((o, i) => ({
+      text: o,
+      onPress: async () => {
+        if (i === options.length - 1) {
+          const list = await createShoppingList(recipe.title).catch(() => null);
+          if (list) doAdd(list.id);
+        } else {
+          doAdd(lists[i].id);
+        }
+      },
+    })));
   }
 
   const [substitutions, setSubstitutions] = useState<
@@ -155,13 +183,28 @@ export default function RecipeDetail() {
           )}
           <Text style={styles.title}>{recipe.title}</Text>
           <View style={styles.meta}>
+            {recipe.category && (
+              <View style={styles.catBadge}>
+                <Text style={styles.catBadgeText}>{recipe.category}</Text>
+              </View>
+            )}
             {recipe.difficulty && (
               <View style={[styles.diffBadge, { backgroundColor: DIFFICULTY_COLORS[recipe.difficulty] }]}>
                 <Text style={styles.diffBadgeText}>{recipe.difficulty}</Text>
               </View>
             )}
-            {recipe.prepTimeMinutes != null && <Text style={styles.metaText}>prép {recipe.prepTimeMinutes} min</Text>}
-            {recipe.cookTimeMinutes != null && <Text style={styles.metaText}>· cuisson {recipe.cookTimeMinutes} min</Text>}
+            {recipe.prepTimeMinutes != null && (
+              <View style={styles.timePill}>
+                <Ionicons name="timer-outline" size={12} color="#555" />
+                <Text style={styles.metaText}>{recipe.prepTimeMinutes} min</Text>
+              </View>
+            )}
+            {recipe.cookTimeMinutes != null && (
+              <View style={styles.timePill}>
+                <Ionicons name="flame-outline" size={12} color="#555" />
+                <Text style={styles.metaText}>{recipe.cookTimeMinutes} min</Text>
+              </View>
+            )}
           </View>
 
           {/* Servings adjuster */}
@@ -369,6 +412,9 @@ const styles = StyleSheet.create({
   title:         { fontSize: 22, fontWeight: '700', paddingHorizontal: 16, paddingTop: 14 },
   meta:          { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, paddingHorizontal: 16, marginTop: 4 },
   metaText:      { color: '#666', fontSize: 13 },
+  catBadge:      { backgroundColor: '#E8F5E9', borderRadius: 4, paddingHorizontal: 7, paddingVertical: 2 },
+  catBadgeText:  { color: '#2E7D32', fontSize: 11, fontWeight: '600' },
+  timePill:      { flexDirection: 'row', alignItems: 'center', gap: 3 },
   diffBadge:     { borderRadius: 4, paddingHorizontal: 7, paddingVertical: 2 },
   diffBadgeText: { color: '#fff', fontSize: 11, fontWeight: '700', textTransform: 'capitalize' },
   servingsRow:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 12, paddingVertical: 10 },
