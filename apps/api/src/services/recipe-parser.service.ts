@@ -318,6 +318,60 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     }
   }
 
+  // Try to extract prep/cook time from common patterns
+  function extractMinutesFromEl(sel: string): number | null {
+    const el = $(sel).first();
+    if (!el.length) return null;
+    // Try ISO duration in content/datetime attributes first
+    const iso = el.attr('content') ?? el.attr('datetime');
+    if (iso) return parseDuration(iso);
+    // Fall back to text
+    const txt = el.text().trim();
+    // "1h30", "1 h 30 min", "30 min", "30 minutes"
+    const mFull = txt.match(/(\d+)\s*h(?:\s*(\d+)\s*(?:min|m))?|(\d+)\s*(?:min|minutes?|m)/i);
+    if (mFull) {
+      if (mFull[1] != null) return parseInt(mFull[1], 10) * 60 + parseInt(mFull[2] ?? '0', 10);
+      return parseInt(mFull[3], 10);
+    }
+    // Bare number — WPRM etc. put units in a sibling span; treat as minutes
+    const mNum = txt.match(/^(\d+)$/);
+    if (mNum) return parseInt(mNum[1], 10);
+    return null;
+  }
+
+  let prepTimeMinutes: number | null = null;
+  let cookTimeMinutes: number | null = null;
+
+  const prepSelectors = [
+    '.wprm-recipe-prep_time', '.tasty-recipe-prep-time', '[class*="prep-time"]', '[class*="preptime"]',
+    '[itemprop="prepTime"]', 'meta[itemprop="prepTime"]',
+    '.recipe-prep-time', '[class*="prep_time"]',
+  ];
+  const cookSelectors = [
+    '.wprm-recipe-cook_time', '.tasty-recipe-cook-time', '[class*="cook-time"]', '[class*="cooktime"]',
+    '[itemprop="cookTime"]', 'meta[itemprop="cookTime"]',
+    '.recipe-cook-time', '[class*="cook_time"]',
+  ];
+  const totalSelectors = [
+    '.wprm-recipe-total_time', '.tasty-recipe-total-time', '[class*="total-time"]',
+    '[itemprop="totalTime"]', 'meta[itemprop="totalTime"]',
+  ];
+
+  for (const sel of prepSelectors) {
+    const v = extractMinutesFromEl(sel);
+    if (v) { prepTimeMinutes = v; break; }
+  }
+  for (const sel of cookSelectors) {
+    const v = extractMinutesFromEl(sel);
+    if (v) { cookTimeMinutes = v; break; }
+  }
+  if (!prepTimeMinutes && !cookTimeMinutes) {
+    for (const sel of totalSelectors) {
+      const v = extractMinutesFromEl(sel);
+      if (v) { cookTimeMinutes = v; break; }
+    }
+  }
+
   const imageUrl = $('meta[property="og:image"]').attr('content') ?? null;
   const ogDesc = $('meta[property="og:description"]').attr('content')?.trim()
     ?? $('meta[name="description"]').attr('content')?.trim()
@@ -329,8 +383,8 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     ingredients,
     instructions,
     imageUrl,
-    prepTimeMinutes: null,
-    cookTimeMinutes: null,
+    prepTimeMinutes,
+    cookTimeMinutes,
     category: null,
     description: ogDesc && ogDesc.length > 10 ? ogDesc : null,
   };

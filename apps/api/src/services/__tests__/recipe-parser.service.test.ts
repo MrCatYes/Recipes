@@ -5,6 +5,7 @@ import {
   parseImageUrl,
   parseInstructions,
   extractJsonLd,
+  extractHeuristicHtml,
 } from '../recipe-parser.service';
 
 // ─── parseDuration ────────────────────────────────────────────────────────────
@@ -180,5 +181,49 @@ describe('extractJsonLd', () => {
     const result = extractJsonLd(makeHtml(RECIPE_JSON_LD));
     expect(result!.category).toBeNull();
     expect(result!.description).toBeNull();
+  });
+});
+
+// ─── extractHeuristicHtml ────────────────────────────────────────────────────
+
+describe('extractHeuristicHtml', () => {
+  function makeHeuristicHtml(body: string): string {
+    return `<html><head><meta property="og:image" content="https://example.com/img.jpg" /></head><body>${body}</body></html>`;
+  }
+
+  it('extracts prep and cook time from wprm classes', () => {
+    const html = makeHeuristicHtml(`
+      <h1>Poulet rôti</h1>
+      <ul class="recipe-ingredients"><li>1 poulet</li><li>2 gousses d'ail</li></ul>
+      <span class="wprm-recipe-prep_time">15</span>
+      <span class="wprm-recipe-cook_time">60</span>
+    `);
+    const result = extractHeuristicHtml(html);
+    expect(result).not.toBeNull();
+    expect(result!.prepTimeMinutes).toBe(15);
+    expect(result!.cookTimeMinutes).toBe(60);
+  });
+
+  it('extracts total time when no prep/cook', () => {
+    const html = makeHeuristicHtml(`
+      <h1>Gâteau rapide</h1>
+      <ul class="recipe-ingredients"><li>2 oeufs</li><li>200g farine</li></ul>
+      <span class="tasty-recipe-total-time">45</span>
+    `);
+    const result = extractHeuristicHtml(html);
+    expect(result).not.toBeNull();
+    expect(result!.cookTimeMinutes).toBe(45);
+    expect(result!.prepTimeMinutes).toBeNull();
+  });
+
+  it('returns null times when none found', () => {
+    const html = makeHeuristicHtml(`
+      <h1>Salade verte</h1>
+      <ul class="recipe-ingredients"><li>laitue</li><li>tomates</li></ul>
+    `);
+    const result = extractHeuristicHtml(html);
+    expect(result).not.toBeNull();
+    expect(result!.prepTimeMinutes).toBeNull();
+    expect(result!.cookTimeMinutes).toBeNull();
   });
 });
