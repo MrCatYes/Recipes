@@ -9,6 +9,7 @@ import type { RecipeWithCost } from '@epicerie/shared-types';
 import { getRecipeCost, getProductSubstitutions, createShoppingList, addRecipeToList, getShoppingLists, deleteRecipe, rematchRecipe } from '../../lib/api';
 import { useStores, type StoreChain } from '../../lib/store-context';
 import { useFavorites } from '../../lib/favorites-context';
+import { getFoodEmoji } from '../../lib/food-emoji';
 
 const STORE_COLORS: Record<StoreChain, string> = {
   Maxi: '#E53935', IGA: '#1565C0', Metro: '#F57C00', SuperC: '#C8102E', Walmart: '#0071CE', Costco: '#003DA5',
@@ -28,6 +29,7 @@ export default function RecipeDetail() {
   const [error, setError] = useState<string | null>(null);
   const [servingsMultiplier, setServingsMultiplier] = useState(1);
   const [addingToList, setAddingToList] = useState(false);
+  const [pantry, setPantry] = useState<Set<string>>(new Set());
 
   async function handleShare() {
     if (!recipe) return;
@@ -123,11 +125,13 @@ export default function RecipeDetail() {
   const adjustedServings = recipe ? Math.round(recipe.servings * servingsMultiplier) : 0;
 
   // Per-store totals: prorata (cost of amounts used) + package (buy full formats)
+  // Pantry items excluded — user already has them
   const summaries = (() => {
     if (!recipe) return [];
     const prorata = new Map<string, number>();
     const pkg = new Map<string, number>();
     for (const ing of recipe.ingredients) {
+      if (pantry.has(ing.id)) continue;
       for (const p of ing.costByStore) {
         if (!selectedStores.includes(p.chain as StoreChain)) continue;
         prorata.set(p.chain, (prorata.get(p.chain) ?? 0) + Math.round(p.priceCents * servingsMultiplier));
@@ -137,6 +141,19 @@ export default function RecipeDetail() {
     return Array.from(prorata.entries())
       .map(([chain, pro]) => ({ chain, prorata: pro, pkg: pkg.get(chain) ?? pro }))
       .sort((a, b) => a.prorata - b.prorata);
+  })();
+
+  const pantrySavings = (() => {
+    if (!recipe || pantry.size === 0) return 0;
+    let total = 0;
+    for (const ing of recipe.ingredients) {
+      if (!pantry.has(ing.id)) continue;
+      const prices = ing.costByStore
+        .filter(p => selectedStores.includes(p.chain as StoreChain))
+        .sort((a, b) => a.priceCents - b.priceCents);
+      if (prices[0]) total += Math.round(prices[0].priceCents * servingsMultiplier);
+    }
+    return total;
   })();
   const best = summaries[0];
 
@@ -234,8 +251,16 @@ export default function RecipeDetail() {
           {/* Hero: total recipe cost */}
           {best && (
             <View style={styles.hero}>
-              <Text style={styles.heroLabel}>Coût total de la recette</Text>
+              <Text style={styles.heroLabel}>
+                {pantry.size > 0 ? 'Coût estimé (sans ce que tu as)' : 'Coût total de la recette'}
+              </Text>
               <Text style={styles.heroTotal}>{formatCents(best.prorata)}</Text>
+              {pantrySavings > 0 && (
+                <View style={styles.pantryBadge}>
+                  <Ionicons name="checkmark-circle" size={14} color="#2E7D32" />
+                  <Text style={styles.pantryBadgeText}>Tu économises {formatCents(pantrySavings)} grâce à ton garde-manger</Text>
+                </View>
+              )}
               <Text style={styles.heroSub}>
                 {formatCents(Math.round(best.prorata / adjustedServings))} / portion · meilleur prix chez {best.chain}
               </Text>
@@ -263,8 +288,10 @@ export default function RecipeDetail() {
           )}
 
           {/* Ingredients */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={styles.section}>Ingrédients</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingRight: 16 }}>
+            <Text style={styles.section}>
+              Ingrédients{pantry.size > 0 ? ` (${pantry.size} en stock)` : ''}
+            </Text>
             <TouchableOpacity
               onPress={() => {
                 const text = recipe.ingredients.map(i => `- ${i.rawText}`).join('\n');
@@ -276,6 +303,7 @@ export default function RecipeDetail() {
               <Ionicons name="copy-outline" size={20} color="#2E7D32" />
             </TouchableOpacity>
           </View>
+          <Text style={styles.pantryHint}>Appuie sur un ingrédient pour marquer comme déjà en stock</Text>
           {recipe.ingredients.map((ing) => {
             const prices = ing.costByStore
               .filter(p => selectedStores.includes(p.chain as StoreChain))
@@ -283,27 +311,44 @@ export default function RecipeDetail() {
             const cheapest = prices[0];
             const priceDiff = prices.length >= 2 ? prices[prices.length - 1].priceCents - prices[0].priceCents : 0;
             const matched = !!ing.productId;
+            const inPantry = pantry.has(ing.id);
+            const emoji = getFoodEmoji(ing.rawText);
             return (
-              <View key={ing.id} style={styles.ingRow}>
-                <View style={[styles.ingDot, { backgroundColor: matched ? '#4CAF50' : '#E0E0E0' }]} />
+              <TouchableOpacity
+                key={ing.id}
+                style={[styles.ingRow, inPantry && styles.ingRowPantry]}
+                onPress={() => {
+                  setPantry(prev => {
+                    const next = new Set(prev);
+                    if (next.has(ing.id)) next.delete(ing.id);
+                    else next.add(ing.id);
+                    return next;
+                  });
+                }}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.ingEmoji}>{emoji}</Text>
                 <View style={styles.ingLeft}>
-                  <Text style={styles.ingText}>{ing.rawText}</Text>
+                  <Text style={[styles.ingText, inPantry && styles.ingTextPantry]}>{ing.rawText}</Text>
                   {matched && ing.product?.name && (
                     <Text style={styles.ingProduct}>≈ {ing.product.name}</Text>
                   )}
-                  {cheapest && prices.length > 1 && priceDiff > 10 && (
+                  {cheapest && prices.length > 1 && priceDiff > 10 && !inPantry && (
                     <Text style={styles.ingBestChain}>
                       Meilleur: {cheapest.chain} ({formatCents(cheapest.priceCents)})
                     </Text>
                   )}
+                  {inPantry && <Text style={styles.ingPantryLabel}>✓ Déjà en stock</Text>}
                 </View>
-                {cheapest
-                  ? <View style={styles.ingPriceWrap}>
-                      <Text style={styles.ingPrice}>{formatCents(Math.round(cheapest.priceCents * servingsMultiplier))}</Text>
-                      {cheapest.isPromo && <Text style={styles.ingPromo}>PROMO</Text>}
-                    </View>
-                  : <Text style={styles.ingNo}>—</Text>}
-              </View>
+                {inPantry
+                  ? <Ionicons name="checkmark-circle" size={22} color="#2E7D32" />
+                  : cheapest
+                    ? <View style={styles.ingPriceWrap}>
+                        <Text style={styles.ingPrice}>{formatCents(Math.round(cheapest.priceCents * servingsMultiplier))}</Text>
+                        {cheapest.isPromo && <Text style={styles.ingPromo}>PROMO</Text>}
+                      </View>
+                    : <Text style={styles.ingNo}>—</Text>}
+              </TouchableOpacity>
             );
           })}
           {/* Match rate indicator */}
@@ -440,12 +485,18 @@ const styles = StyleSheet.create({
   totalPriceBest:{ fontSize: 17 },
   totalPkg:      { fontSize: 11, color: '#999' },
   section:       { fontSize: 16, fontWeight: '700', paddingHorizontal: 16, marginTop: 14, marginBottom: 6 },
-  ingRow:        { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#eee', gap: 8 },
-  ingDot:        { width: 8, height: 8, borderRadius: 4 },
-  ingLeft:       { flex: 1, marginRight: 8 },
-  ingText:       { fontSize: 14 },
-  ingProduct:    { fontSize: 11, color: '#888', marginTop: 1 },
-  ingBestChain:  { fontSize: 10, color: '#2E7D32', marginTop: 1 },
+  ingRow:          { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#eee', gap: 8 },
+  ingRowPantry:    { backgroundColor: '#F1F8E9', opacity: 0.85 },
+  ingEmoji:        { fontSize: 20, width: 28, textAlign: 'center' },
+  ingLeft:         { flex: 1, marginRight: 8 },
+  ingText:         { fontSize: 14 },
+  ingTextPantry:   { color: '#999', textDecorationLine: 'line-through' },
+  ingProduct:      { fontSize: 11, color: '#888', marginTop: 1 },
+  ingBestChain:    { fontSize: 10, color: '#2E7D32', marginTop: 1 },
+  ingPantryLabel:  { fontSize: 10, color: '#2E7D32', fontWeight: '600', marginTop: 1 },
+  pantryHint:      { fontSize: 11, color: '#aaa', paddingHorizontal: 16, marginBottom: 4, fontStyle: 'italic' },
+  pantryBadge:     { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#C8E6C9', borderRadius: 6, paddingHorizontal: 8, paddingVertical: 4, marginTop: 4 },
+  pantryBadgeText: { fontSize: 12, color: '#2E7D32', fontWeight: '600' },
   matchRate:     { fontSize: 12, color: '#888', textAlign: 'center', paddingVertical: 8 },
   ingPriceWrap:  { alignItems: 'flex-end', gap: 1 },
   ingPrice:      { fontSize: 14, color: '#2E7D32', fontWeight: '600' },
