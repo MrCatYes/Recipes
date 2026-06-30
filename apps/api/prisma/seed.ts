@@ -84,16 +84,19 @@ async function seedStores() {
 }
 
 async function seedProducts() {
-  // Derived from canonical catalog (src/data/catalog.ts)
-  const products = CATALOG.map((p) => ({
-    name: p.name,
-    brand: p.brand,
-    category: p.category,
-    defaultUnit: p.defaultUnit,
-    defaultUnitType: p.defaultUnitType,
-  }));
-
-  await prisma.product.createMany({ data: products, skipDuplicates: true });
+  for (const p of CATALOG) {
+    const existing = await prisma.product.findFirst({ where: { name: p.name } });
+    if (existing) {
+      await prisma.product.update({
+        where: { id: existing.id },
+        data: { brand: p.brand, category: p.category, defaultUnit: p.defaultUnit, defaultUnitType: p.defaultUnitType },
+      });
+    } else {
+      await prisma.product.create({
+        data: { name: p.name, brand: p.brand, category: p.category, defaultUnit: p.defaultUnit, defaultUnitType: p.defaultUnitType },
+      });
+    }
+  }
 }
 
 main()

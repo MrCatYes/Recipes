@@ -176,7 +176,7 @@ model Product {
   unitConversions   UnitConversion[]
   shoppingListItems ShoppingListItem[]
 
-  @@index([name])
+  @@unique([name])
   @@index([category])
   @@index([gtin])
 }
