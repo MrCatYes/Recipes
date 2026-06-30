@@ -25,7 +25,7 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_USER: epicerie
       POSTGRES_PASSWORD: epicerie_dev

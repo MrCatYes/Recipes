@@ -83,10 +83,10 @@ export default function CompareScreen() {
           placeholder="Chercher un produit..."
           value={query}
           onChangeText={setQuery}
-          onSubmitEditing={search}
+          onSubmitEditing={() => search()}
           returnKeyType="search"
         />
-        <TouchableOpacity style={styles.button} onPress={search} disabled={loading}>
+        <TouchableOpacity style={styles.button} onPress={() => search()} disabled={loading}>
           <Text style={styles.buttonText}>Chercher</Text>
         </TouchableOpacity>
       </View>

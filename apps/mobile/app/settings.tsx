@@ -124,7 +124,7 @@ export default function SettingsScreen() {
           <>
             <View style={styles.aboutRow}>
               <Text style={styles.aboutLabel}>Spéciaux en base</Text>
-              <Text style={styles.aboutValue}>{stats.totalItems.toLocaleString()} items</Text>
+              <Text style={styles.aboutValue}>{(stats.totalItems ?? 0).toLocaleString()} items</Text>
             </View>
             <View style={styles.aboutRow}>
               <Text style={styles.aboutLabel}>Taux de correspondance</Text>
