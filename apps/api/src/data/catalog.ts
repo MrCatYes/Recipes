@@ -1554,6 +1554,58 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['nouilles asiatiques', 'asian noodles'],
     pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
   },
+
+  // ─── Asian pantry ─────────────────────────────────────────────────────────
+  {
+    name: "Huile de sésame", brand: null, category: 'Huiles',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['huile de sésame', 'sesame oil', 'huile sésame'],
+    exclude: ['graines', 'seeds'],
+    queries: ['huile sésame', 'sesame oil'],
+    pkg: { size: 250, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Graines de sésame', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['graines de sésame', 'sesame seeds', 'sésame'],
+    exclude: ['huile', 'oil', 'pain'],
+    queries: ['graines sésame', 'sesame seeds'],
+    pkg: { size: 100, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 }, densityGPerMl: 0.6,
+  },
+  {
+    name: 'Sauce aux huîtres', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['sauce aux huîtres', 'oyster sauce', 'sauce huître'],
+    exclude: [],
+    queries: ['sauce huîtres', 'oyster sauce'],
+    pkg: { size: 255, unit: 'ml' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
+    name: 'Cinq-épices', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['cinq-épices', 'cinq épices', 'five spice', '5 spice'],
+    exclude: [],
+    queries: ['cinq épices', 'five spice'],
+    pkg: { size: 40, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.45,
+  },
+
+  // ─── More vegetables ──────────────────────────────────────────────────────
+  {
+    name: 'Chou vert', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['chou vert', 'chou', 'cabbage', 'chou pommé'],
+    exclude: ['chou-fleur', 'cauliflower', 'chou de bruxelles', 'brocoli', 'chou rouge', 'red cabbage', 'chou nappa', 'rabiole'],
+    queries: ['chou vert', 'cabbage'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+  {
+    name: 'Basilic séché', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['basilic séché', 'dried basil', 'basilic'],
+    exclude: ['frais', 'fresh', 'pesto'],
+    queries: ['basilic séché', 'dried basil'],
+    pkg: { size: 20, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 }, densityGPerMl: 0.25,
+  },
 ];
 
 export const CHAINS: Chain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
