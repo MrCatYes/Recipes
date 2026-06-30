@@ -1343,8 +1343,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Café moulu', brand: null, category: 'Boissons',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['café moulu', 'café torréf', 'ground coffee', 'café filtre'],
-    exclude: ['instantané', 'capsule', 'dosette'],
+    include: ['café moulu', 'café torréf', 'ground coffee', 'café filtre', 'café corsé', 'café fort', 'café espresso', 'café'],
+    exclude: ['instantané', 'capsule', 'dosette', 'café au lait', 'café frappé'],
     queries: ['café moulu', 'ground coffee'],
     pkg: { size: 340, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
   },
@@ -1605,6 +1605,40 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['frais', 'fresh', 'pesto'],
     queries: ['basilic séché', 'dried basil'],
     pkg: { size: 20, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 }, densityGPerMl: 0.25,
+  },
+
+  // ─── More produce & pantry ────────────────────────────────────────────────
+  {
+    name: 'Asperges', brand: null, category: 'Légumes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['asperge', 'asparagus'],
+    exclude: ['soupe', 'soup', 'conserve', 'canned'],
+    queries: ['asperges', 'asparagus'],
+    pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
+  },
+  {
+    name: 'Sirop de maïs', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['sirop de maïs', 'corn syrup', 'sirop mais'],
+    exclude: ['fructose'],
+    queries: ['sirop maïs', 'corn syrup'],
+    pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 }, densityGPerMl: 1.38,
+  },
+  {
+    name: 'Jus de lime', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['jus de lime', 'lime juice', 'jus lime'],
+    exclude: ['limonade', 'cocktail'],
+    queries: ['jus de lime', 'lime juice'],
+    pkg: { size: 250, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+  {
+    name: 'Vinaigre de riz', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['vinaigre de riz', 'rice vinegar', 'vinaigre riz'],
+    exclude: ['assaisonné', 'seasoned'],
+    queries: ['vinaigre riz', 'rice vinegar'],
+    pkg: { size: 355, unit: 'ml' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 },
   },
 ];
 
