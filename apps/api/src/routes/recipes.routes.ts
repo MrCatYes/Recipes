@@ -98,7 +98,8 @@ export async function recipesRoutes(app: FastifyInstance) {
 
     // Save recipe skeleton
     console.log('[parse] 3. saving to DB...');
-    const category = classifyRecipe(rawRecipe.title, rawRecipe.instructions.join(' '));
+    const category = rawRecipe.category
+      ?? classifyRecipe(rawRecipe.title, rawRecipe.instructions.join(' '));
     const totalMinutes =
       (rawRecipe.prepTimeMinutes ?? 0) + (rawRecipe.cookTimeMinutes ?? 0) || null;
     const difficulty = classifyDifficulty(

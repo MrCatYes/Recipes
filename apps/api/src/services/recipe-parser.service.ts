@@ -9,6 +9,8 @@ export interface ParsedRecipe {
   imageUrl: string | null;
   prepTimeMinutes: number | null;
   cookTimeMinutes: number | null;
+  category: string | null;
+  description: string | null;
 }
 
 // ─── Pure helpers (exported for testing) ─────────────────────────────────────
@@ -76,6 +78,30 @@ function findRecipeNode(json: unknown): Record<string, unknown> | null {
   return null;
 }
 
+const CATEGORY_MAP: Record<string, string> = {
+  'breakfast': 'Déjeuner', 'brunch': 'Déjeuner', 'déjeuner': 'Déjeuner', 'petit-déjeuner': 'Déjeuner',
+  'appetizer': 'Entrée', 'starter': 'Entrée', 'entrée': 'Entrée', 'entree': 'Entrée', 'hors d\'oeuvre': 'Entrée',
+  'main course': 'Plat principal', 'main dish': 'Plat principal', 'dinner': 'Plat principal', 'plat principal': 'Plat principal', 'souper': 'Plat principal', 'lunch': 'Plat principal',
+  'dessert': 'Dessert', 'desserts': 'Dessert', 'gâteau': 'Pâtisserie', 'cake': 'Pâtisserie', 'baking': 'Pâtisserie', 'pâtisserie': 'Pâtisserie',
+  'side dish': 'Accompagnement', 'side': 'Accompagnement', 'accompagnement': 'Accompagnement', 'salade': 'Accompagnement', 'salad': 'Accompagnement',
+  'soup': 'Soupe', 'soupe': 'Soupe', 'potage': 'Soupe',
+  'snack': 'Collation', 'collation': 'Collation',
+  'beverage': 'Boisson', 'drink': 'Boisson', 'boisson': 'Boisson', 'cocktail': 'Boisson', 'smoothie': 'Boisson',
+};
+
+function mapCategory(raw: unknown): string | null {
+  if (!raw) return null;
+  const candidates = Array.isArray(raw) ? raw.map(String) : [String(raw)];
+  for (const c of candidates) {
+    const lower = c.toLowerCase().trim();
+    if (CATEGORY_MAP[lower]) return CATEGORY_MAP[lower];
+    for (const [key, val] of Object.entries(CATEGORY_MAP)) {
+      if (lower.includes(key)) return val;
+    }
+  }
+  return null;
+}
+
 export function extractJsonLd(html: string): ParsedRecipe | null {
   const $ = load(html);
   for (const el of $('script[type="application/ld+json"]').toArray()) {
@@ -97,6 +123,11 @@ export function extractJsonLd(html: string): ParsedRecipe | null {
         if (totalTime) cookTime = totalTime;
       }
 
+      const category = mapCategory(recipe.recipeCategory)
+        ?? mapCategory(recipe.keywords);
+
+      const desc = typeof recipe.description === 'string' ? recipe.description.trim() : null;
+
       return {
         title: String(recipe.name),
         servings: parseServings(recipe.recipeYield ?? recipe['yield']),
@@ -105,6 +136,8 @@ export function extractJsonLd(html: string): ParsedRecipe | null {
         imageUrl: parseImageUrl(recipe.image),
         prepTimeMinutes: prepTime,
         cookTimeMinutes: cookTime,
+        category,
+        description: desc && desc.length > 10 ? desc : null,
       };
     } catch {
       // malformed JSON-LD, try next script tag
@@ -140,6 +173,8 @@ export function extractMicrodata(html: string): ParsedRecipe | null {
 
   const imageEl = prop('image').first();
   const imageUrl = imageEl.attr('src') ?? imageEl.attr('content') ?? null;
+  const catText = prop('recipeCategory').first().text().trim();
+  const descText = prop('description').first().text().trim();
 
   return {
     title,
@@ -149,6 +184,8 @@ export function extractMicrodata(html: string): ParsedRecipe | null {
     imageUrl,
     prepTimeMinutes: parseDuration(prop('prepTime').first().attr('content') ?? prop('prepTime').first().attr('datetime') ?? null),
     cookTimeMinutes: parseDuration(prop('cookTime').first().attr('content') ?? prop('cookTime').first().attr('datetime') ?? null),
+    category: mapCategory(catText) ?? null,
+    description: descText.length > 10 ? descText : null,
   };
 }
 
@@ -200,9 +237,18 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     '[data-testid="ingredient-list"] li',
     // Bob le Chef
     '.single-recipe-ingredients li',
+    // Foodlavie / Zeste / IGA recettes
+    '.recipe-detail__ingredient-list li',
+    '.recipe-ingredient li',
+    '.ingredients-list__item',
+    '[data-recipe-ingredients] li',
+    // Pratico-pratiques / Les Recettes de Caty
+    '.recipe_ingredients li',
+    '.recipe-card-ingredients li',
     // Generic fallback
     'ul[class*="recette"] li',
     'ul[class*="recipe"] li',
+    'ul[class*="ingredien"] li',
   ];
   for (const sel of ingSelectors) {
     $(sel).each((_, el) => {
@@ -236,8 +282,16 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     '.entry-instructions li',
     '.recipe-card__directions li',
     '.field-preparation li',
+    // Extra QC sites
+    '.recipe-detail__step-list li',
+    '.recipe_preparation li',
+    '.recipe-card-directions li',
+    '[data-recipe-instructions] li',
+    '.steps-list__item',
     'ol[class*="recette"] li',
     'ol[class*="recipe"] li',
+    'ol[class*="instruction"] li',
+    'ol[class*="preparation"] li',
   ];
   for (const sel of stepSelectors) {
     $(sel).each((_, el) => {
@@ -265,6 +319,9 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
   }
 
   const imageUrl = $('meta[property="og:image"]').attr('content') ?? null;
+  const ogDesc = $('meta[property="og:description"]').attr('content')?.trim()
+    ?? $('meta[name="description"]').attr('content')?.trim()
+    ?? null;
 
   return {
     title,
@@ -274,6 +331,8 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     imageUrl,
     prepTimeMinutes: null,
     cookTimeMinutes: null,
+    category: null,
+    description: ogDesc && ogDesc.length > 10 ? ogDesc : null,
   };
 }
 
@@ -289,13 +348,17 @@ Schema:
   "instructions": string[],
   "imageUrl": string | null,
   "prepTimeMinutes": number | null,
-  "cookTimeMinutes": number | null
+  "cookTimeMinutes": number | null,
+  "category": "Déjeuner" | "Entrée" | "Plat principal" | "Dessert" | "Pâtisserie" | "Accompagnement" | "Soupe" | "Collation" | "Boisson" | null,
+  "description": string | null
 }
 
 Rules:
 - ingredients: preserve exact raw text (quantity + unit + name, e.g. "250 ml de lait")
 - instructions: one step per element, plain text, no numbering
 - servings: integer >= 1, default 4 if not found
+- category: pick the best match from the enum, null if unsure
+- description: 1-2 sentence summary of the dish, null if not found
 - Return ONLY the JSON object`;
 
 export class RecipeParserService {
@@ -333,12 +396,19 @@ export class RecipeParserService {
   private async fetchHtml(url: string): Promise<string> {
     const res = await fetch(url, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'fr-CA,fr;q=0.9,en;q=0.8',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'fr-CA,fr;q=0.9,en-CA;q=0.8,en;q=0.7',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Cache-Control': 'no-cache',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Sec-Fetch-User': '?1',
+        'Upgrade-Insecure-Requests': '1',
       },
       redirect: 'follow',
-      signal: AbortSignal.timeout(15_000),
+      signal: AbortSignal.timeout(20_000),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${url}`);
     return res.text();
@@ -350,8 +420,8 @@ export class RecipeParserService {
     partial: ParsedRecipe | null
   ): Promise<ParsedRecipe> {
     const $ = load(html);
-    $('script, style, nav, footer, header, aside, [role="navigation"]').remove();
-    const text = $('body').text().replace(/\s{3,}/g, '\n\n').slice(0, 20_000);
+    $('script, style, nav, footer, header, aside, iframe, svg, noscript, [role="navigation"], [role="banner"], [role="complementary"], .ad, .ads, .advertisement, .sidebar, .comments, .social-share').remove();
+    const text = $('body').text().replace(/\s{3,}/g, '\n\n').slice(0, 25_000);
 
     const completion = await this.groq.chat.completions.create({
       model: 'llama-3.3-70b-versatile',

@@ -64,7 +64,7 @@ describe('ruleMatch', () => {
   });
 
   it('returns null for an unmatched item', () => {
-    expect(ruleMatch('PAPIER HYGIÉNIQUE CHARMIN', dbProducts)).toBeNull();
+    expect(ruleMatch('FOIE GRAS DE CANARD CONFIT ENTIER', dbProducts)).toBeNull();
   });
 
   it('does not match boeuf rule to ground pork', () => {

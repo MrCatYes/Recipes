@@ -1293,14 +1293,6 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 1299, IGA: 1499, Metro: 1399 },
   },
   {
-    name: 'Cuisses de poulet', brand: null, category: 'Viandes',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['cuisse de poulet', 'cuisses de poulet', 'haut de cuisse', 'chicken thigh'],
-    exclude: ['farci', 'pané'],
-    queries: ['cuisse poulet', 'chicken thigh'],
-    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 899, IGA: 999, Metro: 949 },
-  },
-  {
     name: 'Boeuf haché mi-maigre', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['boeuf haché', 'bœuf haché', 'ground beef', 'viande hachée'],
@@ -1309,36 +1301,12 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 450, unit: 'g' }, baseline: { Maxi: 599, IGA: 699, Metro: 649 },
   },
   {
-    name: 'Côtelettes de porc', brand: null, category: 'Viandes',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['côtelette de porc', 'côtelettes de porc', 'pork chop'],
-    exclude: ['fumé', 'bbq'],
-    queries: ['côtelette porc', 'pork chop'],
-    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 999, IGA: 1199, Metro: 1099 },
-  },
-  {
     name: 'Saumon', brand: null, category: 'Poissons',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['saumon', 'salmon'],
     exclude: ['fumé', 'smoked', 'conserve', 'boîte'],
     queries: ['saumon', 'salmon'],
     pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 999, IGA: 1199, Metro: 1099 },
-  },
-  {
-    name: 'Crevettes', brand: null, category: 'Poissons',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['crevette', 'crevettes', 'shrimp'],
-    exclude: ['sauce', 'cocktail'],
-    queries: ['crevettes', 'shrimp'],
-    pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 999, IGA: 1199, Metro: 1099 },
-  },
-  {
-    name: 'Bacon', brand: null, category: 'Viandes',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['bacon'],
-    exclude: ['végé', 'dinde', 'turkey'],
-    queries: ['bacon'],
-    pkg: { size: 375, unit: 'g' }, baseline: { Maxi: 599, IGA: 699, Metro: 649 },
   },
   {
     name: 'Saucisses', brand: null, category: 'Viandes',
@@ -1373,36 +1341,12 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 900, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
   },
   {
-    name: 'Céréales', brand: null, category: 'Épicerie',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['céréale', 'cereale', 'cereal', 'cheerios', 'granola', 'flocons'],
-    exclude: ['barre'],
-    queries: ['céréales', 'cereal'],
-    pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 449, IGA: 499, Metro: 479 },
-  },
-  {
-    name: 'Jus d\'orange', brand: null, category: 'Boissons',
-    defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['jus d\'orange', 'jus orange', 'orange juice'],
-    exclude: ['concentrate', 'poudre'],
-    queries: ['jus orange', 'orange juice'],
-    pkg: { size: 1750, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 }, densityGPerMl: 1.04,
-  },
-  {
     name: 'Café moulu', brand: null, category: 'Boissons',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['café moulu', 'café torréf', 'ground coffee', 'café filtre'],
     exclude: ['instantané', 'capsule', 'dosette'],
     queries: ['café moulu', 'ground coffee'],
     pkg: { size: 340, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
-  },
-  {
-    name: 'Chips', brand: null, category: 'Épicerie',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['chips', 'croustille'],
-    exclude: ['tortilla', 'pita'],
-    queries: ['chips', 'croustilles'],
-    pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
   },
   {
     name: 'Pain blanc', brand: null, category: 'Boulangerie',
@@ -1445,55 +1389,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 399, IGA: 499, Metro: 449 },
   },
   {
-    name: 'Bleuets', brand: null, category: 'Fruits et légumes',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['bleuet', 'blueberr'],
-    exclude: ['confiture', 'sirop', 'muffin'],
-    queries: ['bleuets', 'blueberries'],
-    pkg: { size: 340, unit: 'g' }, baseline: { Maxi: 399, IGA: 499, Metro: 449 },
-  },
-  {
-    name: 'Avocat', brand: null, category: 'Fruits et légumes',
-    defaultUnit: 'unit', defaultUnitType: 'weight',
-    include: ['avocat', 'avocado'],
-    exclude: ['huile', 'oil'],
-    queries: ['avocat', 'avocado'],
-    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 199, Metro: 179 },
-  },
-  {
-    name: 'Concombre', brand: null, category: 'Fruits et légumes',
-    defaultUnit: 'unit', defaultUnitType: 'weight',
-    include: ['concombre', 'cucumber'],
-    exclude: ['mariné', 'pickle', 'cornichon'],
-    queries: ['concombre', 'cucumber'],
-    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 129, IGA: 149, Metro: 139 },
-  },
-  {
     name: 'Laitue', brand: null, category: 'Fruits et légumes',
-    defaultUnit: 'unit', defaultUnitType: 'weight',
+    defaultUnit: 'unit', defaultUnitType: 'count',
     include: ['laitue', 'lettuce', 'salade', 'romaine'],
     exclude: ['vinaigrette', 'sauce'],
     queries: ['laitue', 'lettuce'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 249, Metro: 229 },
   },
-  {
-    name: 'Champignons', brand: null, category: 'Fruits et légumes',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['champignon', 'mushroom'],
-    exclude: ['soupe', 'crème de champignon', 'sauce'],
-    queries: ['champignons', 'mushrooms'],
-    pkg: { size: 227, unit: 'g' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
-  },
-
   // ─── Condiments & sauces ──────────────────────────────────────────────────
-  {
-    name: 'Mayonnaise', brand: 'Hellmann\'s', category: 'Condiments',
-    defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['mayonnaise', 'mayo'],
-    exclude: ['vinaigrette', 'sauce ranch'],
-    queries: ['mayonnaise', 'mayo'],
-    pkg: { size: 890, unit: 'ml' }, baseline: { Maxi: 599, IGA: 649, Metro: 629 },
-  },
   {
     name: 'Sauce chili', brand: null, category: 'Condiments',
     defaultUnit: 'ml', defaultUnitType: 'volume',
@@ -1510,15 +1413,6 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['sauce poisson', 'fish sauce'],
     pkg: { size: 200, unit: 'ml' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
   },
-  {
-    name: 'Lait de coco', brand: null, category: 'Épicerie',
-    defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['lait de coco', 'coconut milk', 'crème de coco'],
-    exclude: ['boisson'],
-    queries: ['lait coco', 'coconut milk'],
-    pkg: { size: 398, unit: 'ml' }, baseline: { Maxi: 199, IGA: 249, Metro: 229 },
-  },
-
   // ─── Épices & herbes ──────────────────────────────────────────────────────
   {
     name: 'Cumin moulu', brand: null, category: 'Épices',
@@ -1535,14 +1429,6 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['ail poudre', 'garlic powder'],
     pkg: { size: 50, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
-  },
-  {
-    name: 'Paprika', brand: null, category: 'Épices',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['paprika'],
-    exclude: [],
-    queries: ['paprika'],
-    pkg: { size: 45, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
   },
   {
     name: 'Curcuma', brand: null, category: 'Épices',
@@ -1568,15 +1454,6 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['persil frais', 'fresh parsley'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 199, Metro: 179 },
   },
-  {
-    name: 'Coriandre fraîche', brand: null, category: 'Fruits et légumes',
-    defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['coriandre', 'cilantro'],
-    exclude: ['moulue', 'séchée', 'graines'],
-    queries: ['coriandre fraîche', 'cilantro'],
-    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 199, Metro: 179 },
-  },
-
   // ─── Boulangerie & pâtisserie ─────────────────────────────────────────────
   {
     name: 'Gélatine', brand: 'Knox', category: 'Épicerie',
@@ -1585,14 +1462,6 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['gélatine', 'gelatin'],
     pkg: { size: 28, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
-  },
-  {
-    name: 'Cacao en poudre', brand: null, category: 'Épicerie',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['cacao', 'cocoa', 'poudre de cacao'],
-    exclude: ['chaud', 'chocolat chaud', 'mix'],
-    queries: ['cacao poudre', 'cocoa powder'],
-    pkg: { size: 227, unit: 'g' }, baseline: { Maxi: 449, IGA: 499, Metro: 479 },
   },
   {
     name: 'Farine de blé entier', brand: null, category: 'Épicerie',
@@ -1635,14 +1504,6 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['pois mange-tout', 'snow peas'],
     pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
-  },
-  {
-    name: 'Lime', brand: null, category: 'Fruits et légumes',
-    defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['lime', 'citron vert', 'limette'],
-    exclude: ['limonade', 'soda'],
-    queries: ['lime', 'citron vert'],
-    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 50, IGA: 69, Metro: 59 },
   },
   {
     name: 'Gingembre frais', brand: null, category: 'Fruits et légumes',
@@ -1692,14 +1553,6 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['soupe'],
     queries: ['nouilles asiatiques', 'asian noodles'],
     pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
-  },
-  {
-    name: 'Persil séché', brand: null, category: 'Épices',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['persil séché', 'dried parsley'],
-    exclude: [],
-    queries: ['persil séché', 'dried parsley'],
-    pkg: { size: 15, unit: 'g' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
   },
 ];
 

@@ -150,4 +150,35 @@ describe('extractJsonLd', () => {
     expect(result).not.toBeNull();
     expect(result!.title).toBe('Gâteau au chocolat');
   });
+
+  it('extracts category from recipeCategory', () => {
+    const ld = { ...RECIPE_JSON_LD, recipeCategory: 'Dessert' };
+    const result = extractJsonLd(makeHtml(ld));
+    expect(result).not.toBeNull();
+    expect(result!.category).toBe('Dessert');
+  });
+
+  it('maps English category to French', () => {
+    const ld = { ...RECIPE_JSON_LD, recipeCategory: 'Main Course' };
+    const result = extractJsonLd(makeHtml(ld));
+    expect(result!.category).toBe('Plat principal');
+  });
+
+  it('falls back to keywords for category', () => {
+    const ld = { ...RECIPE_JSON_LD, keywords: ['soupe', 'légumes', 'hiver'] };
+    const result = extractJsonLd(makeHtml(ld));
+    expect(result!.category).toBe('Soupe');
+  });
+
+  it('extracts description', () => {
+    const ld = { ...RECIPE_JSON_LD, description: 'Un délicieux gâteau au chocolat fondant et moelleux.' };
+    const result = extractJsonLd(makeHtml(ld));
+    expect(result!.description).toBe('Un délicieux gâteau au chocolat fondant et moelleux.');
+  });
+
+  it('returns null category/description when absent', () => {
+    const result = extractJsonLd(makeHtml(RECIPE_JSON_LD));
+    expect(result!.category).toBeNull();
+    expect(result!.description).toBeNull();
+  });
 });
