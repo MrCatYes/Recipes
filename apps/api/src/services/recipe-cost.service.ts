@@ -160,6 +160,7 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
     difficulty: recipe.difficulty as RecipeWithCost['difficulty'],
     servings: recipe.servings,
     imageUrl: recipe.imageUrl,
+    description: recipe.description ?? null,
     instructions: recipe.instructions as string[],
     prepTimeMinutes: recipe.prepTimeMinutes,
     cookTimeMinutes: recipe.cookTimeMinutes,

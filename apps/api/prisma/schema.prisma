@@ -275,6 +275,7 @@ model Recipe {
   difficulty       String?  // débutant | confirmé | expert
   servings         Int      @default(4)
   imageUrl         String?
+  description      String?
   instructions     String[] // array of steps
   prepTimeMinutes  Int?
   cookTimeMinutes  Int?

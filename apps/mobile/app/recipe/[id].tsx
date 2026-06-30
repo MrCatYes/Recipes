@@ -207,6 +207,10 @@ export default function RecipeDetail() {
             )}
           </View>
 
+          {recipe.description && (
+            <Text style={styles.description}>{recipe.description}</Text>
+          )}
+
           {/* Servings adjuster */}
           <View style={styles.servingsRow}>
             <Text style={styles.servingsLabel}>Portions :</Text>
@@ -410,6 +414,7 @@ const styles = StyleSheet.create({
   scroll:        { paddingBottom: 40 },
   image:         { width: '100%', height: 200 },
   title:         { fontSize: 22, fontWeight: '700', paddingHorizontal: 16, paddingTop: 14 },
+  description:   { fontSize: 13, color: '#666', paddingHorizontal: 16, marginTop: 6, lineHeight: 19 },
   meta:          { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, paddingHorizontal: 16, marginTop: 4 },
   metaText:      { color: '#666', fontSize: 13 },
   catBadge:      { backgroundColor: '#E8F5E9', borderRadius: 4, paddingHorizontal: 7, paddingVertical: 2 },

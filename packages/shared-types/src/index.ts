@@ -222,6 +222,7 @@ export interface Recipe {
   difficulty: RecipeDifficulty | null;
   servings: number;
   imageUrl: string | null;
+  description: string | null;
   instructions: string[];
   prepTimeMinutes: number | null;
   cookTimeMinutes: number | null;
