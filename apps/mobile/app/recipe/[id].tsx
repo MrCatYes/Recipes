@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView, Image, ActivityIndicator,
-  TouchableOpacity, Linking, Alert, Share,
+  TouchableOpacity, Linking, Alert, Share, Modal, Pressable,
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -10,6 +10,7 @@ import { getRecipeCost, getProductSubstitutions, createShoppingList, addRecipeTo
 import { useStores, type StoreChain } from '../../lib/store-context';
 import { useFavorites } from '../../lib/favorites-context';
 import { getFoodEmoji } from '../../lib/food-emoji';
+import { getMacros, computeIngredientMacros, type Macros } from '../../lib/nutrition';
 
 const STORE_COLORS: Record<StoreChain, string> = {
   Maxi: '#E53935', IGA: '#1565C0', Metro: '#F57C00', SuperC: '#C8102E', Walmart: '#0071CE', Costco: '#003DA5',
@@ -30,6 +31,7 @@ export default function RecipeDetail() {
   const [servingsMultiplier, setServingsMultiplier] = useState(1);
   const [addingToList, setAddingToList] = useState(false);
   const [pantry, setPantry] = useState<Set<string>>(new Set());
+  const [macroModal, setMacroModal] = useState<{ name: string; macros: Macros; perRecipe: Macros | null } | null>(null);
 
   async function handleShare() {
     if (!recipe) return;
@@ -124,6 +126,27 @@ export default function RecipeDetail() {
 
   const adjustedServings = recipe ? Math.round(recipe.servings * servingsMultiplier) : 0;
 
+  const recipeMacros = (() => {
+    if (!recipe) return null;
+    let totals: Macros = { kcal: 0, protein: 0, fat: 0, carbs: 0, fiber: 0, sugar: 0 };
+    let hasAny = false;
+    for (const ing of recipe.ingredients) {
+      if (!ing.product?.name) continue;
+      const m = computeIngredientMacros(ing.product.name, ing.parsedQuantity, ing.parsedUnit);
+      if (!m) continue;
+      hasAny = true;
+      totals = {
+        kcal:    totals.kcal    + Math.round(m.kcal    * servingsMultiplier),
+        protein: totals.protein + Math.round(m.protein * servingsMultiplier * 10) / 10,
+        fat:     totals.fat     + Math.round(m.fat     * servingsMultiplier * 10) / 10,
+        carbs:   totals.carbs   + Math.round(m.carbs   * servingsMultiplier * 10) / 10,
+        fiber:   totals.fiber   + Math.round(m.fiber   * servingsMultiplier * 10) / 10,
+        sugar:   totals.sugar   + Math.round(m.sugar   * servingsMultiplier * 10) / 10,
+      };
+    }
+    return hasAny ? totals : null;
+  })();
+
   // Per-store totals: prorata (cost of amounts used) + package (buy full formats)
   // Pantry items excluded — user already has them
   const summaries = (() => {
@@ -192,6 +215,54 @@ export default function RecipeDetail() {
 
       {loading && <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#2E7D32" />}
       {error && <Text style={styles.error}>{error}</Text>}
+
+      {/* Macro detail modal */}
+      <Modal visible={!!macroModal} transparent animationType="slide" onRequestClose={() => setMacroModal(null)}>
+        <Pressable style={styles.modalBackdrop} onPress={() => setMacroModal(null)}>
+          <Pressable style={styles.modalCard} onPress={() => {}}>
+            <Text style={styles.modalTitle}>{macroModal?.name}</Text>
+            <Text style={styles.modalSub}>Valeurs pour 100 g</Text>
+            {macroModal && (
+              <View style={styles.modalGrid}>
+                {([
+                  ['Calories',    macroModal.macros.kcal,    'kcal'],
+                  ['Protéines',   macroModal.macros.protein, 'g'],
+                  ['Lipides',     macroModal.macros.fat,     'g'],
+                  ['Glucides',    macroModal.macros.carbs,   'g'],
+                  ['Fibres',      macroModal.macros.fiber,   'g'],
+                  ['Sucres',      macroModal.macros.sugar,   'g'],
+                ] as [string, number, string][]).map(([label, val, unit]) => (
+                  <View key={label} style={styles.modalRow}>
+                    <Text style={styles.modalLabel}>{label}</Text>
+                    <Text style={styles.modalValue}>{val} {unit}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+            {macroModal?.perRecipe && (
+              <>
+                <Text style={[styles.modalSub, { marginTop: 12 }]}>Dans cette recette (quantité utilisée)</Text>
+                <View style={styles.modalGrid}>
+                  {([
+                    ['Calories',  macroModal.perRecipe.kcal,    'kcal'],
+                    ['Protéines', macroModal.perRecipe.protein, 'g'],
+                    ['Lipides',   macroModal.perRecipe.fat,     'g'],
+                    ['Glucides',  macroModal.perRecipe.carbs,   'g'],
+                  ] as [string, number, string][]).map(([label, val, unit]) => (
+                    <View key={label} style={styles.modalRow}>
+                      <Text style={styles.modalLabel}>{label}</Text>
+                      <Text style={styles.modalValue}>{val} {unit}</Text>
+                    </View>
+                  ))}
+                </View>
+              </>
+            )}
+            <TouchableOpacity style={styles.modalClose} onPress={() => setMacroModal(null)}>
+              <Text style={styles.modalCloseText}>Fermer</Text>
+            </TouchableOpacity>
+          </Pressable>
+        </Pressable>
+      </Modal>
 
       {recipe && (
         <ScrollView contentContainerStyle={styles.scroll}>
@@ -267,6 +338,14 @@ export default function RecipeDetail() {
               <Text style={styles.heroPkg}>
                 ≈ {formatCents(best.pkg)} si tu achètes les formats complets
               </Text>
+              {recipeMacros && (
+                <View style={styles.macroRow}>
+                  <MacroChip label="kcal" value={String(recipeMacros.kcal)} />
+                  <MacroChip label="prot" value={`${recipeMacros.protein}g`} />
+                  <MacroChip label="lip"  value={`${recipeMacros.fat}g`} />
+                  <MacroChip label="glu"  value={`${recipeMacros.carbs}g`} />
+                </View>
+              )}
             </View>
           )}
 
@@ -303,7 +382,7 @@ export default function RecipeDetail() {
               <Ionicons name="copy-outline" size={20} color="#2E7D32" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.pantryHint}>Appuie sur un ingrédient pour marquer comme déjà en stock</Text>
+          <Text style={styles.pantryHint}>Appuie pour marquer en stock · Maintenir pour voir les macros</Text>
           {recipe.ingredients.map((ing) => {
             const prices = ing.costByStore
               .filter(p => selectedStores.includes(p.chain as StoreChain))
@@ -324,6 +403,13 @@ export default function RecipeDetail() {
                     else next.add(ing.id);
                     return next;
                   });
+                }}
+                onLongPress={() => {
+                  if (!ing.product?.name) return;
+                  const baseMacros = getMacros(ing.product.name);
+                  if (!baseMacros) return;
+                  const perRecipe = computeIngredientMacros(ing.product.name, ing.parsedQuantity, ing.parsedUnit);
+                  setMacroModal({ name: ing.product.name, macros: baseMacros, perRecipe });
                 }}
                 activeOpacity={0.7}
               >
@@ -450,6 +536,21 @@ export default function RecipeDetail() {
 
 function formatCents(c: number) { return `${(c / 100).toFixed(2)} $`; }
 
+function MacroChip({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={macroStyles.chip}>
+      <Text style={macroStyles.chipVal}>{value}</Text>
+      <Text style={macroStyles.chipLbl}>{label}</Text>
+    </View>
+  );
+}
+
+const macroStyles = StyleSheet.create({
+  chip:    { alignItems: 'center', backgroundColor: 'rgba(255,255,255,0.3)', borderRadius: 8, paddingHorizontal: 10, paddingVertical: 4 },
+  chipVal: { fontSize: 15, fontWeight: '700', color: '#1B5E20' },
+  chipLbl: { fontSize: 10, color: '#388E3C', textTransform: 'uppercase' },
+});
+
 const styles = StyleSheet.create({
   container:     { flex: 1, backgroundColor: '#f5f5f5' },
   header:        { flexDirection: 'row', alignItems: 'center', backgroundColor: '#2E7D32', paddingTop: 48, paddingBottom: 12, paddingHorizontal: 8, gap: 4 },
@@ -519,4 +620,15 @@ const styles = StyleSheet.create({
   listBtnText:   { color: '#2E7D32', fontWeight: '600', fontSize: 15 },
   deleteBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, marginTop: 8, marginBottom: 20 },
   deleteBtnText: { color: '#C62828', fontWeight: '500', fontSize: 14 },
+  macroRow:      { flexDirection: 'row', gap: 6, marginTop: 10, justifyContent: 'center', flexWrap: 'wrap' },
+  modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
+  modalCard:     { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, paddingBottom: 36 },
+  modalTitle:    { fontSize: 18, fontWeight: '700', color: '#1B5E20', marginBottom: 2 },
+  modalSub:      { fontSize: 12, color: '#888', marginBottom: 8 },
+  modalGrid:     { backgroundColor: '#F9FBE7', borderRadius: 10, overflow: 'hidden' },
+  modalRow:      { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: 16, paddingVertical: 10, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: '#E0E0E0' },
+  modalLabel:    { fontSize: 14, color: '#555' },
+  modalValue:    { fontSize: 14, fontWeight: '700', color: '#2E7D32' },
+  modalClose:    { marginTop: 16, backgroundColor: '#2E7D32', borderRadius: 10, paddingVertical: 14, alignItems: 'center' },
+  modalCloseText:{ color: '#fff', fontWeight: '600', fontSize: 15 },
 });

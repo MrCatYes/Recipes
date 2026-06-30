@@ -267,6 +267,8 @@ export interface IngredientWithCost extends Ingredient {
   costByStore: PriceWithStore[];
   cheapestCostCents: number | null;
   cheapestStore: StoreChain | null;
+  parsedQuantity: number | null;
+  parsedUnit: string | null;
 }
 
 export interface RecipeWithCost extends Recipe {
