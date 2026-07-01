@@ -280,6 +280,10 @@ model Recipe {
   instructions     String[] // array of steps
   prepTimeMinutes  Int?
   cookTimeMinutes  Int?
+  // Denormalized cost cache — updated after parse/rematch/price-update
+  cachedTotalCents Int?     // cheapest store total in cents
+  cachedStore      String?  // StoreChain of cheapest store
+  cachedCostAt     DateTime? // when the cache was last computed
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -289,6 +293,7 @@ model Recipe {
   @@index([title])
   @@index([category])
   @@index([difficulty])
+  @@index([cachedTotalCents])
 }
 
 model Ingredient {

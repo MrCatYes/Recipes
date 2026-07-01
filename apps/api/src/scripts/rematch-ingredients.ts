@@ -1,5 +1,6 @@
 import { prisma } from '../db';
 import { IngredientMatcherService } from '../services/ingredient-matcher.service';
+import { refreshRecipeCostCache } from '../services/recipe-list.service';
 
 async function main() {
   const products = await prisma.product.findMany({
@@ -31,6 +32,14 @@ async function main() {
   console.log(`Before: ${alreadyMatched}/${total} (${Math.round(alreadyMatched / total * 100)}%)`);
   console.log(`After:  ${finalMatched}/${total} (${Math.round(finalMatched / total * 100)}%)`);
   console.log(`New matches: ${newMatches}`);
+
+  // Refresh cost cache for all recipes
+  const allRecipes = await prisma.recipe.findMany({ select: { id: true } });
+  console.log(`Refreshing cost cache for ${allRecipes.length} recipes...`);
+  for (const r of allRecipes) {
+    await refreshRecipeCostCache(r.id);
+  }
+  console.log('Cache refreshed.');
 
   await prisma.$disconnect();
 }

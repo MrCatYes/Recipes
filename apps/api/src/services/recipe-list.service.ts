@@ -12,6 +12,25 @@ function getWeekMonday(): Date {
 
 export type RecipeSort = 'price' | 'promos' | 'recent' | 'time';
 
+/**
+ * Recompute and persist the cost cache for a single recipe.
+ * Call after parse, rematch, or price updates.
+ */
+export async function refreshRecipeCostCache(recipeId: string): Promise<void> {
+  const cost = await computeRecipeCost(recipeId);
+  if (!cost) return;
+  // Use cheapest across all stores (no chain filter for the cache)
+  const totals = Object.entries(cost.totalCostByStore).sort((a, b) => a[1] - b[1]);
+  await prisma.recipe.update({
+    where: { id: recipeId },
+    data: {
+      cachedTotalCents: totals[0]?.[1] ?? null,
+      cachedStore: totals[0]?.[0] ?? null,
+      cachedCostAt: new Date(),
+    },
+  });
+}
+
 export async function listRecipes(
   opts: { category?: string; difficulty?: string; chains?: StoreChain[]; sort?: RecipeSort; dietaryTag?: string; q?: string } = {},
 ): Promise<GetRecipesResponse> {
@@ -25,7 +44,6 @@ export async function listRecipes(
       ...(q ? { title: { contains: q, mode: 'insensitive' } } : {}),
     },
     include: { ingredients: { select: { id: true, productId: true } } },
-    // dietaryTags loaded in select below via recipe fields
     orderBy: { createdAt: 'desc' },
   });
 
@@ -41,7 +59,7 @@ export async function listRecipes(
     new Set((await prisma.recipe.findMany({ select: { category: true } })).map((r) => r.category).filter(Boolean) as string[]),
   ).sort();
 
-  // Dedup by title; compute cheapest total over selected chains
+  // Dedup by title; use cached cost when available, compute lazily otherwise
   const seen = new Set<string>();
   const summaries: RecipeSummary[] = [];
 
@@ -50,17 +68,39 @@ export async function listRecipes(
     if (seen.has(key)) continue;
     seen.add(key);
 
-    const cost = await computeRecipeCost(r.id);
-    if (!cost) continue;
+    // Use cached cost — avoids O(n) computeRecipeCost calls on list
+    let cheapestTotalCents: number | null = r.cachedTotalCents ?? null;
+    let cheapestStore: StoreChain | null = (r.cachedStore as StoreChain) ?? null;
 
-    // Cheapest store among selected chains
-    const totals = Object.entries(cost.totalCostByStore)
-      .filter(([c]) => !chains?.length || chains.includes(c as StoreChain))
-      .sort((a, b) => a[1] - b[1]);
+    // If no cache yet, compute synchronously and persist for next time
+    if (cheapestTotalCents === null) {
+      const cost = await computeRecipeCost(r.id);
+      if (cost) {
+        const totals = Object.entries(cost.totalCostByStore)
+          .filter(([c]) => !chains?.length || chains.includes(c as StoreChain))
+          .sort((a, b) => a[1] - b[1]);
+        cheapestTotalCents = totals[0]?.[1] ?? null;
+        cheapestStore = (totals[0]?.[0] as StoreChain) ?? null;
+        // Persist — fire and forget
+        prisma.recipe.update({
+          where: { id: r.id },
+          data: { cachedTotalCents: cheapestTotalCents, cachedStore: cheapestStore, cachedCostAt: new Date() },
+        }).catch(() => {});
+      }
+    } else if (chains?.length) {
+      // Cached value is chain-agnostic; must recompute per-chain if chains are filtered
+      const cost = await computeRecipeCost(r.id);
+      if (cost) {
+        const totals = Object.entries(cost.totalCostByStore)
+          .filter(([c]) => chains.includes(c as StoreChain))
+          .sort((a, b) => a[1] - b[1]);
+        cheapestTotalCents = totals[0]?.[1] ?? null;
+        cheapestStore = (totals[0]?.[0] as StoreChain) ?? null;
+      }
+    }
 
     const promoCount = r.ingredients.filter((i) => i.productId && promoProducts.has(i.productId)).length;
     const matchedCount = r.ingredients.filter((i) => i.productId).length;
-
     const totalTime = ((r.prepTimeMinutes ?? 0) + (r.cookTimeMinutes ?? 0)) || null;
 
     summaries.push({
@@ -71,8 +111,8 @@ export async function listRecipes(
       imageUrl: r.imageUrl,
       servings: r.servings,
       totalTimeMinutes: totalTime,
-      cheapestStore: (totals[0]?.[0] as StoreChain) ?? null,
-      cheapestTotalCents: totals[0]?.[1] ?? null,
+      cheapestStore,
+      cheapestTotalCents,
       promoIngredientCount: promoCount,
       ingredientCount: r.ingredients.length,
       matchedIngredientCount: matchedCount,

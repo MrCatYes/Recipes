@@ -5,7 +5,7 @@ import { RecipeParserService } from '../services/recipe-parser.service';
 import { IngredientMatcherService } from '../services/ingredient-matcher.service';
 import { computeRecipeCost } from '../services/recipe-cost.service';
 import { getRecipesByPromos } from '../services/recipe-promos.service';
-import { listRecipes, type RecipeSort } from '../services/recipe-list.service';
+import { listRecipes, refreshRecipeCostCache, type RecipeSort } from '../services/recipe-list.service';
 import { classifyRecipe, classifyDifficulty } from '../services/recipe-classifier';
 import type { ParseRecipeResponse, StoreChain } from '@epicerie/shared-types';
 
@@ -165,11 +165,13 @@ export async function recipesRoutes(app: FastifyInstance) {
       })),
     });
 
-    // Compute costs
+    // Compute costs + refresh cache
     const cost = await computeRecipeCost(recipe.id);
     if (!cost) {
       return reply.internalServerError('Failed to compute recipe cost');
     }
+    // Persist cheapest store to recipe row for fast list rendering
+    refreshRecipeCostCache(recipe.id).catch(() => {});
 
     const warnings: string[] = [];
     const unmatchedCount = matchedIngredients.filter(m => !m.productId).length;
