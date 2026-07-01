@@ -3,7 +3,7 @@
  * Fetches sitemap URLs, filters for recipe pages, imports via RecipeParserService.
  *
  * Usage:
- *   npx tsx src/scripts/import-sitemap-recipes.ts [--max 50] [--site ricardo|soscuisine|all]
+ *   npx tsx src/scripts/import-sitemap-recipes.ts [--max 50] [--site ricardo|soscuisine|mordu|zeste|all]
  *
  * Rates limits itself to 2 req/s. Skips already-imported URLs.
  */
@@ -42,6 +42,11 @@ const SITES: SitemapSite[] = [
     name: 'mordu',
     sitemaps: ['https://ici.radio-canada.ca/sitemap-recettes.xml'],
     recipePattern: /radio-canada\.ca\/emissions\/mordu\/recettes?\//,
+  },
+  {
+    name: 'zeste',
+    sitemaps: ['https://www.zeste.ca/sitemap.xml'],
+    recipePattern: /zeste\.ca\/recettes\//,
   },
 ];
 
