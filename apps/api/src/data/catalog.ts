@@ -165,6 +165,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 599, IGA: 649, Metro: 629 },
   },
   {
+    name: 'Fromage cheddar râpé', brand: null, category: 'Produits laitiers',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['cheddar râpé', 'cheddar shredded', 'fromage râpé cheddar', 'cheddar jaune râpé', 'cheddar fort râpé'],
+    exclude: ['mozzarella', 'suisse', 'emmental', 'parmesan', 'quatre fromages', 'pizza'],
+    queries: ['cheddar râpé', 'shredded cheddar'],
+    pkg: { size: 320, unit: 'g' }, baseline: { Maxi: 549, IGA: 599, Metro: 579 }, densityGPerMl: 0.45,
+  },
+  {
     name: 'Fromage mozzarella râpé', brand: null, category: 'Produits laitiers',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['mozzarella râpé', 'mozzarella rapé', 'shredded mozzarella', 'fromage râpé', 'pizza mozzarella'],
@@ -1745,6 +1753,22 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['dés', 'dice', 'sauce', 'paste', 'pâte'],
     queries: ['concentré tomate', 'tomato purée'],
     pkg: { size: 680, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+  {
+    name: 'Fromage en grains', brand: null, category: 'Produits laitiers',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['fromage en grains', 'cheese curds', 'grains de fromage', 'fromage frais en grains'],
+    exclude: ['fondu', 'tranché', 'râpé'],
+    queries: ['fromage en grains', 'cheese curds'],
+    pkg: { size: 450, unit: 'g' }, baseline: { Maxi: 649, IGA: 699, Metro: 679 }, densityGPerMl: 0.7,
+  },
+  {
+    name: 'Viande à fondue', brand: null, category: 'Viandes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['fondue chinoise', 'boeuf à fondue', 'viande à fondue', 'beef fondue', 'viande fondue'],
+    exclude: ['sauce', 'fromage'],
+    queries: ['viande fondue chinoise', 'fondue beef'],
+    pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 799, IGA: 899, Metro: 849 },
   },
   {
     name: 'Cretons', brand: null, category: 'Viandes',
