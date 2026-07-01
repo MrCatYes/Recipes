@@ -21,6 +21,7 @@ function norm(s: string): string {
 /**
  * Trigram search over the crawled CatalogItem table.
  * Returns items whose name is similar to `term`, ranked by similarity.
+ * Uses unaccented comparison on both sides for better fr-CA matching.
  */
 export async function searchCatalog(
   term: string,
@@ -33,11 +34,23 @@ export async function searchCatalog(
 
   const chainFilter = chains?.length ? chains : null;
 
+  // Use translate() for accent normalization — no extension needed
+  // translate(string, from_chars, to_chars) replaces each char from->to
   const rows = await prisma.$queryRaw<CatalogMatch[]>`
     SELECT id, chain, name, brand, category, "priceCents", "packageSize", "packageUnit", url,
-           similarity(lower(name), ${q}) AS sim
+           similarity(
+             translate(lower(name),
+               'àáâãäåæèéêëìíîïòóôõöùúûüýçñœ',
+               'aaaaaaeeeeiiiioooooouuuuycnoe'),
+             ${q}
+           ) AS sim
     FROM "CatalogItem"
-    WHERE similarity(lower(name), ${q}) >= ${minSim}
+    WHERE similarity(
+             translate(lower(name),
+               'àáâãäåæèéêëìíîïòóôõöùúûüýçñœ',
+               'aaaaaaeeeeiiiioooooouuuuycnoe'),
+             ${q}
+           ) >= ${minSim}
       ${chainFilter ? prismaIn(chainFilter) : prismaEmpty()}
     ORDER BY sim DESC
     LIMIT ${limit}
