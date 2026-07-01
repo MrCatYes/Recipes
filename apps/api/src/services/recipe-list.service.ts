@@ -13,15 +13,16 @@ function getWeekMonday(): Date {
 export type RecipeSort = 'price' | 'promos' | 'recent' | 'time';
 
 export async function listRecipes(
-  opts: { category?: string; difficulty?: string; chains?: StoreChain[]; sort?: RecipeSort; dietaryTag?: string } = {},
+  opts: { category?: string; difficulty?: string; chains?: StoreChain[]; sort?: RecipeSort; dietaryTag?: string; q?: string } = {},
 ): Promise<GetRecipesResponse> {
-  const { category, difficulty, chains, sort = 'price', dietaryTag } = opts;
+  const { category, difficulty, chains, sort = 'price', dietaryTag, q } = opts;
 
   const recipes = await prisma.recipe.findMany({
     where: {
       ...(category ? { category } : {}),
       ...(difficulty ? { difficulty } : {}),
       ...(dietaryTag ? { dietaryTags: { has: dietaryTag } } : {}),
+      ...(q ? { title: { contains: q, mode: 'insensitive' } } : {}),
     },
     include: { ingredients: { select: { id: true, productId: true } } },
     // dietaryTags loaded in select below via recipe fields

@@ -210,15 +210,16 @@ export function searchRecipes(q: string) {
   );
 }
 
-export function getRecipes(opts: { category?: string; difficulty?: string; dietaryTag?: string; chains?: string[]; sort?: string } = {}) {
-  const q = new URLSearchParams();
-  if (opts.category) q.set('category', opts.category);
-  if (opts.difficulty) q.set('difficulty', opts.difficulty);
-  if (opts.dietaryTag) q.set('dietaryTag', opts.dietaryTag);
-  if (opts.chains?.length) q.set('chains', opts.chains.join(','));
-  if (opts.sort) q.set('sort', opts.sort);
-  const qs = q.toString();
-  return apiFetch<GetRecipesResponse>(`/recipes${qs ? `?${qs}` : ''}`);
+export function getRecipes(opts: { category?: string; difficulty?: string; dietaryTag?: string; chains?: string[]; sort?: string; q?: string } = {}) {
+  const qs = new URLSearchParams();
+  if (opts.category) qs.set('category', opts.category);
+  if (opts.difficulty) qs.set('difficulty', opts.difficulty);
+  if (opts.dietaryTag) qs.set('dietaryTag', opts.dietaryTag);
+  if (opts.chains?.length) qs.set('chains', opts.chains.join(','));
+  if (opts.sort) qs.set('sort', opts.sort);
+  if (opts.q) qs.set('q', opts.q);
+  const str = qs.toString();
+  return apiFetch<GetRecipesResponse>(`/recipes${str ? `?${str}` : ''}`);
 }
 
 // ─── Shopping Lists ──────────────────────────────────────────────────────────

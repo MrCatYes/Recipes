@@ -26,6 +26,7 @@ export async function recipesRoutes(app: FastifyInstance) {
       chains: z.string().optional(),
       sort: z.enum(['price', 'promos', 'recent', 'time']).optional().default('price'),
       dietaryTag: z.string().optional(),
+      q: z.string().optional(),
     });
     const parsed = schema.safeParse(req.query);
     if (!parsed.success) return reply.badRequest(parsed.error.message);
@@ -35,6 +36,7 @@ export async function recipesRoutes(app: FastifyInstance) {
       chains: parseChains(parsed.data.chains),
       sort: parsed.data.sort as RecipeSort,
       dietaryTag: parsed.data.dietaryTag,
+      q: parsed.data.q,
     });
   });
   // GET /recipes/by-promos?chains=Maxi,IGA  → recipes whose ingredients are on sale

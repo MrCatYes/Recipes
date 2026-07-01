@@ -363,6 +363,15 @@ export default function RecipesScreen() {
                 </View>
               )}
             </View>
+            {item.dietaryTags?.length > 0 && (
+              <View style={styles.cardDietRow}>
+                {item.dietaryTags.map(tag => (
+                  <Text key={tag} style={styles.cardDietChip}>
+                    {tag === 'vegetarien' ? '🥦' : tag === 'vegetalien' ? '🌱' : tag === 'halal' ? '☪️' : tag === 'sans-gluten' ? '🌾' : tag === 'sans-lactose' ? '🥛' : ''}
+                  </Text>
+                ))}
+              </View>
+            )}
             <View style={styles.cardFooter}>
               {item.ingredientCount > 0 && (
                 <Text style={[styles.matchRate, item.matchedIngredientCount === item.ingredientCount && styles.matchRateFull]}>
@@ -431,6 +440,8 @@ const styles = StyleSheet.create({
   cardCat:       { fontSize: 11, color: '#999' },
   cardCatBadge:  { backgroundColor: '#E8F5E9', borderRadius: 4, paddingHorizontal: 5, paddingVertical: 1 },
   cardCatText:   { fontSize: 10, color: '#2E7D32', fontWeight: '600' },
+  cardDietRow:   { flexDirection: 'row', gap: 2, marginTop: 3 },
+  cardDietChip:  { fontSize: 12 },
   diffBadge:     { borderRadius: 3, paddingHorizontal: 5, paddingVertical: 1 },
   diffBadgeText: { color: '#fff', fontSize: 9, fontWeight: '700', textTransform: 'capitalize' },
   cardTime:      { fontSize: 11, color: '#666' },
