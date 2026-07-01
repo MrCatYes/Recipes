@@ -271,13 +271,24 @@ export async function crawlFlippFlyers(): Promise<{
           totalItems++;
         }
 
+        // Deduplicate: one entry per productId per flyer (keep lowest price)
+        const deduped = new Map<string, Prisma.FlyerItemCreateManyInput>();
+        for (const item of batch) {
+          const key = item.productId ? `pid:${item.productId}` : `raw:${item.rawText.slice(0, 80)}`;
+          const existing = deduped.get(key);
+          if (!existing || item.promoPriceCents < existing.promoPriceCents) {
+            deduped.set(key, item);
+          }
+        }
+        const dedupedBatch = Array.from(deduped.values());
+
         // Batch insert
-        if (batch.length > 0) {
-          await prisma.flyerItem.createMany({ data: batch });
+        if (dedupedBatch.length > 0) {
+          await prisma.flyerItem.createMany({ data: dedupedBatch });
         }
 
         flyersProcessed++;
-        console.log(`     → ${batch.length} items saved (${batch.filter(b => b.productId).length} matched to products)`);
+        console.log(`     → ${dedupedBatch.length} items saved (${batch.length - dedupedBatch.length} dupes removed, ${dedupedBatch.filter(b => b.productId).length} matched to products)`);
       } catch (e) {
         console.error(`     ✗ Error: ${e instanceof Error ? e.message : e}`);
       }

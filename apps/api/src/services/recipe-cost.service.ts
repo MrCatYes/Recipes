@@ -57,8 +57,15 @@ async function catalogFallback(
 
     let portion: number | null;
     if (!unit || recipeIsCount) {
-      // no recipe unit or count → use full package price (1 oeuf = 1 unit)
-      portion = c.priceCents;
+      if (pkgIsCount) {
+        // count-to-count: prorate recipe qty against package size
+        // e.g. "2 poivrons" from a "4-pack for $5.99" → 2/4 × 599 = $2.995
+        portion = Math.round(c.priceCents * qty / c.packageSize);
+      } else {
+        // recipe is count but package is weight/volume — use full package price as
+        // best approximation (1 oeuf = 1 carton, 1 oignon = 1 bag, etc.)
+        portion = c.priceCents;
+      }
     } else {
       portion = universalSvc.costForPortion(qty, unit, c.packageSize, c.packageUnit, c.priceCents);
     }
@@ -160,10 +167,11 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
     });
   }
 
-  // Only consider stores with prices for ≥70% of matched ingredients
-  // to avoid artificially cheap totals from partial price coverage.
-  const matchedCount = ingredientsWithCost.filter(i => i.productId).length;
-  const minCoverage = Math.max(1, Math.floor(matchedCount * 0.7));
+  // Only consider stores with prices for ≥70% of priceable ingredients.
+  // Use count of ingredients that actually have at least one price (not just productId)
+  // to avoid inflating the denominator with productId-linked but unpriced items (e.g. gélatine).
+  const matchedCount = ingredientsWithCost.filter(i => i.costByStore.length > 0).length;
+  const minCoverage = Math.max(1, Math.ceil(matchedCount * 0.7));
   const filteredStores = Object.entries(totalsByStore)
     .filter(([chain]) => (countByStore[chain] ?? 0) >= minCoverage);
   const sortedStores = filteredStores.length

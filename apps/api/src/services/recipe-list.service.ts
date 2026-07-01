@@ -75,11 +75,9 @@ export async function listRecipes(
     if (cheapestTotalCents === null) {
       const cost = await computeRecipeCost(r.id);
       if (cost) {
-        const totals = Object.entries(cost.totalCostByStore)
-          .filter(([c]) => !chains?.length || chains.includes(c as StoreChain))
-          .sort((a, b) => a[1] - b[1]);
-        cheapestTotalCents = totals[0]?.[1] ?? null;
-        cheapestStore = (totals[0]?.[0] as StoreChain) ?? null;
+        // Use coverage-filtered cheapest from computeRecipeCost, not raw totals
+        cheapestTotalCents = cost.cheapestTotalCents ?? null;
+        cheapestStore = cost.cheapestStore ?? null;
         // Persist — fire and forget
         prisma.recipe.update({
           where: { id: r.id },
@@ -87,14 +85,21 @@ export async function listRecipes(
         }).catch(() => {});
       }
     } else if (chains?.length) {
-      // Cached value is chain-agnostic; must recompute per-chain if chains are filtered
+      // Cached value is chain-agnostic; must recompute per-chain if chains are filtered.
+      // Use coverage-filtered results from computeRecipeCost; only apply chain filter on top.
       const cost = await computeRecipeCost(r.id);
       if (cost) {
-        const totals = Object.entries(cost.totalCostByStore)
-          .filter(([c]) => chains.includes(c as StoreChain))
-          .sort((a, b) => a[1] - b[1]);
-        cheapestTotalCents = totals[0]?.[1] ?? null;
-        cheapestStore = (totals[0]?.[0] as StoreChain) ?? null;
+        if (cost.cheapestStore && chains.includes(cost.cheapestStore)) {
+          cheapestTotalCents = cost.cheapestTotalCents ?? null;
+          cheapestStore = cost.cheapestStore ?? null;
+        } else {
+          // cheapest coverage-filtered store not in requested chains — fall back to raw totals filtered by chain
+          const totals = Object.entries(cost.totalCostByStore)
+            .filter(([c]) => chains.includes(c as StoreChain))
+            .sort((a, b) => a[1] - b[1]);
+          cheapestTotalCents = totals[0]?.[1] ?? null;
+          cheapestStore = (totals[0]?.[0] as StoreChain) ?? null;
+        }
       }
     }
 
