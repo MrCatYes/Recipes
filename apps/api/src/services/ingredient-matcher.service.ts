@@ -84,6 +84,15 @@ const UNIT_NORMALIZE: Record<string, string> = {
   moyen: 'unit',
   moyenne: 'unit',
   moyens: 'unit',
+  bâton: 'unit',
+  bâtons: 'unit',
+  baton: 'unit',
+  batons: 'unit',
+  feuille: 'unit',
+  gousse: 'gousse',
+  filet: 'unit',
+  cube: 'unit',
+  cubes: 'unit',
   // More QC French variants
   'c. soupe': 'c. à s.',
   'cs': 'c. à s.',
@@ -164,6 +173,7 @@ const UNIT_ALTERNATIVES = [
   'unités?', 'unit',
   'bunch(?:es)?', 'cloves?', 'slices?', 'stalks?', 'sprigs?',
   'leaves?', 'pieces?', 'pkg', 'packages?', 'dash',
+  'b[âa]tons?', 'cubes?', 'filets?',
 ];
 
 const UNIT_RX = UNIT_ALTERNATIVES.join('|');
@@ -209,6 +219,9 @@ function cleanRawText(raw: string): string {
     .replace(/\(optional\)/gi, '')
     .replace(/\(au go[uû]t\)/gi, '')
     .replace(/\([^)]*(?:tasse|c\.\s*[àa]\s*(?:soupe|th[ée])|oz|ml|g|lb|po)[^)]*\)/gi, '')
+    // Strip leading French/English articles
+    .replace(/^(?:le|la|les|l'|un|une|des|du)\s+/i, '')
+    // Strip trailing prep notes after comma for matching purposes
     .replace(/\s{2,}/g, ' ')
     .trim();
 }

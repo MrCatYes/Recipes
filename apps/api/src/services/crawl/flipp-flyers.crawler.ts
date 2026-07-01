@@ -13,7 +13,7 @@
  * Run:  pnpm exec tsx --env-file=.env src/services/crawl/flipp-flyers.crawler.ts
  */
 
-import { PrismaClient, type StoreChain } from '@prisma/client';
+import { PrismaClient, type StoreChain, type Prisma } from '@prisma/client';
 import Fuse from 'fuse.js';
 import { CATALOG } from '../../data/catalog';
 
@@ -227,7 +227,7 @@ export async function crawlFlippFlyers(): Promise<{
         const items = await fetchAllFlyerItems(flyer.id);
         console.log(`     ${items.length} items`);
 
-        const batch: Parameters<typeof prisma.flyerItem.create>[0]['data'][] = [];
+        const batch: Prisma.FlyerItemCreateManyInput[] = [];
 
         for (const item of items) {
           const priceCents = parsePriceCents(item);

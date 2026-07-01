@@ -69,10 +69,11 @@ export async function findSubstitutions(
 }
 
 async function getCheapestPrice(productId: string, chains: string[]): Promise<number | null> {
+  const storeChains = chains as import('@prisma/client').StoreChain[];
   const sp = await prisma.storeProduct.findMany({
     where: {
       productId,
-      store: { chain: { in: chains } },
+      store: { chain: { in: storeChains } },
     },
     include: {
       prices: { orderBy: { capturedAt: 'desc' }, take: 1 },
@@ -80,14 +81,15 @@ async function getCheapestPrice(productId: string, chains: string[]): Promise<nu
   });
 
   const prices = sp
-    .map(s => s.prices[0]?.priceCents)
+    .flatMap(s => s.prices)
+    .map(p => p.priceCents)
     .filter((p): p is number => p != null);
 
   // Also check flyer items
   const flyerItems = await prisma.flyerItem.findMany({
     where: {
       productId,
-      store: { chain: { in: chains } },
+      store: { chain: { in: storeChains } },
       weekOf: { gte: new Date(Date.now() - 14 * 86400_000) },
     },
     select: { promoPriceCents: true },

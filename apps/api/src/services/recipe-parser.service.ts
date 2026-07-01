@@ -36,16 +36,18 @@ export function parseDietaryTags(raw: unknown, ingredients: string[]): string[] 
 
   // Auto-detect from ingredient list
   const text = ingredients.join(' ').toLowerCase();
-  const MEAT = /\b(poulet|chicken|boeuf|beef|porc|pork|bacon|lard|agneau|lamb|dinde|turkey|veau|veal|saumon|salmon|thon|tuna|crevette|shrimp|anchois|anchovies|fruits de mer|seafood|jambon|ham|pepperoni|saucisse|sausage|merguez)\b/;
-  const DAIRY = /\b(lait|milk|beurre|butter|fromage|cheese|crème|cream|yogourt|yogurt|ghee)\b/;
+  const MEAT = /\b(poulet|chicken|boeuf|beef|porc|pork|bacon|lard|agneau|lamb|dinde|turkey|veau|veal|saumon|salmon|thon|tuna|crevette|shrimp|anchois|anchovies|fruits de mer|seafood|jambon|ham|pepperoni|saucisse|sausage|merguez|prosciutto|pancetta|chorizo)\b/;
+  const DAIRY = /\b(lait|milk|beurre|butter|fromage|cheese|crème|cream|yogourt|yogurt|ghee|mozzarella|cheddar|parmesan|ricotta|feta|mascarpone|petit-lait|whey)\b/;
   const EGG = /\b(oeuf|œuf|egg)\b/;
-  const PORK = /\b(porc|pork|bacon|lard|jambon|ham|pepperoni|saucisse de porc|pancetta)\b/;
-  const GLUTEN = /\b(farine|flour|blé|wheat|orge|barley|seigle|rye|pain|bread|pâtes|pasta|couscous|boulgour|bulgur|semoule)\b/;
+  const PORK = /\b(porc|pork|bacon|lard|jambon|ham|pepperoni|saucisse de porc|pancetta|prosciutto|chorizo)\b/;
+  const GLUTEN = /\b(farine|flour|blé|wheat|orge|barley|seigle|rye|pain|bread|pâtes|pasta|couscous|boulgour|bulgur|semoule|chapelure|panko)\b/;
+  const LACTOSE = DAIRY; // lactose intolerance = same as dairy
 
   if (!MEAT.test(text)) tags.add('vegetarien');
   if (!MEAT.test(text) && !DAIRY.test(text) && !EGG.test(text)) tags.add('vegetalien');
   if (!PORK.test(text)) tags.add('halal');
   if (!GLUTEN.test(text)) tags.add('sans-gluten');
+  if (!LACTOSE.test(text)) tags.add('sans-lactose');
 
   return Array.from(tags);
 }
