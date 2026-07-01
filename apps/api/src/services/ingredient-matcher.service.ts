@@ -360,6 +360,26 @@ export class IngredientMatcherService {
   ): Promise<Array<RegexParseResult>> {
     const productList = this.products.map(p => p.name).join(', ');
 
+    // Retry on 429 rate limit with exponential backoff
+    let lastError: unknown;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (attempt > 0) {
+        const delay = Math.min(1000 * 2 ** attempt + Math.random() * 500, 16000);
+        await new Promise(r => setTimeout(r, delay));
+      }
+      try {
+        return await this._callGroq(productList, ingredients);
+      } catch (e: unknown) {
+        const status = (e as { status?: number })?.status;
+        if (status === 429) { lastError = e; continue; }
+        throw e;
+      }
+    }
+    console.warn('Groq rate limit — falling back to fuzzy-only for this batch:', lastError);
+    return ingredients.map(() => ({ quantity: null, unit: null, productName: null, notes: null }));
+  }
+
+  private async _callGroq(productList: string, ingredients: string[]): Promise<Array<RegexParseResult>> {
     const completion = await this.groq.chat.completions.create({
       model: 'llama-3.3-70b-versatile',
       max_tokens: 2048,
