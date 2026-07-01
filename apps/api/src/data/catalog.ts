@@ -1802,6 +1802,66 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['edamame', 'soya cosse'],
     pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
   },
+  // ─── Condiments & sauces ────────────────────────────────────────────────────
+  {
+    name: 'Piment chipotle en sauce adobo', brand: null, category: 'Conserves',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['chipotle', 'chipotle en sauce adobo', 'adobo', 'piment chipotle'],
+    exclude: [],
+    queries: ['chipotle adobo', 'chipotle sauce'],
+    pkg: { size: 213, unit: 'g' }, baseline: { Maxi: 299, IGA: 329, Metro: 319 },
+  },
+  // ─── Spéciaux / épicerie fine ────────────────────────────────────────────────
+  {
+    name: 'Foie gras', brand: null, category: 'Charcuterie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['foie gras', 'foie gras au torchon', 'bloc de foie gras', 'pâté de foie'],
+    exclude: [],
+    queries: ['foie gras'],
+    pkg: { size: 150, unit: 'g' }, baseline: { IGA: 2499, Metro: 2699 },
+  },
+  {
+    name: 'Fleur de sel', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['fleur de sel', 'fleur sel'],
+    exclude: [],
+    queries: ['fleur de sel'],
+    pkg: { size: 125, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 1.2,
+  },
+  {
+    name: 'Cidre de glace', brand: null, category: 'Vins & boissons',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['cidre de glace', 'ice cider', 'cidre de glaces'],
+    exclude: [],
+    queries: ['cidre de glace', 'ice cider'],
+    pkg: { size: 375, unit: 'ml' }, baseline: { IGA: 2999, Metro: 3199 },
+  },
+  // ─── Boulangerie & pâtes ────────────────────────────────────────────────────
+  {
+    name: 'Pâte à egg roll', brand: null, category: 'Boulangerie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['pâte à egg roll', 'egg roll wrapper', 'pâte egg roll', 'wonton wrapper', 'pâte à wonton'],
+    exclude: [],
+    queries: ['egg roll wrapper', 'pâte egg roll'],
+    pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
+  },
+  {
+    name: 'Bretzels', brand: null, category: 'Collations',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['bretzel', 'bretzels', 'pretzel', 'pretzels'],
+    exclude: ['enrobé', 'chocolate', 'chocolat', 'beurre', 'butter', 'crème', 'cream'],
+    queries: ['bretzels', 'pretzels'],
+    pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 299, IGA: 329, Metro: 319 },
+  },
+  // ─── Bonbons / confiseries ─────────────────────────────────────────────────
+  {
+    name: 'M&M chocolats', brand: 'M&M', category: 'Confiseries',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['m&m', 'm&ms', 'bonbons chocolatés', 'smarties'],
+    exclude: [],
+    queries: ['M&M chocolats', 'bonbons chocolat'],
+    pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
 ];
 
 export const CHAINS: Chain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];

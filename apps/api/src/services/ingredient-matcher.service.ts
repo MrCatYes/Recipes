@@ -219,15 +219,31 @@ function cleanRawText(raw: string): string {
     .replace(/\(optional\)/gi, '')
     .replace(/\(au go[uû]t\)/gi, '')
     .replace(/\([^)]*(?:tasse|c\.\s*[àa]\s*(?:soupe|th[ée])|oz|ml|g|lb|po)[^)]*\)/gi, '')
-    // Strip leading French/English articles
-    .replace(/^(?:le|la|les|l'|un|une|des|du)\s+/i, '')
-    // Strip trailing prep notes after comma for matching purposes
+    // Strip leading French/English articles (including "une grosse X", "le jus de")
+    .replace(/^(?:le|la|les|l[''']|un|une|des|du|d['''])\s+/i, '')
+    // Compound "X et Y" → keep only what looks like the main ingredient (before " et ")
+    // e.g. "zeste râpé et le jus d'une grosse orange" → "orange"
+    // Detect compound by "et" followed by "le/la/l'" then a separate noun phrase
+    .replace(/^(?:.+?)\s+et\s+(?:le|la|l[''']|les)\s+(?:jus|zeste|pulpe)\s+(?:d[''']|de\s)(?:une?\s+)?(?:grosse?|gros|petit[e]?\s+)?(.*)/i, '$1')
     .replace(/\s{2,}/g, ' ')
     .trim();
 }
 
 export function parseIngredientRegex(raw: string): RegexParseResult {
   const text = cleanRawText(raw);
+
+  // Handle "pincée de X", "sachet de X" etc. — unit at start with no quantity
+  const unitAtStartRx = new RegExp(`^(${UNIT_RX})\\s+(?:d[''']|de\\s+|d\\s+|of\\s+)(.+?)(?:\\s*,\\s*(.+))?$`, 'i');
+  const uStart = text.match(unitAtStartRx);
+  if (uStart) {
+    return {
+      quantity: null,
+      unit: normalizeUnit(uStart[1]),
+      productName: uStart[2].trim(),
+      notes: uStart[3]?.trim() ?? null,
+    };
+  }
+
   const m = text.match(INGREDIENT_RX);
   if (!m) return { quantity: null, unit: null, productName: text, notes: null };
 
