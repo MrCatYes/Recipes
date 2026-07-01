@@ -6,6 +6,7 @@
 export const RECIPE_CATEGORIES = [
   'Déjeuner',
   'Entrée',
+  'Soupe',
   'Dessert',
   'Pâtisserie',
   'Accompagnement',
@@ -22,14 +23,15 @@ function norm(s: string): string {
 
 // Checked in order — first match wins.
 const RULES: Array<{ category: RecipeCategory; keywords: string[] }> = [
-  { category: 'Déjeuner', keywords: ['crepe', 'pancake', 'gaufre', 'gruau', 'omelette', 'dejeuner', 'granola', 'smoothie', 'oeufs brouilles', 'pain dore', 'frittata', 'shakshuka', 'muffin dejeuner', 'overnight oats'] },
-  { category: 'Boisson', keywords: ['cocktail', 'limonade', 'sangria', 'boisson', 'jus', 'tisane', 'chocolat chaud', 'latte', 'milkshake', 'slush', 'punch', 'spritz'] },
-  { category: 'Collation', keywords: ['barre energetique', 'barre de', 'energie', 'trail mix', 'pop corn', 'popcorn', 'bouchees', 'mini', 'collation', 'snack'] },
-  { category: 'Pâtisserie', keywords: ['pate a', 'croissant', 'brioche', 'chou', 'eclair', 'feuillete', 'patisserie', 'scone', 'pate brisee', 'pate feuilletee', 'pain ', 'focaccia', 'naan', 'baguette'] },
-  { category: 'Dessert', keywords: ['gateau', 'biscuit', 'tarte', 'brownie', 'pouding', 'mousse', 'creme glacee', 'sucre a la creme', 'fudge', 'dessert', 'sorbet', 'tiramisu', 'cupcake', 'sable', 'galette', 'carre', 'compote', 'creme brulee', 'cheesecake', 'panna cotta', 'crostata', 'clafoutis', 'fondant', 'muffin', 'scone sucre'] },
-  { category: 'Entrée', keywords: ['salade', 'soupe', 'potage', 'trempette', 'bruschetta', 'tartare', 'entree', 'veloute', 'crevettes', 'rouleaux', 'imperiaux', 'craquelin', 'hummus', 'guacamole', 'ceviche', 'carpaccio', 'antipasto', 'chowder', 'gaspacho'] },
-  { category: 'Accompagnement', keywords: ['puree', 'frites', 'accompagnement', 'riz pilaf', 'couscous', 'legumes roti', 'salade de', 'gratin', 'slaw'] },
-  { category: 'Plat principal', keywords: ['poulet', 'boeuf', 'porc', 'pates', 'spaghetti', 'lasagne', 'pizza', 'burger', 'ragout', 'mijote', 'chili', 'pate chinois', 'saute', 'curry', 'casserole', 'poisson', 'saumon', 'fish', 'macaroni', 'risotto', 'tacos', 'quiche', 'paella', 'fondue', 'steak', 'roti', 'tourtiere', 'shepherd', 'pad thai', 'ramen', 'pho', 'burrito', 'fajita', 'gyoza', 'dumplings', 'bolognese', 'carbonara', 'tikka masala', 'butter chicken'] },
+  { category: 'Déjeuner', keywords: ['crepe', 'pancake', 'gaufre', 'gruau', 'omelette', 'dejeuner', 'granola', 'smoothie', 'oeufs brouilles', 'pain dore', 'frittata', 'shakshuka', 'muffin dejeuner', 'overnight oats', 'benedict'] },
+  { category: 'Boisson', keywords: ['cocktail', 'limonade', 'sangria', 'boisson', 'jus de', 'tisane', 'chocolat chaud', 'latte', 'milkshake', 'slush', 'punch', 'spritz', 'infusion', 'kefir'] },
+  { category: 'Soupe', keywords: ['soupe', 'potage', 'veloute', 'chowder', 'gaspacho', 'bouillon', 'minestrone', 'bisque', 'bortsch', 'ramen', 'pho'] },
+  { category: 'Collation', keywords: ['craquelin', 'barre energetique', 'barre de', 'energie', 'trail mix', 'pop corn', 'popcorn', 'bouchees', 'collation', 'snack', 'nachos', 'chips maison'] },
+  { category: 'Pâtisserie', keywords: ['pate a', 'croissant', 'brioche', 'chou', 'eclair', 'feuillete', 'patisserie', 'scone', 'pate brisee', 'pate feuilletee', 'pain ', 'focaccia', 'naan', 'baguette', 'pretzel', 'bretzel'] },
+  { category: 'Dessert', keywords: ['gateau', 'biscuit', 'tarte', 'brownie', 'pouding', 'mousse', 'creme glacee', 'sucre a la creme', 'fudge', 'dessert', 'sorbet', 'tiramisu', 'cupcake', 'sable', 'galette', 'carre', 'compote', 'creme brulee', 'cheesecake', 'panna cotta', 'crostata', 'clafoutis', 'fondant', 'muffin', 'scone sucre', 'profiterole', 'macaron', 'verrine'] },
+  { category: 'Entrée', keywords: ['salade', 'trempette', 'bruschetta', 'tartare', 'entree', 'crevettes', 'rouleaux', 'imperiaux', 'hummus', 'guacamole', 'ceviche', 'carpaccio', 'antipasto', 'terrine', 'pate de foie', 'foie gras', 'gravlax'] },
+  { category: 'Accompagnement', keywords: ['puree', 'frites', 'accompagnement', 'riz pilaf', 'couscous', 'legumes roti', 'salade de', 'gratin', 'slaw', 'polenta', 'tabbouleh'] },
+  { category: 'Plat principal', keywords: ['poulet', 'boeuf', 'porc', 'pates', 'spaghetti', 'lasagne', 'pizza', 'burger', 'ragout', 'mijote', 'chili', 'pate chinois', 'saute', 'curry', 'casserole', 'poisson', 'saumon', 'fish', 'macaroni', 'risotto', 'tacos', 'quiche', 'paella', 'fondue', 'steak', 'roti', 'tourtiere', 'shepherd', 'pad thai', 'burrito', 'fajita', 'gyoza', 'dumplings', 'bolognese', 'carbonara', 'tikka masala', 'butter chicken', 'canard', 'confit', 'osso buco', 'blanquette', 'bourguignon'] },
 ];
 
 export function classifyRecipe(title: string, extra = ''): RecipeCategory {

@@ -141,7 +141,7 @@ const CATEGORY_MAP: Record<string, string> = {
   'main course': 'Plat principal', 'main dish': 'Plat principal', 'dinner': 'Plat principal', 'plat principal': 'Plat principal', 'souper': 'Plat principal', 'lunch': 'Plat principal',
   'dessert': 'Dessert', 'desserts': 'Dessert', 'gâteau': 'Pâtisserie', 'cake': 'Pâtisserie', 'baking': 'Pâtisserie', 'pâtisserie': 'Pâtisserie',
   'side dish': 'Accompagnement', 'side': 'Accompagnement', 'accompagnement': 'Accompagnement', 'salade': 'Accompagnement', 'salad': 'Accompagnement',
-  'soup': 'Soupe', 'soupe': 'Soupe', 'potage': 'Soupe',
+  'soup': 'Soupe', 'soupe': 'Soupe', 'potage': 'Soupe', 'veloute': 'Soupe', 'bisque': 'Soupe', 'chowder': 'Soupe',
   'snack': 'Collation', 'collation': 'Collation',
   'beverage': 'Boisson', 'drink': 'Boisson', 'boisson': 'Boisson', 'cocktail': 'Boisson', 'smoothie': 'Boisson',
 };
@@ -474,7 +474,7 @@ Schema:
   "imageUrl": string | null,
   "prepTimeMinutes": number | null,
   "cookTimeMinutes": number | null,
-  "category": "Déjeuner" | "Entrée" | "Plat principal" | "Dessert" | "Pâtisserie" | "Accompagnement" | "Soupe" | "Collation" | "Boisson" | null,
+  "category": "Déjeuner" | "Entrée" | "Soupe" | "Plat principal" | "Dessert" | "Pâtisserie" | "Accompagnement" | "Collation" | "Boisson" | null,
   "description": string | null
 }
 
