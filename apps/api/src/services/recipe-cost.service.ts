@@ -46,16 +46,26 @@ async function catalogFallback(
   const pool = guarded.length ? guarded : candidates;
 
   // Cheapest prorated cost per chain
+  const recipeIsCount = !unit || ['unit', 'unité', 'pièce', 'tranche'].includes(unit);
+
   const bestByChain = new Map<string, PriceWithStore>();
   for (const c of pool) {
+    // Skip unit-packaged catalog items when recipe measures by weight/volume —
+    // we can't prorate "500 ml" against "1 unit" without knowing the can size.
+    const pkgIsCount = c.packageUnit === 'unit';
+    if (pkgIsCount && !recipeIsCount) continue;
+
     let portion: number | null;
-    if (!unit) {
-      // no recipe unit → use full package price (can't prorate)
+    if (!unit || recipeIsCount) {
+      // no recipe unit or count → use full package price (1 oeuf = 1 unit)
       portion = c.priceCents;
     } else {
       portion = universalSvc.costForPortion(qty, unit, c.packageSize, c.packageUnit, c.priceCents);
     }
     if (portion == null || portion <= 0) continue;
+
+    // Sanity cap: single ingredient > $25 is almost certainly a unit mismatch
+    if (portion > 2500) continue;
 
     const existing = bestByChain.get(c.chain);
     if (!existing || portion < existing.priceCents) {

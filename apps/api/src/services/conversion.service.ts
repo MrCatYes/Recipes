@@ -104,10 +104,13 @@ export class ConversionService {
     let recipeBase: number | null;
     let packageBase: number | null;
 
-    if (recipeDomain === 'count' || packageDomain === 'count') {
-      // Count: pass-through (1 oignon = 1 unit)
+    if (recipeDomain === 'count' && packageDomain === 'count') {
+      // Both count — pass-through (1 oignon = 1 unit)
       recipeBase  = this.convert(recipeQty,   recipeUnit,  'unit', productId) ?? recipeQty;
       packageBase = this.convert(packageSize, packageUnit, 'unit', productId) ?? packageSize;
+    } else if (recipeDomain === 'count' || packageDomain === 'count') {
+      // Mixed count/weight|volume — can't meaningfully prorate without explicit factor
+      return null;
     } else if (recipeDomain === packageDomain) {
       // Both weight or both volume — pick common base
       const base = recipeDomain === 'weight' ? 'g' : 'ml';
@@ -135,7 +138,12 @@ export class ConversionService {
 
     if (recipeBase == null || packageBase == null || packageBase === 0) return null;
 
-    return Math.round((recipeBase / packageBase) * priceCents);
+    const portion = Math.round((recipeBase / packageBase) * priceCents);
+
+    // Sanity: can't use more than 4x a package for one ingredient
+    if (portion > priceCents * 4) return null;
+
+    return portion;
   }
 
   /**
