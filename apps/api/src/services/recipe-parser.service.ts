@@ -36,7 +36,7 @@ export function parseDietaryTags(raw: unknown, ingredients: string[]): string[] 
 
   // Auto-detect from ingredient list
   const text = ingredients.join(' ').toLowerCase();
-  const MEAT = /\b(poulet|chicken|boeuf|beef|porc|pork|bacon|lard|agneau|lamb|dinde|turkey|veau|veal|saumon|salmon|thon|tuna|crevette|shrimp|anchois|anchovies|fruits de mer|seafood|jambon|ham|pepperoni|saucisse|sausage|merguez|prosciutto|pancetta|chorizo)\b/;
+  const MEAT = /\b(poulet|chicken|boeuf|beef|porc|pork|bacon|lard|agneau|lamb|dinde|turkey|veau|veal|canard|duck|lapin|rabbit|chevreau|bison|saumon|salmon|thon|tuna|crevette|shrimp|anchois|anchovies|fruits de mer|seafood|jambon|ham|pepperoni|saucisse|sausage|merguez|prosciutto|pancetta|chorizo|vivaneau|tilapia|morue|aiglefin|haddock|flétan|halibut|pangasius|truite|trout|doré|walleye|mahi|bar|loup de mer|poisson|fish|crabe|crab|homard|lobster|pétoncle|scallop|moule|mussel|huître|oyster|calmar|squid)\b/;
   const DAIRY = /\b(lait|milk|beurre|butter|fromage|cheese|crème|cream|yogourt|yogurt|ghee|mozzarella|cheddar|parmesan|ricotta|feta|mascarpone|petit-lait|whey)\b/;
   const EGG = /\b(oeuf|œuf|egg)\b/;
   const PORK = /\b(porc|pork|bacon|lard|jambon|ham|pepperoni|saucisse de porc|pancetta|prosciutto|chorizo)\b/;
