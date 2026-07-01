@@ -554,16 +554,29 @@ export class RecipeParserService {
     $('script, style, nav, footer, header, aside, iframe, svg, noscript, [role="navigation"], [role="banner"], [role="complementary"], .ad, .ads, .advertisement, .sidebar, .comments, .social-share').remove();
     const text = $('body').text().replace(/\s{3,}/g, '\n\n').slice(0, 25_000);
 
-    const completion = await this.groq.chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      max_tokens: 4096,
-      messages: [
-        { role: 'system', content: CLAUDE_SYSTEM },
-        { role: 'user', content: `URL: ${url}\n\nPage content:\n${text}` },
-      ],
-    });
+    let content = '';
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (attempt > 0) {
+        const delay = Math.min(1000 * 2 ** attempt + Math.random() * 500, 16000);
+        await new Promise(r => setTimeout(r, delay));
+      }
+      try {
+        const completion = await this.groq.chat.completions.create({
+          model: 'llama-3.3-70b-versatile',
+          max_tokens: 4096,
+          messages: [
+            { role: 'system', content: CLAUDE_SYSTEM },
+            { role: 'user', content: `URL: ${url}\n\nPage content:\n${text}` },
+          ],
+        });
+        content = completion.choices[0]?.message?.content ?? '';
+        break;
+      } catch (e: unknown) {
+        if ((e as { status?: number })?.status === 429) continue;
+        throw e;
+      }
+    }
 
-    const content = completion.choices[0]?.message?.content ?? '';
     try {
       const match = content.match(/\{[\s\S]*\}/);
       if (match) {
