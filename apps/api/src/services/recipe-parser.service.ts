@@ -82,15 +82,33 @@ export function parseImageUrl(raw: unknown): string | null {
   return null;
 }
 
+function cleanIngredientText(s: string): string {
+  return s
+    .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/&#\d+;/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 export function parseInstructions(raw: unknown): string[] {
+  const clean = (s: string) => s
+    .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
+    .replace(/^\s*(?:step\s*)?\d+[\.\)]\s*/i, '') // strip leading "1." / "Step 1:"
+    .replace(/\s{2,}/g, ' ')
+    .trim();
   if (!raw) return [];
-  if (typeof raw === 'string') return raw.split('\n').map(s => s.trim()).filter(Boolean);
+  if (typeof raw === 'string') return raw.split(/\n|<br\s*\/?>/).map(clean).filter(s => s.length > 3);
   if (!Array.isArray(raw)) return [];
-  return (raw as unknown[]).map((step) => {
-    if (typeof step === 'string') return step.trim();
-    const s = step as Record<string, unknown>;
-    return String(s.text ?? s.name ?? '').trim();
-  }).filter(Boolean);
+  const steps: string[] = [];
+  for (const step of raw as unknown[]) {
+    if (typeof step === 'string') {
+      steps.push(...step.split(/\n/).map(clean).filter(s => s.length > 3));
+    } else {
+      const s = step as Record<string, unknown>;
+      const text = String(s.text ?? s.name ?? '').trim();
+      if (text) steps.push(clean(text));
+    }
+  }
+  return steps;
 }
 
 function findRecipeNode(json: unknown): Record<string, unknown> | null {
@@ -150,7 +168,7 @@ export function extractJsonLd(html: string): ParsedRecipe | null {
       if (!recipe) continue;
 
       const ingredients = Array.isArray(recipe.recipeIngredient)
-        ? (recipe.recipeIngredient as unknown[]).map(String).filter(Boolean)
+        ? (recipe.recipeIngredient as unknown[]).map(i => cleanIngredientText(String(i))).filter(Boolean)
         : [];
 
       if (!recipe.name || ingredients.length === 0) continue;
@@ -297,9 +315,19 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
       const t = $(el).text().trim().replace(/\s+/g, ' ');
       if (t && t.length > 2 && t.length < 200) ingredients.push(t);
     });
-    if (ingredients.length > 0) break;
+    if (ingredients.length >= 2) break; // need at least 2 to be a real ingredient list
   }
-  if (ingredients.length === 0) return null;
+  // Dedup while preserving order (e.g., duplicate selectors matching same elements)
+  const ingSet = new Set<string>();
+  const uniqueIngredients = ingredients.filter(i => {
+    const key = i.toLowerCase().replace(/\s+/g, ' ');
+    if (ingSet.has(key)) return false;
+    ingSet.add(key);
+    return true;
+  });
+  if (uniqueIngredients.length === 0) return null;
+  ingredients.length = 0;
+  ingredients.push(...uniqueIngredients);
 
   const instructions: string[] = [];
   const stepSelectors = [
@@ -490,7 +518,7 @@ export class RecipeParserService {
     return this.extractWithGroq(html, url, partial);
   }
 
-  private async fetchHtml(url: string): Promise<string> {
+  private async fetchHtml(url: string, attempt = 1): Promise<string> {
     const res = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
@@ -507,6 +535,12 @@ export class RecipeParserService {
       redirect: 'follow',
       signal: AbortSignal.timeout(20_000),
     });
+    // Retry once on transient server errors
+    if ((res.status === 429 || res.status === 503 || res.status === 502) && attempt < 3) {
+      const delay = attempt * 2000;
+      await new Promise(r => setTimeout(r, delay));
+      return this.fetchHtml(url, attempt + 1);
+    }
     if (!res.ok) throw new Error(`HTTP ${res.status} fetching ${url}`);
     return res.text();
   }
