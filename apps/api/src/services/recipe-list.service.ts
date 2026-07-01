@@ -19,13 +19,12 @@ export type RecipeSort = 'price' | 'promos' | 'recent' | 'time';
 export async function refreshRecipeCostCache(recipeId: string): Promise<void> {
   const cost = await computeRecipeCost(recipeId);
   if (!cost) return;
-  // Use cheapest across all stores (no chain filter for the cache)
-  const totals = Object.entries(cost.totalCostByStore).sort((a, b) => a[1] - b[1]);
+  // Use cheapestStore from computeRecipeCost which applies coverage filtering
   await prisma.recipe.update({
     where: { id: recipeId },
     data: {
-      cachedTotalCents: totals[0]?.[1] ?? null,
-      cachedStore: totals[0]?.[0] ?? null,
+      cachedTotalCents: cost.cheapestTotalCents ?? null,
+      cachedStore: cost.cheapestStore ?? null,
       cachedCostAt: new Date(),
     },
   });

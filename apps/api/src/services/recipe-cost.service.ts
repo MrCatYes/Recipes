@@ -93,6 +93,7 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
   if (!recipe) return null;
 
   const totalsByStore: Record<string, number> = {};
+  const countByStore: Record<string, number> = {};  // how many ingredients priced at each store
   const ingredientsWithCost: IngredientWithCost[] = [];
 
   // Universal conversions (no product-specific densities) for catalog fallback.
@@ -147,6 +148,7 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
 
     for (const p of costByStore) {
       totalsByStore[p.chain] = (totalsByStore[p.chain] ?? 0) + p.priceCents;
+      countByStore[p.chain] = (countByStore[p.chain] ?? 0) + 1;
     }
 
     ingredientsWithCost.push({
@@ -158,7 +160,15 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
     });
   }
 
-  const sortedStores = Object.entries(totalsByStore).sort((a, b) => a[1] - b[1]);
+  // Only consider stores with prices for ≥70% of matched ingredients
+  // to avoid artificially cheap totals from partial price coverage.
+  const matchedCount = ingredientsWithCost.filter(i => i.productId).length;
+  const minCoverage = Math.max(1, Math.floor(matchedCount * 0.7));
+  const filteredStores = Object.entries(totalsByStore)
+    .filter(([chain]) => (countByStore[chain] ?? 0) >= minCoverage);
+  const sortedStores = filteredStores.length
+    ? filteredStores.sort((a, b) => a[1] - b[1])
+    : Object.entries(totalsByStore).sort((a, b) => a[1] - b[1]);
   const cheapestStore = sortedStores[0] ? sortedStores[0][0] as StoreChain : null;
   const cheapestTotalCents = sortedStores[0] ? sortedStores[0][1] : null;
 
