@@ -148,7 +148,7 @@ async function main() {
     console.log(`Importing ${recipeUrls.length} recipes from ${FROM_FILE} (of ${fileUrls.length} total)`);
     const parser = new RecipeParserService();
     const products = await prisma.product.findMany({
-      select: { id: true, name: true, brand: true, category: true, gtin: true, defaultUnit: true, defaultUnitType: true },
+      select: { id: true, name: true, brand: true, category: true, gtin: true, defaultUnit: true, defaultUnitType: true, createdAt: true, updatedAt: true },
     });
     let ok = 0, skip = 0, error = 0;
     for (let i = 0; i < recipeUrls.length; i++) {
@@ -172,7 +172,7 @@ async function main() {
 
   const parser = new RecipeParserService();
   const products = await prisma.product.findMany({
-    select: { id: true, name: true, brand: true, category: true, gtin: true, defaultUnit: true, defaultUnitType: true },
+    select: { id: true, name: true, brand: true, category: true, gtin: true, defaultUnit: true, defaultUnitType: true, createdAt: true, updatedAt: true },
   });
 
   for (const site of sites) {

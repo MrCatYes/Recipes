@@ -25,7 +25,7 @@ async function main() {
 
   const parser = new RecipeParserService();
   const products = await prisma.product.findMany({
-    select: { id: true, name: true, brand: true, category: true, gtin: true, defaultUnit: true, defaultUnitType: true },
+    select: { id: true, name: true, brand: true, category: true, gtin: true, defaultUnit: true, defaultUnitType: true, createdAt: true, updatedAt: true },
   });
 
   let ok = 0, fail = 0;
