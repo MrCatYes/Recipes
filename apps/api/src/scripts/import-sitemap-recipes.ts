@@ -39,8 +39,10 @@ const SITES: SitemapSite[] = [
     recipePattern: /soscuisine\.com\/recette\//,
   },
   {
+    // Mordu (Radio-Canada) is a SPA — no XML sitemap, requires browser scraping
+    // Disabled: fetch-based sitemap import cannot discover recipe URLs from SPA
     name: 'mordu',
-    sitemaps: ['https://ici.radio-canada.ca/sitemap-recettes.xml'],
+    sitemaps: [],
     recipePattern: /radio-canada\.ca\/emissions\/mordu\/recettes?\//,
   },
   {
