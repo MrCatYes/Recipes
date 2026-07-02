@@ -277,12 +277,28 @@ export const CATALOG: CatalogProduct[] = [
 
   // ─── Produce ──────────────────────────────────────────────────────────────────
   {
+    name: 'Oignon', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['oignon', 'oignons', 'onion', 'onions'],
+    exclude: ['vert', 'green', 'rouge', 'red', 'poudre', 'powder', 'frit', 'fried', 'perlé', 'jaune', 'yellow', 'espagnol', 'cipollini', 'pearl', 'perlé'],
+    queries: ['oignon', 'onion'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 79, IGA: 89, Metro: 85 },
+  },
+  {
     name: 'Oignon jaune', brand: null, category: 'Légumes',
     defaultUnit: 'unit', defaultUnitType: 'count',
     include: ['oignon jaune', 'oignons jaunes', 'yellow onion', 'oignon espagnol'],
     exclude: ['vert', 'green', 'rouge', 'red', 'poudre', 'powder', 'frit', 'fried', 'perlé'],
     queries: ['oignon jaune', 'yellow onion'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 79, IGA: 89, Metro: 85 },
+  },
+  {
+    name: 'Oignon rouge', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['oignon rouge', 'oignons rouges', 'red onion', 'red onions'],
+    exclude: ['poudre', 'powder', 'vert', 'green'],
+    queries: ['oignon rouge', 'red onion'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 89, IGA: 99, Metro: 95 },
   },
   {
     name: 'Ail', brand: null, category: 'Légumes',
