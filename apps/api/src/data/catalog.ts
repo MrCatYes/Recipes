@@ -83,6 +83,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 }, densityGPerMl: 0.9,
   },
   {
+    name: 'Crème de tartre', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['crème de tartre', 'cream of tartar', 'tartrate'],
+    exclude: [],
+    queries: ['crème de tartre', 'cream of tartar'],
+    pkg: { size: 70, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 }, densityGPerMl: 0.8,
+  },
+  {
     name: 'Extrait de vanille', brand: null, category: 'Épices',
     defaultUnit: 'ml', defaultUnitType: 'volume',
     include: ['extrait de vanille', 'vanilla extract', 'essence de vanille'],
@@ -797,7 +805,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Paprika fumé', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['paprika fumé', 'smoked paprika'],
+    include: ['paprika fumé', 'smoked paprika', 'piment fumé', 'paprika espagnol'],
     exclude: [],
     queries: ['paprika fumé', 'smoked paprika'],
     pkg: { size: 50, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 }, densityGPerMl: 0.5,
