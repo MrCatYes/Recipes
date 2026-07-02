@@ -2063,6 +2063,142 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 540, unit: 'ml' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
   },
 
+  // ─── Herbes & épices additionnelles ───────────────────────────────────────
+  {
+    name: 'Herbes de Provence', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['herbes de provence', 'herbes provençales', 'provence herbs'],
+    exclude: [],
+    queries: ['herbes de provence'],
+    pkg: { size: 25, unit: 'g' }, baseline: { Maxi: 299, IGA: 329, Metro: 319 }, densityGPerMl: 0.25,
+  },
+  {
+    name: 'Garam masala', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['garam masala'],
+    exclude: [],
+    queries: ['garam masala'],
+    pkg: { size: 45, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 }, densityGPerMl: 0.5,
+  },
+  {
+    name: 'Laurier', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['feuille de laurier', 'feuilles de laurier', 'bay leaf', 'bay leaves', 'laurier'],
+    exclude: [],
+    queries: ['feuilles de laurier', 'bay leaves'],
+    pkg: { size: 6, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 }, densityGPerMl: 0.3,
+  },
+  {
+    name: 'Romarin séché', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['romarin', 'rosemary', 'romarin séché'],
+    exclude: ['frais', 'fresh'],
+    queries: ['romarin', 'rosemary'],
+    pkg: { size: 20, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 }, densityGPerMl: 0.3,
+  },
+  {
+    name: 'Sauge séchée', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['sauge', 'sage'],
+    exclude: ['frais', 'fresh'],
+    queries: ['sauge', 'sage'],
+    pkg: { size: 15, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 }, densityGPerMl: 0.3,
+  },
+  {
+    name: 'Cardamome', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['cardamome', 'cardamom'],
+    exclude: [],
+    queries: ['cardamome', 'cardamom'],
+    pkg: { size: 35, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 }, densityGPerMl: 0.45,
+  },
+  // ─── Herbes fraîches ───────────────────────────────────────────────────────
+  {
+    name: 'Menthe fraîche', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['menthe', 'mint', 'menthe fraîche'],
+    exclude: ['séchée', 'dried', 'essence', 'extract', 'thé', 'tea', 'tisane'],
+    queries: ['menthe fraîche', 'fresh mint'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 179, Metro: 169 },
+  },
+  {
+    name: 'Ciboulette fraîche', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['ciboulette', 'chives', 'ciboulette fraîche'],
+    exclude: ['séchée', 'dried'],
+    queries: ['ciboulette', 'chives'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 179, Metro: 169 },
+  },
+  // ─── Boulangerie & noix ────────────────────────────────────────────────────
+  {
+    name: 'Poudre d\'amande', brand: null, category: 'Épicerie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ["poudre d'amande", 'almond flour', 'farine d amande', 'amandes moulues'],
+    exclude: ['amandes entières', 'amandes tranchées'],
+    queries: ["poudre d'amande", 'almond flour'],
+    pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 }, densityGPerMl: 0.55,
+  },
+  {
+    name: 'Pignons de pin', brand: null, category: 'Noix',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['pignons de pin', 'pignons', 'pine nuts', 'pine nut'],
+    exclude: [],
+    queries: ['pignons de pin', 'pine nuts'],
+    pkg: { size: 100, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
+  },
+  {
+    name: 'Chocolat blanc', brand: null, category: 'Épicerie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['chocolat blanc', 'white chocolate'],
+    exclude: ['boisson', 'chaud'],
+    queries: ['chocolat blanc', 'white chocolate'],
+    pkg: { size: 100, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
+  },
+  // ─── Condiments & sauces additionnels ─────────────────────────────────────
+  {
+    name: 'Pesto', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['pesto', 'pesto au basilic', 'basil pesto', 'pesto genovese'],
+    exclude: ['rouge', 'red', 'tomates séchées'],
+    queries: ['pesto', 'basil pesto'],
+    pkg: { size: 190, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 }, densityGPerMl: 0.95,
+  },
+  // ─── Féculents additionnels ────────────────────────────────────────────────
+  {
+    name: 'Riz arborio', brand: null, category: 'Féculents',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['riz arborio', 'arborio rice', 'riz à risotto', 'riz risotto'],
+    exclude: [],
+    queries: ['riz arborio', 'arborio rice'],
+    pkg: { size: 900, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 0.85,
+  },
+  // ─── Fruits additionnels ───────────────────────────────────────────────────
+  {
+    name: 'Framboises', brand: null, category: 'Fruits',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['framboises', 'framboise', 'raspberry', 'raspberries'],
+    exclude: ['confiture', 'sirop', 'yogourt', 'surgelées'],
+    queries: ['framboises', 'raspberries'],
+    pkg: { size: 170, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+  },
+  {
+    name: 'Mangue', brand: null, category: 'Fruits',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['mangue', 'mango'],
+    exclude: ['jus', 'juice', 'séchée', 'dried', 'sirop', 'conserve'],
+    queries: ['mangue', 'mango'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 179, Metro: 169 },
+  },
+  // ─── Conserves additionnelles ──────────────────────────────────────────────
+  {
+    name: 'Purée de citrouille', brand: null, category: 'Conserves',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['purée de citrouille', 'purée de courge', 'pumpkin purée', 'pumpkin puree', 'citrouille en conserve'],
+    exclude: ['fraîche', 'fresh', 'graine'],
+    queries: ['purée citrouille', 'pumpkin puree'],
+    pkg: { size: 398, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+
   // ─── Bonbons / confiseries ─────────────────────────────────────────────────
   {
     name: 'M&M chocolats', brand: 'M&M', category: 'Confiseries',

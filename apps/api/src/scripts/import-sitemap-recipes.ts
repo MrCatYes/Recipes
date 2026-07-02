@@ -54,7 +54,7 @@ async function fetchSitemap(url: string): Promise<string[]> {
   try {
     const res = await fetch(url, {
       headers: { 'User-Agent': 'Mozilla/5.0 EpicerieBot/1.0', 'Accept': 'application/xml,text/xml' },
-      signal: AbortSignal.timeout(30_000),
+      signal: AbortSignal.timeout(60_000),
     });
     if (!res.ok) { console.warn(`  Sitemap ${res.status}: ${url}`); return []; }
     const text = await res.text();
