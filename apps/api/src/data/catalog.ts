@@ -37,8 +37,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Farine tout-usage', brand: 'Robin Hood', category: 'Farine',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['farine tout usage', 'farine tout-usage', 'all purpose flour', 'all-purpose flour', 'farine robin hood', 'farine five roses', 'farine selection', 'farine no name', 'farine sans nom'],
-    exclude: ['blé entier', 'whole wheat', 'sarrasin', 'amande', 'avoine', 'gâteau', 'cake', 'sans gluten', 'gluten free', 'épeautre', 'à pain', 'bread'],
+    include: ['farine tout usage', 'farine tout-usage', 'all purpose flour', 'all-purpose flour', 'farine robin hood', 'farine five roses', 'farine selection', 'farine no name', 'farine sans nom', 'farine à pâtisserie', 'pastry flour', 'cake flour', 'farine blanche'],
+    exclude: ['blé entier', 'whole wheat', 'sarrasin', 'amande', 'avoine', 'sans gluten', 'gluten free', 'épeautre', 'à pain', 'bread', 'maïs', 'corn', 'riz', 'rice'],
     queries: ['farine', 'farine tout usage', 'flour'],
     pkg: { size: 2000, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 0.53,
   },
@@ -135,8 +135,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Crème 35%', brand: null, category: 'Produits laitiers',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['crème 35', 'cream 35', 'crème à fouetter', 'whipping cream', 'crème épaisse', 'crème à cuisson à 35'],
-    exclude: ['10 %', '15 %', '10%', '15%', 'sure', 'sour', 'café', 'coffee', 'glacée', 'ice', 'coco', 'fouettée en', 'aérosol'],
+    include: ['crème 35', 'cream 35', 'crème à fouetter', 'whipping cream', 'crème épaisse', 'crème à cuisson à 35', 'crème chantilly', 'chantilly'],
+    exclude: ['crème 10', 'cream 10', 'crème 15', 'cream 15', 'sure', 'sour', 'café', 'coffee', 'glacée', 'ice', 'coco', 'fouettée en', 'aérosol'],
     queries: ['crème 35', 'crème à fouetter'],
     pkg: { size: 473, unit: 'ml' }, baseline: { Maxi: 449, IGA: 499, Metro: 479 },
   },
@@ -427,6 +427,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['jaune', 'rouge', 'espagnol', 'poudre', 'française'],
     queries: ['oignon vert', 'green onion'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 129, IGA: 149, Metro: 139 },
+  },
+  {
+    name: 'Échalote française', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['échalote française', 'echalote francaise', 'échalotes françaises', 'shallot', 'échalote grise', 'échalote de jersey'],
+    exclude: ['verte', 'green', 'poudre', 'powder'],
+    queries: ['échalote française', 'shallot'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 99, IGA: 119, Metro: 109 },
   },
   {
     name: 'Gingembre', brand: null, category: 'Légumes',
@@ -736,6 +744,22 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['vinaigre cidre', 'apple cider vinegar'],
     pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 },
   },
+  {
+    name: 'Vinaigre de vin blanc', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['vinaigre de vin blanc', 'white wine vinegar', 'vinaigre vin blanc'],
+    exclude: [],
+    queries: ['vinaigre de vin blanc', 'white wine vinegar'],
+    pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
+    name: 'Vinaigre de vin rouge', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['vinaigre de vin rouge', 'red wine vinegar', 'vinaigre vin rouge'],
+    exclude: [],
+    queries: ['vinaigre de vin rouge', 'red wine vinegar'],
+    pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
 
   // ─── Spices ────────────────────────────────────────────────────────────────────
   {
@@ -769,6 +793,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['bâton', 'stick', 'rouleau'],
     queries: ['cannelle', 'cinnamon'],
     pkg: { size: 50, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.55,
+  },
+  {
+    name: 'Muscade moulue', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['muscade', 'nutmeg', 'noix de muscade'],
+    exclude: [],
+    queries: ['muscade', 'nutmeg'],
+    pkg: { size: 40, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 }, densityGPerMl: 0.5,
   },
   {
     name: 'Poudre de chili', brand: null, category: 'Épices',
