@@ -219,7 +219,10 @@ async function crawlCategory(page: Page, cfg: PlatformConfig, url: string): Prom
 }
 
 export async function crawlMetroPlatform(cfg: PlatformConfig): Promise<void> {
-  const browser = await chromium.launch({ headless: true, args: ['--no-sandbox', '--disable-blink-features=AutomationControlled'] });
+  // Use system chromium on Alpine Linux (playwright's bundled binaries are glibc and won't run on musl)
+  const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+    ?? (require('fs').existsSync('/usr/bin/chromium-browser') ? '/usr/bin/chromium-browser' : undefined);
+  const browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-blink-features=AutomationControlled', '--disable-dev-shm-usage'] });
   const ctx = await browser.newContext({ userAgent: UA, locale: 'fr-CA', viewport: { width: 1280, height: 900 } });
   const page = await ctx.newPage();
 
