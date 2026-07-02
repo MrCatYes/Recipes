@@ -269,7 +269,8 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     '.ingredients li',
     '.ingredient-list li',
     '[class*="ingredient"] li',
-    // Ricardo.com
+    // Ricardo.com (old format scoped to ingredient section)
+    '.c-recipe-instructions--ingredients .c-recipe-instructions__item',
     '.recipe__ingredients li',
     '.c-ingredients li',
     // SOS Cuisine
@@ -343,6 +344,8 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     '.c-steps li',
     '.mntl-sc-block-group--LI',
     '.recipe-steps__list__item',
+    // Ricardo.com old format (same c-recipe-instructions__item as ingredients but scoped)
+    '.c-recipe-instructions--preparation .c-recipe-instructions__item',
     // QC sites
     '.recipe-detail__steps li',
     '.recipe-detail-steps li',
