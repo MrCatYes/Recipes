@@ -2199,6 +2199,72 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 398, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
   },
 
+  // ─── Légumes & épices encore manquants ────────────────────────────────────
+  {
+    name: 'Fenouil', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['fenouil', 'fennel', 'bulbe de fenouil'],
+    exclude: ['graines', 'seeds', 'séché', 'dried'],
+    queries: ['fenouil', 'fennel'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
+    name: 'Thym frais', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['thym frais', 'fresh thyme'],
+    exclude: ['séché', 'dried'],
+    queries: ['thym frais', 'fresh thyme'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 179, Metro: 169 },
+  },
+  {
+    name: 'Tabasco', brand: 'Tabasco', category: 'Condiments',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['tabasco', 'sauce piquante', 'hot sauce', 'sambal oelek', 'sauce forte'],
+    exclude: [],
+    queries: ['tabasco', 'sauce piquante'],
+    pkg: { size: 60, unit: 'ml' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 },
+  },
+  {
+    name: 'Courge poivrée', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['courge poivrée', 'courge poivree', 'acorn squash', 'courge butternut', 'butternut squash', 'courge musquée', 'courge spaghetti', 'courge'],
+    exclude: ['purée', 'puree', 'soupe', 'graine'],
+    queries: ['courge', 'acorn squash'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+  {
+    name: 'Graines de citrouille', brand: null, category: 'Noix',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['graines de citrouille', 'pepitas', 'graines de courge', 'pumpkin seeds'],
+    exclude: ['purée', 'confiture'],
+    queries: ['graines citrouille', 'pepitas'],
+    pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Tomates séchées', brand: null, category: 'Épicerie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['tomates séchées', 'tomates sechees', 'sun-dried tomatoes', 'tomates déshydratées'],
+    exclude: ['pâte', 'sauce'],
+    queries: ['tomates séchées', 'sun-dried tomatoes'],
+    pkg: { size: 100, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
+    name: 'Rhum', brand: null, category: 'Vins & boissons',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['rhum', 'rum', 'rhum brun', 'rhum blanc', 'rhum ambré'],
+    exclude: ['extrait', 'arôme', 'arome'],
+    queries: ['rhum', 'rum'],
+    pkg: { size: 750, unit: 'ml' }, baseline: { Maxi: 2499, IGA: 2699, Metro: 2599 },
+  },
+  {
+    name: 'Graines de moutarde', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['graines de moutarde', 'mustard seeds', 'graines de moutarde noires', 'graines de moutarde jaunes'],
+    exclude: ['moutarde préparée', 'dijon', 'moutarde de'],
+    queries: ['graines moutarde', 'mustard seeds'],
+    pkg: { size: 50, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.7,
+  },
+
   // ─── Bonbons / confiseries ─────────────────────────────────────────────────
   {
     name: 'M&M chocolats', brand: 'M&M', category: 'Confiseries',
