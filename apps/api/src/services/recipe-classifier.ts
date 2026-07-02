@@ -24,11 +24,11 @@ function norm(s: string): string {
 // Checked in order — first match wins.
 const RULES: Array<{ category: RecipeCategory; keywords: string[] }> = [
   { category: 'Déjeuner', keywords: ['crepe', 'pancake', 'gaufre', 'gruau', 'omelette', 'dejeuner', 'granola', 'smoothie', 'oeufs brouilles', 'pain dore', 'frittata', 'shakshuka', 'muffin dejeuner', 'overnight oats', 'benedict'] },
-  { category: 'Boisson', keywords: ['cocktail', 'limonade', 'sangria', 'boisson', 'jus de', 'tisane', 'chocolat chaud', 'latte', 'milkshake', 'slush', 'punch', 'spritz', 'infusion', 'kefir', 'cosmopolitan', 'cosmopolitain', 'portonic', 'vin chaud', 'kir royal', 'aperitif'] },
+  { category: 'Boisson', keywords: ['cocktail', 'limonade', 'sangria', 'boisson', 'jus de', 'tisane', 'chocolat chaud', 'latte', 'milkshake', 'slush', 'punch', 'spritz', 'infusion', 'kefir', 'cosmopolitan', 'cosmopolitain', 'portonic', 'vin chaud', 'kir royal', 'aperitif', 'thé glacé', 'thé froid', 'kombucha'] },
   { category: 'Soupe', keywords: ['soupe', 'potage', 'veloute', 'chowder', 'gaspacho', 'bouillon', 'minestrone', 'bisque', 'bortsch', 'ramen', 'pho', 'consomme', 'vichyssoise', 'creme de '] },
   // Dessert before Entrée so "salade de fruits" beats the generic 'salade' keyword
   { category: 'Dessert', keywords: [
-    'gateau', 'biscuit', 'tarte', 'brownie', 'pouding', 'mousse', 'creme glacee', 'sucre a la creme',
+    'gateau', 'biscuit', 'tarte', 'brownie', 'pouding', 'mousse ', 'creme glacee', 'sucre a la creme',
     'fudge', 'dessert', 'sorbet', 'tiramisu', 'cupcake', 'sable', 'galette', 'carre au', 'carre de',
     'compote', 'creme brulee', 'creme anglaise', 'cheesecake', 'panna cotta', 'crostata', 'clafoutis', 'fondant au chocolat',
     'muffin', 'scone sucre', 'profiterole', 'macaron', 'verrine',
@@ -38,6 +38,7 @@ const RULES: Array<{ category: RecipeCategory; keywords: string[] }> = [
     'croustade', 'crumble', 'biscotti', 'panettone', 'sundae', 'moka', 'billot',
     'cake au', 'cake a la', 'cake a l',
     'carres moelleux', 'carres aux', 'carres de',
+    'brown betty', 'tapioca', 'guimauve', 'marshmallow', 'flan ', 'flans',
   ] },
   // Collation after Dessert — sweet spreads and snacks
   { category: 'Collation', keywords: [
@@ -51,7 +52,7 @@ const RULES: Array<{ category: RecipeCategory; keywords: string[] }> = [
     'gravlax', 'crostini', 'gougere', 'salsa', 'tapenade', 'brie', 'camembert',
     'acras', 'bouraks', 'champignons farcis', 'legumes farcis',
   ] },
-  { category: 'Accompagnement', keywords: ['puree', 'frites', 'accompagnement', 'riz pilaf', 'riz basmati', 'riz blanc', 'riz long', 'couscous', 'legumes roti', 'salade de', 'gratin', 'slaw', 'polenta', 'tabbouleh', 'sauce pour'] },
+  { category: 'Accompagnement', keywords: ['puree', 'frites', 'accompagnement', 'riz pilaf', 'riz basmati', 'riz blanc', 'riz long', 'couscous', 'legumes roti', 'salade de', 'gratin', 'slaw', 'polenta', 'tabbouleh', 'sauce pour', 'vinaigrette'] },
   { category: 'Plat principal', keywords: [
     'poulet', 'boeuf', 'porc', 'agneau', 'veau', 'gigot', 'pates', 'spaghetti', 'lasagne', 'pizza',
     'burger', 'ragout', 'mijote', 'chili', 'pate chinois', 'saute', 'curry', 'casserole', 'poisson',
