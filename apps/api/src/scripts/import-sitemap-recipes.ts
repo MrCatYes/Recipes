@@ -46,6 +46,14 @@ const SITES: SitemapSite[] = [
     recipePattern: /radio-canada\.ca\/emissions\/mordu\/recettes?\//,
   },
   {
+    name: 'coupdepouce',
+    sitemaps: [
+      'https://www.coupdepouce.com/sitemap/story-0.xml',
+      'https://www.coupdepouce.com/sitemap/story-1.xml',
+    ],
+    recipePattern: /coupdepouce\.com\/recette\//,
+  },
+  {
     name: 'zeste',
     sitemaps: ['https://www.zeste.ca/sitemap.xml'],
     recipePattern: /zeste\.ca\/recettes\//,
