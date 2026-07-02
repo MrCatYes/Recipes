@@ -803,8 +803,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Vinaigre de vin rouge', brand: null, category: 'Épicerie',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['vinaigre de vin rouge', 'red wine vinegar', 'vinaigre vin rouge'],
-    exclude: [],
+    include: ['vinaigre de vin rouge', 'red wine vinegar', 'vinaigre vin rouge', 'vinaigre de vin'],
+    exclude: ['blanc', 'white'],
     queries: ['vinaigre de vin rouge', 'red wine vinegar'],
     pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
   },
