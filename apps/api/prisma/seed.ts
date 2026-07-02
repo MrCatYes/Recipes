@@ -60,6 +60,8 @@ async function seedUnitConversions() {
     { from: 'tasse', to: 'g', factor: 200 },  // generic density fallback
   ];
 
+  // Delete universal conversions and re-seed to avoid duplicates from repeated seed runs
+  await prisma.unitConversion.deleteMany({ where: { productId: null } });
   await prisma.unitConversion.createMany({
     data: conversions.map((c) => ({
       fromUnit: c.from,
@@ -67,7 +69,6 @@ async function seedUnitConversions() {
       factor: c.factor,
       productId: null,
     })),
-    skipDuplicates: true,
   });
 }
 
