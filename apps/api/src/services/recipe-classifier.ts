@@ -52,7 +52,7 @@ const RULES: Array<{ category: RecipeCategory; keywords: string[] }> = [
     'gravlax', 'crostini', 'gougere', 'salsa', 'tapenade', 'brie', 'camembert',
     'acras', 'bouraks', 'champignons farcis', 'legumes farcis',
   ] },
-  { category: 'Accompagnement', keywords: ['puree', 'frites', 'accompagnement', 'riz pilaf', 'riz basmati', 'riz blanc', 'riz long', 'couscous', 'legumes roti', 'salade de', 'gratin', 'slaw', 'polenta', 'tabbouleh', 'sauce pour', 'vinaigrette'] },
+  { category: 'Accompagnement', keywords: ['puree', 'frites', 'accompagnement', 'riz pilaf', 'riz basmati', 'riz blanc', 'riz long', 'couscous', 'legumes roti', 'salade de', 'gratin', 'slaw', 'polenta', 'tabbouleh', 'sauce pour'] },
   { category: 'Plat principal', keywords: [
     'poulet', 'boeuf', 'porc', 'agneau', 'veau', 'gigot', 'pates', 'spaghetti', 'lasagne', 'pizza',
     'burger', 'ragout', 'mijote', 'chili', 'pate chinois', 'saute', 'curry', 'casserole', 'poisson',
