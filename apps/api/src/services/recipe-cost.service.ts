@@ -135,6 +135,8 @@ export async function computeRecipeCost(recipeId: string): Promise<RecipeWithCos
           for (const p of priceData.prices) {
             const portion = svc.costForPortion(qty, effectiveUnit, p.packageSize, p.packageUnit, p.priceCents, ing.productId);
             if (portion === null) continue;
+            // Sanity cap: single ingredient > $30 is almost certainly a unit mismatch
+            if (portion > 3000) continue;
             cb.push({ ...p, priceCents: portion, packagePriceCents: p.packagePriceCents });
           }
           const byChain = new Map<string, PriceWithStore>();
