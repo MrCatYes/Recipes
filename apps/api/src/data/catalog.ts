@@ -2199,6 +2199,48 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 398, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
   },
 
+  // ─── Légumes & épices encore manquants (round 8) ──────────────────────────
+  {
+    name: 'Moules', brand: null, category: 'Poissons & fruits de mer',
+    defaultUnit: 'kg', defaultUnitType: 'weight',
+    include: ['moules', 'mussels', 'moule fraîche'],
+    exclude: ['vinaigrette', 'jus'],
+    queries: ['moules', 'mussels'],
+    pkg: { size: 1, unit: 'kg' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
+  },
+  {
+    name: "Fleur d'ail", brand: null, category: 'Légumes',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ["fleur d'ail", 'fleur d ail', 'garlic scape'],
+    exclude: [],
+    queries: ['fleur ail', 'garlic scape'],
+    pkg: { size: 100, unit: 'ml' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.9,
+  },
+  {
+    name: 'Kiwi', brand: null, category: 'Fruits',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['kiwi', 'kiwis'],
+    exclude: ['jus', 'juice', 'séché', 'dried'],
+    queries: ['kiwi'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 99, IGA: 119, Metro: 109 },
+  },
+  {
+    name: 'Vermicelles de riz', brand: null, category: 'Féculents',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['vermicelle de riz', 'vermicelles de riz', 'rice vermicelli', 'nouilles de riz'],
+    exclude: [],
+    queries: ['vermicelle riz', 'rice vermicelli'],
+    pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.3,
+  },
+  {
+    name: 'Piment frais', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['piment de chili', 'piment chili', 'chili vert', 'chili rouge', 'jalapeño', 'serrano', 'poblano', 'piment fort'],
+    exclude: ['poudre', 'moulu', 'flocons', 'séché', 'chipotle', 'tabasco', 'alep'],
+    queries: ['piment frais', 'fresh chili'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 99, IGA: 119, Metro: 109 },
+  },
+
   // ─── Légumes & épices encore manquants ────────────────────────────────────
   {
     name: 'Fenouil', brand: null, category: 'Légumes',
