@@ -2708,6 +2708,30 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['fromage quark', 'quark'],
     pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
   },
+  {
+    name: 'Cerises fraîches', brand: null, category: 'Fruits et légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['cerises fraîches', 'cerises', 'cherries', 'cherry'],
+    exclude: ['griottes', 'séchées', 'dried', 'maraschino', 'confites', 'jus', 'tomates'],
+    queries: ['cerises', 'cherries'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 499, IGA: 579, Metro: 549 },
+  },
+  {
+    name: 'Escalopes de poulet', brand: null, category: 'Viandes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['escalope de poulet', 'escalopes de poulet', 'chicken cutlet', 'cutlets de poulet'],
+    exclude: [],
+    queries: ['escalopes de poulet', 'chicken cutlets'],
+    pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
+  },
+  {
+    name: 'Pain à hot-dog', brand: null, category: 'Boulangerie',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['pain à hot-dog', 'pain hot dog', 'hot dog bun', 'pains à hot-dog'],
+    exclude: [],
+    queries: ['pain à hot-dog'],
+    pkg: { size: 8, unit: 'unit' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
 ];
 
 export const CHAINS: Chain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
