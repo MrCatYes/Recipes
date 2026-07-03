@@ -64,9 +64,15 @@ export function parseDuration(raw: unknown): number | null {
 
 export function parseServings(raw: unknown): number {
   if (raw == null) return 4;
-  if (typeof raw === 'number') return Math.max(1, Math.round(raw));
-  const m = String(raw).match(/\d+/);
-  return m ? Math.max(1, parseInt(m[0], 10)) : 4;
+  if (typeof raw === 'number') return raw > 0 && raw <= 100 ? Math.round(raw) : 4;
+  const str = String(raw).trim();
+  // If raw is a volume/weight measure (e.g. "625 ml", "500 g"), it's a yield not a serving count
+  if (/^\d+[\s,.]?\d*\s*(ml|g|kg|L|oz|lb|cl)\b/i.test(str)) return 4;
+  const m = str.match(/\d+/);
+  if (!m) return 4;
+  const n = parseInt(m[0], 10);
+  // Cap at 100 — anything higher is almost certainly a misparse (volume, grams, etc.)
+  return n > 0 && n <= 100 ? n : 4;
 }
 
 export function parseImageUrl(raw: unknown): string | null {
