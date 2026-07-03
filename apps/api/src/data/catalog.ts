@@ -1670,7 +1670,7 @@ export const CATALOG: CatalogProduct[] = [
     name: 'Sucre', brand: null, category: 'Épicerie',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['sucre', 'sugar'],
-    exclude: ['sucre à glacer', 'cassonade', 'sucre d\'érable', 'sucre brun', 'sucre glace', 'icing sugar', 'powdered sugar'],
+    exclude: ['sucre à glacer', 'cassonade', "sucre d'érable", 'sucre brun', 'sucre glace', 'icing sugar', 'powdered sugar', 'mi-sucré', 'non sucré', 'non sucrée', 'sucrée', 'compote'],
     queries: ['sucre blanc', 'white sugar'],
     pkg: { size: 2000, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 }, densityGPerMl: 0.85,
   },
