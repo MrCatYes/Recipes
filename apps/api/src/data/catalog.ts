@@ -1014,6 +1014,14 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['lait de coco', 'coconut milk'],
     pkg: { size: 398, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
   },
+  {
+    name: 'Noix de coco râpée', brand: null, category: 'Épicerie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['noix de coco râpée', 'noix de coco', 'coconut flakes', 'shredded coconut', 'copeaux de noix de coco', 'flocons de noix de coco', 'noix de coco en flocons'],
+    exclude: ['lait', 'milk', 'crème', 'cream', 'eau'],
+    queries: ['noix de coco râpée', 'shredded coconut'],
+    pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 }, densityGPerMl: 0.35,
+  },
 
   // ─── Tortillas & wraps ────────────────────────────────────────────────────────
   {
