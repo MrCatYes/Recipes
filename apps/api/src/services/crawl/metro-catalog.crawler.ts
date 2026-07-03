@@ -164,7 +164,7 @@ async function saveTiles(tiles: RawTile[], cfg: PlatformConfig): Promise<number>
       m => Math.round(parseFloat(m[1].replace(',', '.')) * 100));
     const isPromo = /r[ée]gulier/i.test(t.text) && prices.length >= 2;
     const priceCents = isPromo ? Math.min(prices[0], prices[1]) : (prices[0] ?? 0);
-    if (!priceCents || priceCents <= 0) continue;
+    if (!priceCents || priceCents <= 0 || priceCents > 100000) continue; // skip >$1000 (parse errors)
     const { size, unit } = parsePkg(t.text);
     await prisma.catalogItem.upsert({
       where: { chain_sourceSku: { chain: cfg.chain, sourceSku: t.code } },

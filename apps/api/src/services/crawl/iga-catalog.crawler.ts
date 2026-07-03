@@ -93,7 +93,7 @@ async function crawlSlice(value: string): Promise<number> {
   }
 
   for (const h of r.hits) {
-    if (!h.articleNumber || !h.name || h.price == null || h.price <= 0) continue;
+    if (!h.articleNumber || !h.name || h.price == null || h.price <= 0 || h.price > 1000) continue; // skip >$1000 (parse errors)
     const priceCents = Math.round(h.price * 100);
     const category = h.categories?.[0] ?? value.split(' > ')[0] ?? null;
     await prisma.catalogItem.upsert({

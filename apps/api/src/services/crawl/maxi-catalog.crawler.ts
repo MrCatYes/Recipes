@@ -87,7 +87,7 @@ async function crawlCategory(page: Page, url: string, category: string): Promise
       const priceStr = t.pricing?.price;
       if (!sku || !priceStr) continue;
       const priceCents = Math.round(parseFloat(priceStr) * 100);
-      if (!Number.isFinite(priceCents) || priceCents <= 0) continue;
+      if (!Number.isFinite(priceCents) || priceCents <= 0 || priceCents > 100000) continue; // skip >$1000
       const { size, unit } = parsePkg(t.packageSizing);
       const name = [t.brand, t.title].filter(Boolean).join(' ').trim() || t.title || '';
       if (!name) continue;
