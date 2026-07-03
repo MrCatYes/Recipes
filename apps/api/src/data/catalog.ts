@@ -200,7 +200,7 @@ export const CATALOG: CatalogProduct[] = [
     name: 'Oeufs gros', brand: null, category: 'Oeufs',
     defaultUnit: 'unit', defaultUnitType: 'count',
     include: ['oeufs gros', 'œufs gros', 'gros oeufs', 'large eggs', 'oeufs blancs', 'œufs blancs', 'oeufs calibre', 'lot de 12', 'oeufs bruns', 'naturoeuf', 'douzaine oeufs', 'oeufs frais', 'eggs large', 'oeuf', 'oeufs', 'egg', 'jaune d oeuf', 'jaunes d oeuf', 'blanc d oeuf', 'blancs d oeuf'],
-    exclude: ['liquide', 'liquid', 'chocolat', 'caille', 'substitut', 'sauce', 'mayo', 'vinaigrette'],
+    exclude: ['liquide', 'liquid', 'chocolat', 'caille', 'substitut', 'sauce', 'mayo', 'vinaigrette', 'boeuf', 'beef', 'coeur', 'mousseline'],
     queries: ['oeufs', 'eggs'],
     pkg: { size: 12, unit: 'unit' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
   },
