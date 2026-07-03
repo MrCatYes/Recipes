@@ -503,7 +503,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Champignons', brand: null, category: 'Légumes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['champignons', 'champignon', 'mushroom', 'café au lait', 'cremini', 'blancs'],
+    include: ['champignons', 'champignon', 'mushroom', 'café au lait', 'cremini', 'champignons blancs', 'white mushroom'],
     exclude: ['soupe', 'soup', 'sauce', 'crème', 'séchés'],
     queries: ['champignons', 'mushrooms'],
     pkg: { size: 227, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 },
@@ -987,6 +987,22 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['sauce', 'chili préparé'],
     queries: ['haricots rouges', 'kidney beans'],
     pkg: { size: 540, unit: 'ml' }, baseline: { Maxi: 129, IGA: 149, Metro: 139 },
+  },
+  {
+    name: 'Haricots blancs en conserve', brand: null, category: 'Légumineuses',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['haricots blancs', 'white beans', 'navy beans', 'fèves blanches', 'lingot', 'baby lima', 'northern beans', 'cannellini'],
+    exclude: ['secs', 'dried'],
+    queries: ['haricots blancs', 'white beans'],
+    pkg: { size: 540, unit: 'ml' }, baseline: { Maxi: 129, IGA: 149, Metro: 139 },
+  },
+  {
+    name: 'Haricots blancs secs', brand: null, category: 'Légumineuses',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['haricots blancs secs', 'white beans dry', 'dried white beans', 'haricots lingot secs'],
+    exclude: [],
+    queries: ['haricots blancs secs'],
+    pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
   },
 
   // ─── Canned additions ─────────────────────────────────────────────────────────
