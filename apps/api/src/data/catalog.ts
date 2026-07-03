@@ -2520,6 +2520,40 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['épices à volaille'],
     pkg: { size: 45, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
   },
+
+  // ─── Round 11 — légumes, vins, pâtes manquantes ────────────────────────────
+  {
+    name: 'Haricots verts', brand: null, category: 'Légumes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['haricots verts', 'haricot vert', 'green beans', 'green bean', 'fève verte'],
+    exclude: ['conserve', 'can', 'séchés', 'dried'],
+    queries: ['haricots verts', 'green beans'],
+    pkg: { size: 300, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
+    name: 'Vin mousseux', brand: null, category: 'Vins & boissons',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['vin mousseux', 'mousseux', 'prosecco', 'cava', 'crémant', 'champagne', 'sparkling wine', 'vin pétillant'],
+    exclude: ['vinaigre', 'vinegar'],
+    queries: ['vin mousseux', 'prosecco'],
+    pkg: { size: 750, unit: 'ml' }, baseline: { Maxi: 1499, IGA: 1799, Metro: 1699 },
+  },
+  {
+    name: 'Tubettinis', brand: null, category: 'Pâtes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['tubettini', 'tubetti', 'ditalini', 'petites pâtes courtes', 'small pasta'],
+    exclude: [],
+    queries: ['tubettinis', 'ditalini'],
+    pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 199, IGA: 249, Metro: 229 },
+  },
+  {
+    name: 'Huile de friture', brand: null, category: 'Huiles',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['huile pour la friture', 'huile de friture', 'frying oil', 'huile de cuisson', 'huile végétale'],
+    exclude: ['olive', 'arachide', 'sesame', 'sésame', 'coco', 'noix'],
+    queries: ['huile végétale', 'vegetable oil'],
+    pkg: { size: 1000, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
 ];
 
 export const CHAINS: Chain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
