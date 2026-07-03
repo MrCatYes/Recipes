@@ -99,6 +99,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 100, unit: 'ml' }, baseline: { Maxi: 449, IGA: 499, Metro: 479 },
   },
   {
+    name: 'Gousse de vanille', brand: null, category: 'Épices',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['gousse de vanille', 'vanilla bean', 'gousses de vanille'],
+    exclude: [],
+    queries: ['gousse de vanille', 'vanilla bean'],
+    pkg: { size: 2, unit: 'unit' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
+  },
+  {
     name: 'Sel', brand: 'Sifto', category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['sel de table', 'sel iodé', 'table salt', 'sel sifto', 'sel windsor', 'de sel', 'sel ', 'gros sel', 'coarse salt', 'sel casher', 'sel kasher'],
