@@ -1645,8 +1645,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Eau', brand: null, category: 'Boissons',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['eau', 'water'],
-    exclude: ['eau de rose', 'eau de fleur', 'eau gazeuse', 'eau minérale', 'soda'],
+    include: ["d'eau", 'water'],
+    exclude: ['eau de rose', 'eau de fleur', 'eau gazeuse', 'eau minérale', 'soda', 'rose water'],
     queries: ['eau', 'water'],
     pkg: { size: 1000, unit: 'ml' }, baseline: { Maxi: 0, IGA: 0, Metro: 0 },
   },
