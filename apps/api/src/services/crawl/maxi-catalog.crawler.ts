@@ -6,8 +6,14 @@
  *   pnpm exec tsx src/services/crawl/maxi-catalog.crawler.ts
  */
 
-import { chromium, type Page } from 'playwright';
+import { chromium as chromiumBase } from 'playwright-extra';
+import stealth from 'puppeteer-extra-plugin-stealth';
+import type { Page } from 'playwright';
 import { PrismaClient } from '@prisma/client';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+(chromiumBase as any).use(stealth());
+const chromium = chromiumBase;
 
 const prisma = new PrismaClient();
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
@@ -111,7 +117,9 @@ async function crawlCategory(page: Page, url: string, category: string): Promise
 }
 
 export async function crawlMaxi(): Promise<void> {
-  const browser = await chromium.launch({ headless: true, args: ['--no-sandbox', '--disable-blink-features=AutomationControlled'] });
+  const executablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH
+    ?? (require('fs').existsSync('/usr/bin/chromium-browser') ? '/usr/bin/chromium-browser' : undefined);
+  const browser = await chromium.launch({ headless: true, executablePath, args: ['--no-sandbox', '--disable-blink-features=AutomationControlled', '--disable-dev-shm-usage'] });
   const ctx = await browser.newContext({ userAgent: UA, locale: 'fr-CA', viewport: { width: 1280, height: 900 } });
   const page = await ctx.newPage();
 
