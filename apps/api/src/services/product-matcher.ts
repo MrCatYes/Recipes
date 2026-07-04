@@ -1,7 +1,7 @@
 /**
  * Shared product matcher.
- * Maps a scraped/flyer product name → our canonical DB product via keyword rules.
- * Strict: rejects wrong-category items (jus de tomate ≠ tomates en dés, porc ≠ boeuf).
+ * Maps a scraped/flyer product name -> our canonical DB product via keyword rules.
+ * Strict: rejects wrong-category items (jus de tomate != tomates en des, porc != boeuf).
  */
 
 import { CATALOG } from '../data/catalog';
@@ -18,9 +18,12 @@ export const MATCH_RULES: Record<string, MatchRule> = Object.fromEntries(
 
 export function normalize(s: string): string {
   return s.toLowerCase()
-    .replace(/[‘’ʼ`]/g, "’") // normalize apostrophe variants
-    .replace(/œ/g, ‘oe’).replace(/æ/g, ‘ae’) // expand ligatures
-    .normalize(‘NFD’).replace(/[̀-ͯ]/g, ‘’); // strip accents
+    // Normalize apostrophe variants to straight apostrophe (U+0027):
+    // U+2018 left single quotation, U+2019 right single quotation, U+02BC modifier apostrophe, backtick
+    .replace(/[‘’ʼ`]/g, "'")
+    // Expand ligatures: U+0153 oe-ligature, U+00E6 ae-ligature
+    .replace(/œ/g, 'oe').replace(/æ/g, 'ae')
+    .normalize('NFD').replace(/[̀-ͯ]/g, ''); // strip combining accent marks
 }
 
 export interface DBProduct { id: string; name: string }
