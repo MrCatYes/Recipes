@@ -2913,8 +2913,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Rôti de boeuf', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['rôti de boeuf', 'rôti de bœuf', 'côtes croisées', 'chuck roast', 'rôti de palette', 'palette de boeuf', 'surlonge de boeuf', 'surlonge de bœuf', 'haut de surlonge', 'basse côte', 'contre-filet', 'bavette de boeuf', 'bavette de bœuf', 'bifteck', 'steak'],
-    exclude: ['porc', 'pork', 'veau', 'agneau', 'haché'],
+    include: ['rôti de boeuf', 'rôti de bœuf', 'côtes croisées', 'chuck roast', 'rôti de palette', 'palette de boeuf', 'surlonge de boeuf', 'surlonge de bœuf', 'haut de surlonge', 'basse côte', 'contre-filet', 'bavette de boeuf', 'bavette de bœuf', 'bifteck', 'steak', 'cubes de boeuf', 'cubes de bœuf', 'dés de boeuf', 'dés de bœuf', 'boeuf à braiser', 'bœuf à braiser', 'lanières de boeuf', 'lanières de bœuf'],
+    exclude: ['porc', 'pork', 'veau', 'agneau', 'haché', 'saucisse'],
     queries: ['rôti de boeuf', 'chuck roast'],
     pkg: { size: 1200, unit: 'g' }, baseline: { Maxi: 1299, IGA: 1499, Metro: 1399 },
   },
@@ -2933,6 +2933,22 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['hot dog'],
     queries: ['pain hamburger', 'hamburger bun'],
     pkg: { size: 8, unit: 'unit' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
+    name: 'Fond de veau', brand: null, category: 'Conserves',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['fond de veau', 'veal stock', 'demi-glace de veau', 'bouillon de veau', 'veal broth', 'fond brun de veau'],
+    exclude: ['poulet', 'chicken', 'boeuf', 'légume'],
+    queries: ['fond de veau', 'veal stock'],
+    pkg: { size: 473, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Grenade', brand: null, category: 'Fruits',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['grenade', 'pomegranate', 'grains de grenade', 'arilles de grenade', 'jus de grenade'],
+    exclude: [],
+    queries: ['grenade', 'pomegranate'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
   },
   {
     name: 'Harissa', brand: null, category: 'Épices',
