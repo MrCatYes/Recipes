@@ -183,8 +183,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Fromage cheddar', brand: null, category: 'Produits laitiers',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['fromage cheddar', 'cheddar cheese', 'cheddar fort', 'cheddar mi-fort', 'cheddar doux'],
-    exclude: ['tranches', 'slices', 'râpé', 'shredded', 'effiloché', 'string', 'collation'],
+    include: ['fromage cheddar', 'cheddar cheese', 'cheddar fort', 'cheddar mi-fort', 'cheddar doux', 'cheddar'],
+    exclude: ['râpé', 'shredded', 'effiloché', 'string', 'collation'],
     queries: ['cheddar', 'fromage cheddar'],
     pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 599, IGA: 649, Metro: 629 },
   },
@@ -243,7 +243,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Pâtes spaghetti', brand: 'Barilla', category: 'Féculents',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['spaghetti', 'spaghettini', 'pâtes alimentaires barilla', 'pâtes barilla', 'linguine', 'linguini', 'fettuccine', 'tagliatelle', 'pappardelle', 'fusilli', 'farfalle', 'rotini', 'rigatoni', 'penne rigate'],
+    include: ['spaghetti', 'spaghettini', 'pâtes alimentaires barilla', 'pâtes barilla', 'linguine', 'linguini', 'fettuccine', 'tagliatelle', 'pappardelle', 'fusilli', 'farfalle', 'rotini', 'rigatoni', 'penne rigate', 'coquilles', 'conchiglie', 'orzo', 'ditalini', 'capellini', 'vermicelle', 'orecchiette', 'gemelli'],
     exclude: ['sauce', 'repas', 'meal', 'soupe', 'soup', 'courge', 'squash', 'sans gluten', 'gluten free'],
     queries: ['spaghetti', 'pâtes barilla'],
     pkg: { size: 450, unit: 'g' }, baseline: { Maxi: 199, IGA: 249, Metro: 229 },
@@ -327,7 +327,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Pomme de terre', brand: null, category: 'Légumes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['pommes de terre', 'patates', 'potatoes', 'russet', 'yukon'],
+    include: ['pommes de terre', 'pomme de terre', 'patates', 'patate', 'potatoes', 'potato', 'russet', 'yukon', 'rattes', 'fingerling', 'grelots'],
     exclude: ['douce', 'sweet', 'frite', 'fries', 'croustilles', 'chips', 'pilée', 'purée'],
     queries: ['pommes de terre', 'potatoes'],
     pkg: { size: 4500, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
@@ -769,6 +769,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 599, IGA: 649, Metro: 629 },
   },
   {
+    name: 'Confiture', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['confiture', 'jam', 'marmelade', 'marmalade', 'gelée de fruits', 'fruit preserve'],
+    exclude: ['moutarde', 'mustard', 'piment', 'pepper'],
+    queries: ['confiture', 'jam'],
+    pkg: { size: 250, unit: 'ml' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
     name: 'Moutarde de Dijon', brand: null, category: 'Épicerie',
     defaultUnit: 'ml', defaultUnitType: 'volume',
     include: ['moutarde de dijon', 'dijon mustard', 'moutarde dijon', 'moutarde à l ancienne', 'moutarde ancienne', 'whole grain mustard', 'moutarde forte', 'moutarde jaune'],
@@ -901,7 +909,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Poudre de chili', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['poudre de chili', 'chili powder', 'assaisonnement chili'],
+    include: ['poudre de chili', 'chili powder', 'assaisonnement chili', 'assaisonnement au chili'],
     exclude: ['sauce', 'piment', 'sriracha'],
     queries: ['poudre chili', 'chili powder'],
     pkg: { size: 50, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.5,
@@ -2477,6 +2485,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['vinaigrette'],
     queries: ['brie', 'camembert'],
     pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 549, IGA: 599, Metro: 579 },
+  },
+  {
+    name: 'Fromage bleu', brand: null, category: 'Fromages',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['fromage bleu', 'blue cheese', 'roquefort', 'gorgonzola', 'stilton', 'bleu bénédictin', 'bénédictin', 'benediction', 'bleu de bresse', 'bleu d\'auvergne'],
+    exclude: [],
+    queries: ['fromage bleu', 'blue cheese'],
+    pkg: { size: 150, unit: 'g' }, baseline: { Maxi: 599, IGA: 649, Metro: 629 },
   },
   {
     name: 'Homard', brand: null, category: 'Poissons & fruits de mer',

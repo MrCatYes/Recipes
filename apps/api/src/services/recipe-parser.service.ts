@@ -89,6 +89,7 @@ export function parseImageUrl(raw: unknown): string | null {
 }
 
 const META_LINE_RE = /^(portions?|rendement|préparation|preparation|cuisson|macération|maceration|repos|réfrigération|réfrigeration|congélation|congelation|attente)\s+[\d,]/i;
+const META_BOOL_RE = /^se\s+congèle\s+(oui|non)$/i;
 
 function cleanIngredientText(s: string): string {
   return s
@@ -98,7 +99,8 @@ function cleanIngredientText(s: string): string {
 }
 
 function isMetaLine(s: string): boolean {
-  return META_LINE_RE.test(s.trim());
+  const t = s.trim();
+  return META_LINE_RE.test(t) || META_BOOL_RE.test(t);
 }
 
 export function parseInstructions(raw: unknown): string[] {
