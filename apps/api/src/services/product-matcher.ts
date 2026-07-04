@@ -17,7 +17,9 @@ export const MATCH_RULES: Record<string, MatchRule> = Object.fromEntries(
 );
 
 export function normalize(s: string): string {
-  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, ''); // strip accents
+  return s.toLowerCase()
+    .replace(/[‘’ʼ`]/g, "'") // normalize apostrophe variants
+    .normalize('NFD').replace(/[̀-ͯ]/g, ''); // strip accents
 }
 
 export interface DBProduct { id: string; name: string }
