@@ -2919,6 +2919,22 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 1200, unit: 'g' }, baseline: { Maxi: 1299, IGA: 1499, Metro: 1399 },
   },
   {
+    name: 'Baguette', brand: null, category: 'Boulangerie',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['baguette', 'miche', 'miche de pain', 'pain de campagne', 'pain croûté', 'pain artisan', 'pain baguette'],
+    exclude: ['sandwich', 'tranché', 'sliced'],
+    queries: ['baguette', 'pain artisan'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+  {
+    name: 'Pain à hamburger', brand: null, category: 'Boulangerie',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['pain à hamburger', 'pain hamburger', 'hamburger bun', 'pains à hamburger', 'pain brioche hamburger', 'brioche hamburger', 'pain brioché hamburger'],
+    exclude: ['hot dog'],
+    queries: ['pain hamburger', 'hamburger bun'],
+    pkg: { size: 8, unit: 'unit' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
     name: 'Harissa', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['harissa', 'pâte harissa', 'harissa paste'],
