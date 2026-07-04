@@ -16,7 +16,7 @@ import type { Page } from 'playwright';
 
 const BASE = 'https://www.ricardocuisine.com';
 const CATEGORIES = [
-  // Plats principaux (viandes)
+  // Plats principaux — leaf categories (render recipe cards directly)
   '/recettes/plats-principaux/poulet',
   '/recettes/plats-principaux/boeuf',
   '/recettes/plats-principaux/porc',
@@ -30,22 +30,34 @@ const CATEGORIES = [
   '/recettes/plats-principaux/canard',
   '/recettes/plats-principaux/veau',
   '/recettes/plats-principaux/fondues',
-  // Desserts (subcategories with actual recipe links)
-  '/recettes/desserts/gateaux-et-genoise',
-  '/recettes/desserts/biscuits-et-gateaux-au-chocolat',
-  '/recettes/desserts/tartes-et-tourtes-sucrees',
-  '/recettes/desserts/mousses-et-cremeux',
-  '/recettes/desserts/poudings-et-cremes',
-  '/recettes/desserts/glaces-et-sorbets',
-  '/recettes/desserts/muffins-et-scones',
+  '/recettes/plats-principaux/dinde',
+  '/recettes/plats-principaux/gibier',
+  '/recettes/plats-principaux/quiches-et-tartes-salees',
+  '/recettes/plats-principaux/orge-et-quinoa',
+  // Desserts — actual leaf subcategories (discovered via Playwright)
+  '/recettes/desserts/barres-et-carres',
+  '/recettes/desserts/biscuits',
+  '/recettes/desserts/bonbons-chocolats-et-friandises',
+  '/recettes/desserts/brownies',
+  '/recettes/desserts/confitures-et-tartinades-sucrees',
+  '/recettes/desserts/croustades-et-croustillants',
+  '/recettes/desserts/cremes-desserts-mousse-et-meringues',
+  '/recettes/desserts/crepes-et-pancakes',
+  '/recettes/desserts/cupcakes',
+  '/recettes/desserts/desserts-glaces',
+  '/recettes/desserts/fruits',
+  '/recettes/desserts/gateaux',
+  '/recettes/desserts/muffins-et-pains-desserts',
+  '/recettes/desserts/poudings-et-tapiocas',
+  '/recettes/desserts/patisseries',
+  '/recettes/desserts/tartes',
+  '/recettes/desserts/yogourts-et-fromages',
   // Other categories
   '/recettes/entrees-et-hors-doeuvre',
   '/recettes/soupes-et-potages',
   '/recettes/salades-et-crudites',
   '/recettes/dejeuners-et-brunchs',
   '/recettes/accompagnements-et-sauces',
-  '/recettes/recettes-vegetariennes',
-  '/recettes/recettes-rapides-et-faciles',
   '/recettes/patisseries-et-boulangeries',
   '/recettes/boissons',
 ];
