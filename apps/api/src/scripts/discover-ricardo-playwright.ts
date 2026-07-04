@@ -16,7 +16,7 @@ import type { Page } from 'playwright';
 
 const BASE = 'https://www.ricardocuisine.com';
 const CATEGORIES = [
-  // Plats principaux — leaf categories (render recipe cards directly)
+  // Plats principaux — all leaf subcategories
   '/recettes/plats-principaux/poulet',
   '/recettes/plats-principaux/boeuf',
   '/recettes/plats-principaux/porc',
@@ -24,6 +24,7 @@ const CATEGORIES = [
   '/recettes/plats-principaux/fruits-de-mer',
   '/recettes/plats-principaux/pates-alimentaires',
   '/recettes/plats-principaux/riz',
+  '/recettes/plats-principaux/risotto',
   '/recettes/plats-principaux/oeufs',
   '/recettes/plats-principaux/legumineuses',
   '/recettes/plats-principaux/agneau',
@@ -34,7 +35,12 @@ const CATEGORIES = [
   '/recettes/plats-principaux/gibier',
   '/recettes/plats-principaux/quiches-et-tartes-salees',
   '/recettes/plats-principaux/orge-et-quinoa',
-  // Desserts — actual leaf subcategories (discovered via Playwright)
+  '/recettes/plats-principaux/tofu-soya-et-cie',
+  '/recettes/plats-principaux/vegetarien',
+  '/recettes/plats-principaux/sandwichs',
+  '/recettes/plats-principaux/oies-pintades-et-autres-volailles',
+  '/recettes/plats-principaux/dejeuners-brunch',
+  // Desserts — leaf subcategories (discovered via Playwright)
   '/recettes/desserts/barres-et-carres',
   '/recettes/desserts/biscuits',
   '/recettes/desserts/bonbons-chocolats-et-friandises',
@@ -52,14 +58,44 @@ const CATEGORIES = [
   '/recettes/desserts/patisseries',
   '/recettes/desserts/tartes',
   '/recettes/desserts/yogourts-et-fromages',
-  // Other categories
-  '/recettes/entrees-et-hors-doeuvre',
-  '/recettes/soupes-et-potages',
-  '/recettes/salades-et-crudites',
-  '/recettes/dejeuners-et-brunchs',
-  '/recettes/accompagnements-et-sauces',
-  '/recettes/patisseries-et-boulangeries',
-  '/recettes/boissons',
+  // Entrées — correct subcategory paths (from site nav)
+  '/recettes/entrees/bouchees',
+  '/recettes/entrees/conserves-et-ketchups',
+  '/recettes/entrees/entree',
+  '/recettes/entrees/legumes-et-gratins',
+  '/recettes/entrees/marinades-pour-bbq',
+  '/recettes/entrees/mayonnaises-et-vinaigrettes',
+  '/recettes/entrees/pains-sales',
+  '/recettes/entrees/salades',
+  '/recettes/entrees/sauces-beurres-et-pestos',
+  '/recettes/entrees/soupes-et-potages',
+  '/recettes/entrees/trempettes-et-tartinades-salees',
+  '/recettes/entrees/boissons-et-cocktails-alcoolises',
+  '/recettes/entrees/boissons-et-cocktails-sans-alcool',
+  // Ingredients pages (ingredient-centric recipe listings)
+  '/recettes/ingredients/poulet',
+  '/recettes/ingredients/boeuf',
+  '/recettes/ingredients/porc',
+  '/recettes/ingredients/poisson',
+  '/recettes/ingredients/saumon',
+  '/recettes/ingredients/crevettes',
+  '/recettes/ingredients/homard',
+  '/recettes/ingredients/agneau',
+  '/recettes/ingredients/canard',
+  '/recettes/ingredients/dinde',
+  '/recettes/ingredients/veau',
+  '/recettes/ingredients/gibier',
+  '/recettes/ingredients/legumes',
+  '/recettes/ingredients/legumineuses',
+  '/recettes/ingredients/pates',
+  '/recettes/ingredients/oeufs',
+  '/recettes/ingredients/fromages',
+  '/recettes/ingredients/tofu',
+  '/recettes/ingredients/fruits',
+  '/recettes/ingredients/canneberges',
+  '/recettes/ingredients/chocolat',
+  '/recettes/ingredients/creme',
+  '/recettes/ingredients/miel',
 ];
 
 async function extractUrls(page: Page): Promise<string[]> {
