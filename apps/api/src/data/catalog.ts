@@ -225,7 +225,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: "Huile d'olive extra vierge", brand: null, category: 'Huiles',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ["huile d'olive extra vierge", 'extra virgin olive oil', "huile d'olive vierge extra"],
+    include: ["huile d'olive", "huile d'olive extra vierge", 'extra virgin olive oil', "huile d'olive vierge extra", 'olive oil'],
     exclude: ['tapenade', 'antipasto', 'marinade', 'spray', 'enduit', 'pomace', 'pure'],
     queries: ['huile olive', 'olive oil'],
     pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 999, IGA: 1099, Metro: 1049 },
@@ -2020,6 +2020,22 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['cidre de glace', 'ice cider'],
     pkg: { size: 375, unit: 'ml' }, baseline: { IGA: 2999, Metro: 3199 },
   },
+  {
+    name: 'Bière', brand: null, category: 'Vins & boissons',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['bière', 'biere', 'beer', 'bière blonde', 'bière noire', 'bière brune', 'bière rousse', 'lager', 'ale ', 'ipa', 'stout', 'porter', 'canette de bière', 'bouteille de bière'],
+    exclude: ['vinaigre', 'vinegar', 'cidre', 'cider', 'levure de bière'],
+    queries: ['bière', 'beer'],
+    pkg: { size: 355, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+  {
+    name: 'Cidre', brand: null, category: 'Vins & boissons',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['cidre', 'apple cider', 'hard cider'],
+    exclude: ['vinaigre', 'vinegar', 'glace', 'ice'],
+    queries: ['cidre', 'cider'],
+    pkg: { size: 355, unit: 'ml' }, baseline: { Maxi: 299, IGA: 329, Metro: 319 },
+  },
   // ─── Boulangerie & pâtes ────────────────────────────────────────────────────
   {
     name: 'Pâte à egg roll', brand: null, category: 'Boulangerie',
@@ -2833,7 +2849,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Veau', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['rôti de veau', 'roti de veau', 'épaule de veau', 'épaule de veau', 'gigot de veau', 'jarret de veau', 'escalope de veau', 'côtelette de veau', 'osso-buco', 'osso buco', 'médaillon de veau', 'surlonge de veau', 'longe de veau'],
+    include: ['rôti de veau', 'roti de veau', 'épaule de veau', 'gigot de veau', 'jarret de veau', 'escalope de veau', 'escalopes de veau', 'côtelette de veau', 'côtelettes de veau', 'osso-buco', 'osso buco', 'médaillon de veau', 'surlonge de veau', 'longe de veau'],
     exclude: ['haché', 'ground'],
     queries: ['veau rôti', 'veal roast'],
     pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 1599, IGA: 1799, Metro: 1699 },
