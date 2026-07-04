@@ -58,6 +58,11 @@ const SITES: SitemapSite[] = [
     sitemaps: ['https://www.zeste.ca/sitemap.xml'],
     recipePattern: /zeste\.ca\/recettes\//,
   },
+  {
+    name: '5ingredients',
+    sitemaps: ['https://www.5ingredients15minutes.com/fr/sitemap_index.xml'],
+    recipePattern: /5ingredients15minutes\.com\/fr\/recettes\//,
+  },
 ];
 
 async function fetchSitemap(url: string): Promise<string[]> {

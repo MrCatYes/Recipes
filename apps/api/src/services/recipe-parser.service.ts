@@ -304,7 +304,9 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     // Recettes du Québec
     '.recette-ingredients li',
     '.recipeIngredients li',
-    // Cuisinez.com / 5ingredients15minutes
+    // Cuisinez.com / 5ingredients15minutes / pratico-pratiques
+    '.recipe__ingredients--ingredient li',
+    '.recipe__ingredients--ingredient',
     '.entry-ingredients li',
     '.recipe-card__ingredients li',
     // Mordu (Radio-Canada)
