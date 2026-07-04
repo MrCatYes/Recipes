@@ -143,8 +143,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Beurre non salé', brand: null, category: 'Produits laitiers',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['beurre non salé', 'unsalted butter', 'beurre doux', 'beurre selection', 'beurre lactantia', 'beurre président', 'beurre no name', 'beurre ramolli', 'beurre en pommade', 'beurre mou'],
-    exclude: ['arachide', 'peanut', 'amande', 'almond', 'margarine', 'cacao', "à l'ail", 'garlic', 'demi-sel'],
+    include: ['beurre non salé', 'unsalted butter', 'beurre doux', 'beurre selection', 'beurre lactantia', 'beurre président', 'beurre no name', 'beurre ramolli', 'beurre en pommade', 'beurre mou', 'beurre', 'butter'],
+    exclude: ['arachide', 'peanut', 'amande', 'almond', 'margarine', 'cacao', "à l'ail", 'garlic', 'demi-sel', 'fondu', 'clarifié', 'noisette'],
     queries: ['beurre', 'butter'],
     pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 699, IGA: 749, Metro: 729 }, densityGPerMl: 0.96,
   },
@@ -2605,7 +2605,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Huile de friture', brand: null, category: 'Huiles',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['huile pour la friture', 'huile de friture', 'frying oil', 'huile de cuisson', 'huile végétale'],
+    include: ['huile pour la friture', 'huile de friture', 'frying oil', 'huile de cuisson'],
     exclude: ['olive', 'arachide', 'sesame', 'sésame', 'coco', 'noix'],
     queries: ['huile végétale', 'vegetable oil'],
     pkg: { size: 1000, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
