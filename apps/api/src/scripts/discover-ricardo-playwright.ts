@@ -16,6 +16,7 @@ import type { Page } from 'playwright';
 
 const BASE = 'https://www.ricardocuisine.com';
 const CATEGORIES = [
+  // Plats principaux (viandes)
   '/recettes/plats-principaux/poulet',
   '/recettes/plats-principaux/boeuf',
   '/recettes/plats-principaux/porc',
@@ -29,14 +30,24 @@ const CATEGORIES = [
   '/recettes/plats-principaux/canard',
   '/recettes/plats-principaux/veau',
   '/recettes/plats-principaux/fondues',
-  '/recettes/entrees',
-  '/recettes/soupes',
-  '/recettes/salades',
-  '/recettes/desserts',
-  '/recettes/dejeuners',
-  '/recettes/accompagnements',
+  // Desserts (subcategories with actual recipe links)
+  '/recettes/desserts/gateaux-et-genoise',
+  '/recettes/desserts/biscuits-et-gateaux-au-chocolat',
+  '/recettes/desserts/tartes-et-tourtes-sucrees',
+  '/recettes/desserts/mousses-et-cremeux',
+  '/recettes/desserts/poudings-et-cremes',
+  '/recettes/desserts/glaces-et-sorbets',
+  '/recettes/desserts/muffins-et-scones',
+  // Other categories
+  '/recettes/entrees-et-hors-doeuvre',
+  '/recettes/soupes-et-potages',
+  '/recettes/salades-et-crudites',
+  '/recettes/dejeuners-et-brunchs',
+  '/recettes/accompagnements-et-sauces',
   '/recettes/recettes-vegetariennes',
-  '/recettes/recettes-rapides',
+  '/recettes/recettes-rapides-et-faciles',
+  '/recettes/patisseries-et-boulangeries',
+  '/recettes/boissons',
 ];
 
 async function extractUrls(page: Page): Promise<string[]> {

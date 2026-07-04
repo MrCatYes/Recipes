@@ -414,7 +414,7 @@ export const CATALOG: CatalogProduct[] = [
     name: 'Bouillon de boeuf', brand: null, category: 'Conserves',
     defaultUnit: 'ml', defaultUnitType: 'volume',
     include: ['bouillon de boeuf', 'bouillon de bœuf', 'beef broth', 'beef stock', 'fond de boeuf'],
-    exclude: ['poulet', 'chicken', 'légume', 'vegetable', 'cube', 'poudre', 'soupe'],
+    exclude: ['bouillon de poulet', 'chicken broth', 'chicken stock', 'fond de poulet', 'légume', 'vegetable', 'cube', 'poudre', 'soupe'],
     queries: ['bouillon de boeuf', 'beef broth'],
     pkg: { size: 900, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
   },
