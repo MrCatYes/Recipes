@@ -2063,6 +2063,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 375, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 },
   },
   {
+    name: 'Flocons de piment rouge', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['flocons de piment', 'red pepper flakes', 'crushed red pepper', 'piment broyé', 'piment séché broyé', 'piment fort broyé'],
+    exclude: [],
+    queries: ['flocons piment rouge', 'red pepper flakes'],
+    pkg: { size: 45, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.4,
+  },
+  {
     name: 'Poivre de Cayenne', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['poivre de cayenne', 'cayenne', 'piment de cayenne', 'poudre de cayenne'],
