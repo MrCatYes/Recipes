@@ -88,11 +88,17 @@ export function parseImageUrl(raw: unknown): string | null {
   return null;
 }
 
+const META_LINE_RE = /^(portions?|rendement|préparation|preparation|cuisson|macération|maceration|repos|réfrigération|réfrigeration|congélation|congelation|attente)\s+[\d,]/i;
+
 function cleanIngredientText(s: string): string {
   return s
     .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/&#\d+;/g, ' ')
     .replace(/\s{2,}/g, ' ')
     .trim();
+}
+
+function isMetaLine(s: string): boolean {
+  return META_LINE_RE.test(s.trim());
 }
 
 export function parseInstructions(raw: unknown): string[] {
@@ -174,7 +180,7 @@ export function extractJsonLd(html: string): ParsedRecipe | null {
       if (!recipe) continue;
 
       const ingredients = Array.isArray(recipe.recipeIngredient)
-        ? (recipe.recipeIngredient as unknown[]).map(i => cleanIngredientText(String(i))).filter(Boolean)
+        ? (recipe.recipeIngredient as unknown[]).map(i => cleanIngredientText(String(i))).filter(s => s && !isMetaLine(s))
         : [];
 
       if (!recipe.name || ingredients.length === 0) continue;
@@ -223,11 +229,11 @@ export function extractMicrodata(html: string): ParsedRecipe | null {
 
   const ingredients = prop('recipeIngredient').toArray()
     .map(el => $(el).text().trim())
-    .filter(Boolean);
+    .filter(s => s && !isMetaLine(s));
   if (ingredients.length === 0) {
     prop('ingredients').toArray()
       .map(el => $(el).text().trim())
-      .filter(Boolean)
+      .filter(s => s && !isMetaLine(s))
       .forEach(i => ingredients.push(i));
   }
   if (ingredients.length === 0) return null;
@@ -320,7 +326,7 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
   for (const sel of ingSelectors) {
     $(sel).each((_, el) => {
       const t = $(el).text().trim().replace(/\s+/g, ' ');
-      if (t && t.length > 2 && t.length < 200) ingredients.push(t);
+      if (t && t.length > 2 && t.length < 200 && !isMetaLine(t)) ingredients.push(t);
     });
     if (ingredients.length >= 2) break; // need at least 2 to be a real ingredient list
   }

@@ -511,7 +511,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Champignons', brand: null, category: 'Légumes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['champignons', 'champignon', 'mushroom', 'café au lait', 'cremini', 'champignons blancs', 'white mushroom'],
+    include: ['champignons', 'champignon', 'mushroom', 'café au lait', 'cremini', 'champignons blancs', 'white mushroom', 'shiitake', 'portobello', 'pleurotes', 'pleurote'],
     exclude: ['soupe', 'soup', 'sauce', 'crème', 'séchés'],
     queries: ['champignons', 'mushrooms'],
     pkg: { size: 227, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 },
@@ -2071,6 +2071,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 45, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.4,
   },
   {
+    name: 'Graines de fenouil', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['graines de fenouil', 'fennel seeds', 'graine de fenouil', 'fenouil moulu', 'fenouil en poudre'],
+    exclude: ['frais', 'fresh', 'bulbe', 'bulb'],
+    queries: ['graines fenouil', 'fennel seeds'],
+    pkg: { size: 45, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.55,
+  },
+  {
     name: 'Poivre de Cayenne', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['poivre de cayenne', 'cayenne', 'piment de cayenne', 'poudre de cayenne'],
@@ -2599,6 +2607,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['vacherin'],
     pkg: { size: 250, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
+  },
+  {
+    name: 'Fromage suisse', brand: null, category: 'Fromages',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['fromage suisse', 'gruyère', 'gruyere', 'emmental', 'emmenthal', 'fromage de style suisse', 'raclette', 'comté', 'comte', 'beaufort', 'appenzell'],
+    exclude: ['cheddar', 'mozzarella', 'parmesan', 'brie', 'camembert', 'jarlsberg'],
+    queries: ['fromage suisse', 'gruyère'],
+    pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
   },
   {
     name: 'Pastis', brand: null, category: 'Alcools',
