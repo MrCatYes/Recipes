@@ -88,7 +88,7 @@ export function parseImageUrl(raw: unknown): string | null {
   return null;
 }
 
-const META_LINE_RE = /^(portions?|rendement|préparation|preparation|cuisson|macération|maceration|repos|réfrigération|réfrigeration|congélation|congelation|attente)\s+[\d,]/i;
+const META_LINE_RE = /^(portions?|rendement|préparation|preparation|cuisson|macération|maceration|repos|réfrigération|réfrigeration|congélation|congelation|attente|refroidissement|levée|levee|marinage|trempage|décongélation|decongelation|marinade\s+\d|temps\s+de)\s+[\d,]/i;
 const META_BOOL_RE = /^se\s+congèle\s+(oui|non)$/i;
 
 function cleanIngredientText(s: string): string {
