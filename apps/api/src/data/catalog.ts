@@ -207,7 +207,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Oeufs gros', brand: null, category: 'Oeufs',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['oeufs gros', 'œufs gros', 'gros oeufs', 'large eggs', 'oeufs blancs', 'œufs blancs', 'oeufs calibre', 'lot de 12', 'oeufs bruns', 'naturoeuf', 'douzaine oeufs', 'oeufs frais', 'eggs large', 'oeuf', 'oeufs', 'egg', 'jaune d oeuf', 'jaunes d oeuf', 'blanc d oeuf', 'blancs d oeuf'],
+    include: ['oeufs gros', 'œufs gros', 'gros oeufs', 'large eggs', 'oeufs blancs', 'œufs blancs', 'oeufs calibre', 'lot de 12', 'oeufs bruns', 'naturoeuf', 'douzaine oeufs', 'oeufs frais', 'eggs large', 'oeuf', 'oeufs', 'egg', 'jaune d oeuf', "jaune d'oeuf", 'jaunes d oeuf', "jaunes d'oeuf", 'blanc d oeuf', "blanc d'oeuf", 'blancs d oeuf', "blancs d'oeuf"],
     exclude: ['liquide', 'liquid', 'chocolat', 'caille', 'substitut', 'sauce', 'mayo', 'vinaigrette', 'boeuf', 'beef', 'coeur', 'mousseline'],
     queries: ['oeufs', 'eggs'],
     pkg: { size: 12, unit: 'unit' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
@@ -2797,6 +2797,38 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['vodka'],
     pkg: { size: 750, unit: 'ml' }, baseline: { Maxi: 2999, IGA: 3299, Metro: 3199 },
+  },
+  {
+    name: 'Mélasse', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['mélasse', 'molasses'],
+    exclude: [],
+    queries: ['mélasse', 'molasses'],
+    pkg: { size: 675, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 }, densityGPerMl: 1.4,
+  },
+  {
+    name: 'Tofu', brand: null, category: 'Épicerie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['tofu'],
+    exclude: [],
+    queries: ['tofu ferme', 'tofu'],
+    pkg: { size: 350, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 },
+  },
+  {
+    name: 'Aiglefin', brand: null, category: 'Poissons & fruits de mer',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['aiglefin', 'haddock', 'aigrefin'],
+    exclude: [],
+    queries: ['aiglefin', 'haddock'],
+    pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 999, IGA: 1099, Metro: 1049 },
+  },
+  {
+    name: 'Rôti de boeuf', brand: null, category: 'Viandes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['rôti de boeuf', 'rôti de bœuf', 'côtes croisées', 'chuck roast', 'rôti de palette', 'palette de boeuf'],
+    exclude: ['porc', 'pork', 'veau'],
+    queries: ['rôti de boeuf', 'chuck roast'],
+    pkg: { size: 1200, unit: 'g' }, baseline: { Maxi: 1299, IGA: 1499, Metro: 1399 },
   },
 ];
 
