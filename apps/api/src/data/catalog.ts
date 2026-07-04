@@ -2081,7 +2081,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Graines de fenouil', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['graines de fenouil', 'fennel seeds', 'graine de fenouil', 'fenouil moulu', 'fenouil en poudre'],
+    include: ['graines de fenouil', 'fennel seeds', 'graine de fenouil', 'fenouil moulu', 'fenouil moulues', 'graines de fenouil moulues', 'fenouil en poudre'],
     exclude: ['frais', 'fresh', 'bulbe', 'bulb'],
     queries: ['graines fenouil', 'fennel seeds'],
     pkg: { size: 45, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.55,
@@ -2917,6 +2917,38 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['porc', 'pork', 'veau', 'agneau', 'haché'],
     queries: ['rôti de boeuf', 'chuck roast'],
     pkg: { size: 1200, unit: 'g' }, baseline: { Maxi: 1299, IGA: 1499, Metro: 1399 },
+  },
+  {
+    name: 'Harissa', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['harissa', 'pâte harissa', 'harissa paste'],
+    exclude: [],
+    queries: ['harissa'],
+    pkg: { size: 135, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
+  },
+  {
+    name: 'Baies de genièvre', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['baies de genièvre', 'baies de genievre', 'genièvre', 'genievre', 'juniper berries', 'juniper berry'],
+    exclude: [],
+    queries: ['baies genièvre', 'juniper berries'],
+    pkg: { size: 30, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Riz à sushi', brand: null, category: 'Riz & grains',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['riz calrose', 'riz à sushi', 'riz sushi', 'sushi rice', 'calrose', 'riz japonica', 'riz à grains ronds'],
+    exclude: ['vinaigre', 'vinegar'],
+    queries: ['riz calrose', 'riz sushi', 'sushi rice'],
+    pkg: { size: 907, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Fromage pecorino', brand: null, category: 'Fromages',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['pecorino', 'pecorino romano', 'pecorino toscano', 'fromage pecorino'],
+    exclude: ['parmesan', 'parmigiano'],
+    queries: ['pecorino romano'],
+    pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
   },
 ];
 
