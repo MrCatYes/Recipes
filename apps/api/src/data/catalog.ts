@@ -319,7 +319,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Ail', brand: null, category: 'Légumes',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ["bulbe d'ail", 'ail frais', "tête d'ail", "gousses d'ail", 'fresh garlic', 'garlic bulb'],
+    include: ["bulbe d'ail", 'ail frais', "tête d'ail", "gousse d'ail", "gousses d'ail", 'fresh garlic', 'garlic bulb', 'garlic clove'],
     exclude: ['poudre', 'powder', 'sel', 'salt', 'haché en pot', 'minced', 'toast', 'pain', 'bread', 'crevette', 'shrimp', 'sauce', 'vinaigrette', 'croûton', 'beurre', 'butter', 'trempette'],
     queries: ['ail frais', 'bulbe ail'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 69, IGA: 79, Metro: 75 },
