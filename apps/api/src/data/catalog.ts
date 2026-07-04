@@ -2998,6 +2998,22 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['pecorino romano'],
     pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
   },
+  {
+    name: 'Assaisonnements italiens', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['assaisonnements italiens', 'assaisonnement italien', 'italian seasoning', 'mélange d\'épices italiennes', 'épices italiennes'],
+    exclude: [],
+    queries: ['assaisonnements italiens', 'italian seasoning'],
+    pkg: { size: 20, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 }, densityGPerMl: 0.5,
+  },
+  {
+    name: 'Dulce de leche', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['dulce de leche', 'confiture de lait', 'caramel de lait', 'caramel argentin'],
+    exclude: [],
+    queries: ['dulce de leche', 'confiture de lait'],
+    pkg: { size: 400, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
 ];
 
 export const CHAINS: Chain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
