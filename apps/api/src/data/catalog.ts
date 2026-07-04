@@ -2355,7 +2355,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Piment frais', brand: null, category: 'Légumes',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['piment de chili', 'piment chili', 'chili vert', 'chili rouge', 'jalapeño', 'serrano', 'poblano', 'piment fort', 'piment doux', 'piment vert', 'piment rouge'],
+    include: ['piment de chili', 'piment chili', 'chili vert', 'chili rouge', 'jalapeño', 'serrano', 'poblano', 'habanero', 'piment fort', 'piment doux', 'piment vert', 'piment rouge', 'scotch bonnet'],
     exclude: ['poudre', 'moulu', 'flocons', 'séché', 'chipotle', 'tabasco', 'alep'],
     queries: ['piment frais', 'fresh chili'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 99, IGA: 119, Metro: 109 },
