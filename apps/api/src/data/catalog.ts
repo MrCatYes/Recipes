@@ -178,7 +178,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['yogourt grec', 'greek yogurt', 'yogourt nature'],
     exclude: ['boire', 'drink', 'enfant', 'kids', 'aromatisé', 'vanille', 'fraise'],
     queries: ['yogourt grec', 'greek yogurt'],
-    pkg: { size: 750, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+    pkg: { size: 750, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 1.05,
   },
   {
     name: 'Fromage cheddar', brand: null, category: 'Produits laitiers',
