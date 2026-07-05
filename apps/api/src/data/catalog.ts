@@ -1289,6 +1289,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 410, unit: 'g' }, baseline: { Maxi: 449, IGA: 499, Metro: 479 },
   },
   {
+    name: 'Filet de porc', brand: null, category: 'Viandes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['filet de porc', 'filets de porc', 'filet mignon de porc', 'filets mignons de porc', 'pork tenderloin', 'longe de porc', 'longes de porc', 'pork loin', 'longe'],
+    exclude: ['haché', 'ground'],
+    queries: ['filet de porc', 'pork tenderloin'],
+    pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 1099, IGA: 1199, Metro: 1149 },
+  },
+  {
     name: 'Côtelettes de porc', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['côtelettes de porc', 'cotelettes de porc', 'pork chops', 'côtelette de porc'],
@@ -1299,8 +1307,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Steak de boeuf', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['steak de boeuf', 'bifteck', 'beef steak', 'steak de surlonge', 'contre-filet', 'faux-filet', 'bavette', 't-bone', 'filet mignon', 'new york'],
-    exclude: ['végé', 'plant', 'sauce', 'assaisonnement'],
+    include: ['steak de boeuf', 'bifteck', 'beef steak', 'steak de surlonge', 'contre-filet', 'faux-filet', 'bavette', 't-bone', 'new york'],
+    exclude: ['végé', 'plant', 'sauce', 'assaisonnement', 'porc', 'pork'],
     queries: ['steak boeuf', 'beef steak'],
     pkg: { size: 300, unit: 'g' }, baseline: { Maxi: 1299, IGA: 1499, Metro: 1399 },
   },
