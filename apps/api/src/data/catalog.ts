@@ -3225,8 +3225,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Ficelle de boucher', brand: null, category: 'Quincaillerie cuisine',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['ficelle de boucher', 'ficelle', 'butcher twine', 'kitchen twine', 'butcher string', 'corde de boucher'],
-    exclude: [],
+    include: ['ficelle de boucher', 'butcher twine', 'kitchen twine', 'butcher string', 'corde de boucher', 'ficelle alimentaire'],
+    exclude: ['pain', 'bread', 'boulangerie'],
     queries: ['ficelle boucher', 'butcher twine'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 0, IGA: 0, Metro: 0 },
   },
