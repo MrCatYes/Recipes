@@ -175,7 +175,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Yogourt grec nature', brand: 'Oikos', category: 'Produits laitiers',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['yogourt grec', 'greek yogurt', 'yogourt nature'],
+    include: ['yogourt grec', 'greek yogurt', 'yogourt nature', 'yaourt grec', 'yaourt à la grecque', 'yaourt nature', 'yaourts natures'],
     exclude: ['boire', 'drink', 'enfant', 'kids', 'aromatisé', 'vanille', 'fraise'],
     queries: ['yogourt grec', 'greek yogurt'],
     pkg: { size: 750, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 1.05,
@@ -417,6 +417,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['bouillon de poulet', 'chicken broth', 'chicken stock', 'fond de poulet', 'légume', 'vegetable', 'cube', 'poudre', 'soupe'],
     queries: ['bouillon de boeuf', 'beef broth'],
     pkg: { size: 900, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+  {
+    name: 'Cube de bouillon', brand: null, category: 'Épicerie',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['cube de bouillon', 'cubes de bouillon', 'bouillon kub', 'kub or', 'bouillon en cube', 'tablette de bouillon', 'bouillon cube', 'maggi cube', 'knorr cube'],
+    exclude: [],
+    queries: ['cube de bouillon', 'bouillon cube'],
+    pkg: { size: 8, unit: 'unit' }, baseline: { Maxi: 299, IGA: 329, Metro: 319 },
   },
   {
     name: 'Sauce soya', brand: null, category: 'Épicerie',
@@ -761,7 +769,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Fromage à la crème', brand: 'Philadelphia', category: 'Produits laitiers',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['fromage à la crème', 'cream cheese', 'philadelphia'],
+    include: ['fromage à la crème', 'cream cheese', 'philadelphia', 'saint-morêt', 'saint-moret', 'kiri'],
     exclude: ['tartare', 'boursin', 'brie'],
     queries: ['fromage à la crème', 'cream cheese'],
     pkg: { size: 250, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
@@ -2889,7 +2897,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Veau', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['rôti de veau', 'roti de veau', 'épaule de veau', 'gigot de veau', 'jarret de veau', 'escalope de veau', 'escalopes de veau', 'côtelette de veau', 'côtelettes de veau', 'osso-buco', 'osso buco', 'médaillon de veau', 'surlonge de veau', 'longe de veau'],
+    include: ['rôti de veau', 'roti de veau', 'épaule de veau', 'gigot de veau', 'jarret de veau', 'escalope de veau', 'escalopes de veau', 'côtelette de veau', 'côtelettes de veau', 'osso-buco', 'osso buco', 'médaillon de veau', 'surlonge de veau', 'longe de veau', 'paupiette de veau', 'paupiettes de veau'],
     exclude: ['haché', 'ground'],
     queries: ['veau rôti', 'veal roast'],
     pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 1599, IGA: 1799, Metro: 1699 },
@@ -3365,6 +3373,30 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ["oignons frits french's"],
     pkg: { size: 79, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Jeunes pousses', brand: null, category: 'Légumes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['jeunes pousses', 'bébé épinards', 'baby spinach', 'mesclun', 'mixed greens', 'salade de jeunes pousses', 'pousses de'],
+    exclude: ['tournesol', 'luzerne', 'alfalfa'],
+    queries: ['jeunes pousses', 'baby spinach'],
+    pkg: { size: 142, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Biscuits à la cuillère', brand: null, category: 'Épicerie',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['biscuits à la cuillère', 'biscuits a la cuillere', 'biscuit cuillère', 'ladyfinger', 'ladyfingers', 'savoiardi', 'boudoir'],
+    exclude: [],
+    queries: ['biscuits cuillère', 'ladyfingers'],
+    pkg: { size: 24, unit: 'unit' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+  },
+  {
+    name: 'Piment oiseau', brand: null, category: 'Épices',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['piment oiseau', 'piments oiseaux', 'bird pepper', 'bird eye chili', 'piment fort', 'piment rouge fort', 'piment de cayenne frais', 'thai chili'],
+    exclude: ['poudre', 'powder', 'sauce'],
+    queries: ['piment oiseau', 'bird pepper'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 179, Metro: 169 },
   },
   {
     name: 'Bouquet garni', brand: null, category: 'Épices',
