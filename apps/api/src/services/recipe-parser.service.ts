@@ -571,10 +571,17 @@ export class RecipeParserService {
 
     // Tier 2: HTML Microdata (itemtype="schema.org/Recipe")
     const fromMicrodata = extractMicrodata(html);
-    if (fromMicrodata && fromMicrodata.ingredients.length > 0) return fromMicrodata;
 
-    // Tier 3: CSS-class heuristics (WordPress recipe plugins, common patterns)
+    // Tier 3: CSS-class heuristics (includes Ricardo data-react-app-props extraction)
     const fromHeuristic = extractHeuristicHtml(html);
+
+    // For Microdata results with too few instructions, prefer heuristic if it has more
+    if (fromMicrodata && fromMicrodata.ingredients.length > 0) {
+      if (fromHeuristic && fromHeuristic.instructions.length > fromMicrodata.instructions.length) {
+        return fromHeuristic;
+      }
+      return fromMicrodata;
+    }
     if (fromHeuristic && fromHeuristic.ingredients.length > 0) return fromHeuristic;
 
     // Tier 4: Groq LLM fallback
