@@ -90,6 +90,8 @@ export function parseImageUrl(raw: unknown): string | null {
 
 const META_LINE_RE = /^(portions?|rendement|préparation|preparation|cuisson|macération|maceration|repos|réfrigération|réfrigeration|congélation|congelation|attente|refroidissement|levée|levee|marinage|trempage|décongélation|decongelation|marinade\s+\d|temps\s+de)\s+[\d,]/i;
 const META_BOOL_RE = /^se\s+congèle\s+(oui|non)$/i;
+// Section headers that appear in French recipe ingredient lists but aren't ingredients
+const SECTION_HEADER_RE = /^(préparation|preparation|pour\s+(la|le|les|l['''])\s+\w+|la\s+sauce|la\s+garniture|la\s+farce|la\s+marinade|le\s+glaçage|la\s+pâte|la\s+crème|la\s+décoration|garniture|farce|sauce|marinade|vinaigrette)\s*:?\s*$/i;
 
 function cleanIngredientText(s: string): string {
   return s
@@ -100,7 +102,7 @@ function cleanIngredientText(s: string): string {
 
 function isMetaLine(s: string): boolean {
   const t = s.trim();
-  return META_LINE_RE.test(t) || META_BOOL_RE.test(t);
+  return META_LINE_RE.test(t) || META_BOOL_RE.test(t) || SECTION_HEADER_RE.test(t);
 }
 
 export function parseInstructions(raw: unknown): string[] {

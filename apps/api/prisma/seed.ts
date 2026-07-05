@@ -50,6 +50,8 @@ async function seedUnitConversions() {
     { from: 'c. à t.', to: 'ml', factor: 5 },     // cuillère à thé
     { from: 'oz fl', to: 'ml',   factor: 29.5735 },
     { from: 'pinte', to: 'ml',   factor: 946.353 },
+    { from: 'cl',   to: 'ml',   factor: 10 },     // centilitre
+    { from: 'ml',   to: 'cl',   factor: 0.1 },
     // ─── Weight: base = g ───────────────────────────────────────────
     { from: 'kg',    to: 'g',    factor: 1000 },
     { from: 'g',     to: 'kg',   factor: 0.001 },

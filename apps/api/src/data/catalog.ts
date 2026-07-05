@@ -217,8 +217,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Huile canola', brand: null, category: 'Huiles',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['huile de canola', 'huile canola', 'canola oil', 'huile végétale', 'huile vegetale', 'vegetable oil', 'huile de tournesol', 'sunflower oil', 'huile de maïs', 'corn oil', 'huile de pépins'],
-    exclude: ['mélange', 'blend', 'spray', 'enduit', 'aérosol', 'olive', 'sésame', 'sesame', 'arachide', 'peanut', 'coco', 'avocado', 'avocat'],
+    include: ['huile de canola', 'huile canola', 'canola oil', 'huile végétale', 'huile vegetale', 'vegetable oil', 'huile de tournesol', 'sunflower oil', 'huile de maïs', 'corn oil', 'huile de pépins', 'huile neutre', 'neutral oil'],
+    exclude: ['mélange', 'blend', 'spray', 'enduit', 'aérosol', 'olive', 'sésame', 'sesame', 'arachide', 'peanut', 'coco', 'avocado', 'avocat', 'truffe', 'friture', 'noix', 'noisette', 'lin', 'chanvre'],
     queries: ['huile canola', 'canola oil'],
     pkg: { size: 1000, unit: 'ml' }, baseline: { Maxi: 699, IGA: 749, Metro: 729 },
   },
@@ -3237,6 +3237,30 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['brochettes bois', 'wooden skewers'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 0, IGA: 0, Metro: 0 },
+  },
+  {
+    name: 'Crème 35%', brand: null, category: 'Produits laitiers',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['crème 35%', 'creme 35%', 'crème à fouetter', 'creme a fouetter', 'whipping cream', 'heavy cream', 'crème liquide entière', 'creme liquide entiere', 'crème fraîche liquide', 'crème liquide', 'crème entière', 'full cream'],
+    exclude: ['sure', 'sour', 'aigre', 'légère', 'legere', 'glacée'],
+    queries: ['crème 35%', 'crème fouetter', 'whipping cream'],
+    pkg: { size: 473, unit: 'ml' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
+  },
+  {
+    name: 'Whisky', brand: null, category: 'Vins & boissons',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['whisky', 'whiskey', 'scotch', 'bourbon', 'rye whisky'],
+    exclude: [],
+    queries: ['whisky', 'whiskey'],
+    pkg: { size: 750, unit: 'ml' }, baseline: { Maxi: 2499, IGA: 2799, Metro: 2699 },
+  },
+  {
+    name: 'Piment d\'Espelette', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ["piment d'espelette", 'espelette pepper', 'poudre d\'espelette', 'piment espelette'],
+    exclude: [],
+    queries: ["piment espelette"],
+    pkg: { size: 40, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
   },
 ];
 
