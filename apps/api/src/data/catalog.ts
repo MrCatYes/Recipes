@@ -1003,6 +1003,22 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 20, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.3,
   },
   {
+    name: 'Cerfeuil', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['cerfeuil', 'chervil'],
+    exclude: [],
+    queries: ['cerfeuil', 'chervil'],
+    pkg: { size: 15, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.25,
+  },
+  {
+    name: 'Marjolaine séchée', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['marjolaine', 'marjoram', 'marjolaine fraîche', 'marjolaine séchée'],
+    exclude: [],
+    queries: ['marjolaine', 'marjoram'],
+    pkg: { size: 15, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.25,
+  },
+  {
     name: 'Clou de girofle', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['clou de girofle', 'clous de girofle', 'girofle', 'cloves', 'clove'],
@@ -2321,7 +2337,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Anis étoilé', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['anis étoilé', 'anis etoile', 'star anise', 'badiane'],
+    include: ['anis étoilé', 'anis etoile', 'star anise', 'badiane', "graines d'anis", 'graines de anis', 'anis moulu', 'anise seeds'],
     exclude: [],
     queries: ['anis étoilé', 'star anise'],
     pkg: { size: 20, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 }, densityGPerMl: 0.45,
