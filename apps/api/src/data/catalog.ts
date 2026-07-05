@@ -3294,6 +3294,38 @@ export const CATALOG: CatalogProduct[] = [
     queries: ["piment espelette"],
     pkg: { size: 40, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
   },
+  {
+    name: 'Raifort', brand: null, category: 'Condiments',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['raifort', 'horseradish', 'raifort préparé', 'raifort prepare', 'crème de raifort', 'sauce raifort'],
+    exclude: [],
+    queries: ['raifort', 'horseradish'],
+    pkg: { size: 156, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
+  },
+  {
+    name: 'Vinaigrette César', brand: null, category: 'Condiments',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['vinaigrette césar', 'vinaigrette cesar', 'caesar dressing', 'vinaigrette de césar'],
+    exclude: [],
+    queries: ['vinaigrette césar', 'caesar dressing'],
+    pkg: { size: 475, unit: 'ml' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+  },
+  {
+    name: 'Sauce demi-glace', brand: null, category: 'Condiments',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['sauce demi-glace', 'demi-glace', 'demi glace', 'sachet de sauce demi-glace'],
+    exclude: ['fond de veau'],
+    queries: ['sauce demi-glace'],
+    pkg: { size: 284, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Sauce tonkatsu', brand: null, category: 'Condiments',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['tonkatsu', 'sauce tonkatsu', 'bulldog sauce'],
+    exclude: [],
+    queries: ['sauce tonkatsu'],
+    pkg: { size: 300, unit: 'ml' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+  },
 ];
 
 export const CHAINS: Chain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];

@@ -92,6 +92,8 @@ const META_LINE_RE = /^(portions?|rendement|préparation|preparation|cuisson|mac
 const META_BOOL_RE = /^se\s+congèle\s+(oui|non)$/i;
 // Section headers that appear in French recipe ingredient lists but aren't ingredients
 const SECTION_HEADER_RE = /^(préparation|preparation|pour\s+(la|le|les|l['''])\s+\w+|la\s+sauce|la\s+garniture|la\s+farce|la\s+marinade|le\s+glaçage|la\s+pâte|la\s+crème|la\s+décoration|garniture|farce|sauce|marinade|vinaigrette)\s*:?\s*$/i;
+// Recipe cross-references ("1 recette de pâte à pizza"), non-food items, and decorative mentions
+const NON_INGREDIENT_RE = /^\d*\s*recette\s+de\s+/i;
 
 function cleanIngredientText(s: string): string {
   return s
@@ -102,7 +104,7 @@ function cleanIngredientText(s: string): string {
 
 function isMetaLine(s: string): boolean {
   const t = s.trim();
-  return META_LINE_RE.test(t) || META_BOOL_RE.test(t) || SECTION_HEADER_RE.test(t);
+  return META_LINE_RE.test(t) || META_BOOL_RE.test(t) || SECTION_HEADER_RE.test(t) || NON_INGREDIENT_RE.test(t);
 }
 
 export function parseInstructions(raw: unknown): string[] {
