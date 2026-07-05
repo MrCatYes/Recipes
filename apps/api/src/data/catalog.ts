@@ -421,7 +421,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Sauce soya', brand: null, category: 'Épicerie',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['sauce soya', 'sauce soja', 'soy sauce'],
+    include: ['sauce soya', 'sauce soja', 'soy sauce', 'tamari', 'sauce tamari', 'soya'],
     exclude: ['teriyaki', 'huîtres', 'oyster', 'hoisin'],
     queries: ['sauce soya', 'soy sauce'],
     pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 299, IGA: 329, Metro: 319 },
@@ -3125,6 +3125,22 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['grand marnier', 'triple sec'],
     pkg: { size: 750, unit: 'ml' }, baseline: { Maxi: 3999, IGA: 4299, Metro: 4199 },
+  },
+  {
+    name: 'Glaçons', brand: null, category: 'Boissons',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['glaçon', 'glaçons', 'glacon', 'glacons', 'ice cube', 'ice cubes', 'glaçons et', 'glaçons,'],
+    exclude: [],
+    queries: ['glaçons'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 0, IGA: 0, Metro: 0 },
+  },
+  {
+    name: 'Huile de truffe', brand: null, category: 'Huiles',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['huile de truffe', 'truffle oil', 'huile truffée'],
+    exclude: [],
+    queries: ['huile truffe', 'truffle oil'],
+    pkg: { size: 100, unit: 'ml' }, baseline: { Maxi: 999, IGA: 1299, Metro: 1199 },
   },
 ];
 
