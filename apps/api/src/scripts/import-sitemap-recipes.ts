@@ -63,6 +63,26 @@ const SITES: SitemapSite[] = [
     sitemaps: ['https://www.5ingredients15minutes.com/fr/sitemap_index.xml'],
     recipePattern: /5ingredients15minutes\.com\/fr\/recettes\//,
   },
+  {
+    name: 'pratico',
+    sitemaps: ['https://www.pratico-pratiques.com/sitemap.xml'],
+    recipePattern: /pratico-pratiques\.com\/recettes?\//,
+  },
+  {
+    name: 'jeanCoutu',
+    sitemaps: ['https://www.jeancoutu.com/sante/alimentation/sitemap.xml'],
+    recipePattern: /jeancoutu\.com\/sante\/alimentation\/recettes?\//,
+  },
+  {
+    name: 'lacuisinedeJean',
+    sitemaps: ['https://www.lacuisinedejean.com/sitemap.xml'],
+    recipePattern: /lacuisinedejean\.com\/recette\//,
+  },
+  {
+    name: 'cuisine_az',
+    sitemaps: ['https://www.cuisine-az.com/sitemap.xml'],
+    recipePattern: /cuisine-az\.com\/recette\//,
+  },
 ];
 
 async function fetchSitemap(url: string): Promise<string[]> {
