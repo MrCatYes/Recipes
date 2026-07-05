@@ -1655,7 +1655,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Crème glacée', brand: null, category: 'Surgelés',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['crème glacée', 'creme glacee', 'ice cream', 'gelato'],
+    include: ['crème glacée', 'creme glacee', 'ice cream', 'gelato', 'glace vanille', 'glace à la vanille', 'glace au chocolat', 'glace chocolat', 'glace fraise', 'glace à la fraise', 'crème à la glace'],
     exclude: ['sandwich', 'barre', 'cornet'],
     queries: ['crème glacée', 'ice cream'],
     pkg: { size: 1500, unit: 'ml' }, baseline: { Maxi: 499, IGA: 599, Metro: 549 }, densityGPerMl: 0.55,
@@ -3153,7 +3153,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Pain à hamburger', brand: null, category: 'Boulangerie',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['pain à hamburger', 'pain hamburger', 'hamburger bun', 'pains à hamburger', 'pain brioche hamburger', 'brioche hamburger', 'pain brioché hamburger'],
+    include: ['pain à hamburger', 'pain hamburger', 'hamburger bun', 'pains à hamburger', 'pain brioche hamburger', 'brioche hamburger', 'pain brioché hamburger', 'pain kaiser', 'kaiser', 'pains kaiser'],
     exclude: ['hot dog'],
     queries: ['pain hamburger', 'hamburger bun'],
     pkg: { size: 8, unit: 'unit' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
@@ -3629,6 +3629,38 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['érable', 'erable', 'maple'],
     queries: ['sirop de canne', 'simple syrup'],
     pkg: { size: 750, unit: 'ml' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
+  },
+  {
+    name: 'Jus de canneberge', brand: null, category: 'Jus',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['jus de canneberge', 'jus canneberge', 'cranberry juice', 'cocktail de canneberge', 'canneberry juice'],
+    exclude: [],
+    queries: ['jus de canneberge', 'cranberry juice'],
+    pkg: { size: 1000, unit: 'ml' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
+  },
+  {
+    name: 'Clémentines', brand: null, category: 'Fruits',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['clémentine', 'clementine', 'clémentines', 'clementines', 'mandarine', 'mandarines', 'tangerine', 'tangerines'],
+    exclude: [],
+    queries: ['clémentines', 'mandarines'],
+    pkg: { size: 1360, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
+  },
+  {
+    name: 'Fromage tex-mex râpé', brand: null, category: 'Fromages',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['fromage tex-mex', 'tex-mex râpé', 'tex mex râpé', 'mexican cheese blend', 'fromage mexicain', 'mélange tex-mex', 'fromage habanero'],
+    exclude: [],
+    queries: ['fromage tex-mex', 'mexican cheese blend'],
+    pkg: { size: 320, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
+  },
+  {
+    name: 'Gnocchis', brand: null, category: 'Pâtes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['gnocchi', 'gnocchis', 'gnocchis de pomme', 'gnocchis frais', 'gnocchis du commerce', 'potato gnocchi', 'gnocchetti'],
+    exclude: [],
+    queries: ['gnocchis', 'potato gnocchi'],
+    pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
   },
 ];
 
