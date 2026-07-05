@@ -115,6 +115,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 149, IGA: 169, Metro: 159 }, densityGPerMl: 1.2,
   },
   {
+    name: 'Sel de céleri', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['sel de céleri', 'sel de celeri', 'celery salt'],
+    exclude: [],
+    queries: ['sel de céleri', 'celery salt'],
+    pkg: { size: 68, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.9,
+  },
+  {
     name: 'Beurre arachide', brand: 'Kraft', category: 'Tartinades',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ["beurre d'arachide", 'beurre arachide', 'peanut butter'],
@@ -195,6 +203,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['mozzarella', 'suisse', 'emmental', 'parmesan', 'quatre fromages', 'pizza'],
     queries: ['cheddar râpé', 'shredded cheddar'],
     pkg: { size: 320, unit: 'g' }, baseline: { Maxi: 549, IGA: 599, Metro: 579 }, densityGPerMl: 0.45,
+  },
+  {
+    name: 'Fromage gouda', brand: null, category: 'Fromages',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['gouda', 'fromage gouda', 'gouda fort', 'gouda doux', 'edam'],
+    exclude: ['fondue'],
+    queries: ['gouda', 'fromage gouda'],
+    pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 699, IGA: 749, Metro: 729 },
   },
   {
     name: 'Fromage mozzarella râpé', brand: null, category: 'Produits laitiers',
@@ -3253,6 +3269,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['jus', 'juice', 'sirop', 'zeste'],
     queries: ['pamplemousse', 'grapefruit'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 169, Metro: 159 },
+  },
+  {
+    name: 'Cantaloup', brand: null, category: 'Fruits',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['cantaloup', 'cantaloupe', 'melon cantaloup', 'melon brodé', 'melon brodé'],
+    exclude: ['jus', 'juice'],
+    queries: ['cantaloup', 'cantaloupe'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
   },
   {
     name: 'Radis', brand: null, category: 'Légumes',
