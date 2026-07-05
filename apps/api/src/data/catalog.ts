@@ -3222,6 +3222,22 @@ export const CATALOG: CatalogProduct[] = [
     queries: ['pâte à pizza', 'pizza dough'],
     pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
   },
+  {
+    name: 'Ficelle de boucher', brand: null, category: 'Quincaillerie cuisine',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['ficelle de boucher', 'ficelle', 'butcher twine', 'kitchen twine', 'butcher string', 'corde de boucher'],
+    exclude: [],
+    queries: ['ficelle boucher', 'butcher twine'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 0, IGA: 0, Metro: 0 },
+  },
+  {
+    name: 'Brochettes de bois', brand: null, category: 'Quincaillerie cuisine',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['brochette de bois', 'brochettes de bois', 'wooden skewer', 'wooden skewers', 'brochette en bois', 'brochettes en bois', 'brochettes de bambou', 'brochettes bambou'],
+    exclude: [],
+    queries: ['brochettes bois', 'wooden skewers'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 0, IGA: 0, Metro: 0 },
+  },
 ];
 
 export const CHAINS: Chain[] = ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
