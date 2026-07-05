@@ -64,9 +64,19 @@ const RULES: Array<{ category: RecipeCategory; keywords: string[] }> = [
 ];
 
 export function classifyRecipe(title: string, extra = ''): RecipeCategory {
-  const text = norm(`${title} ${extra}`);
+  // Title takes priority: if a rule matches the title alone, use it immediately.
+  const titleNorm = norm(title);
   for (const rule of RULES) {
-    if (rule.keywords.some((k) => text.includes(norm(k)))) return rule.category;
+    if (rule.keywords.some((k) => titleNorm.includes(norm(k)))) return rule.category;
+  }
+  // Fallback: check instructions for Soupe/Déjeuner/Boisson signals (high-confidence only).
+  if (extra) {
+    const extraNorm = norm(extra);
+    const highConfidence: RecipeCategory[] = ['Soupe', 'Déjeuner', 'Boisson', 'Dessert'];
+    for (const rule of RULES) {
+      if (!highConfidence.includes(rule.category)) continue;
+      if (rule.keywords.some((k) => extraNorm.includes(norm(k)))) return rule.category;
+    }
   }
   return 'Plat principal';
 }
