@@ -1023,7 +1023,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Lentilles sèches', brand: null, category: 'Légumineuses',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['lentilles', 'lentils', 'lentilles vertes', 'lentilles rouges', 'lentilles brunes'],
+    include: ['lentilles', 'lentils', 'lentilles vertes', 'lentilles rouges', 'lentilles brunes', 'lentille verte', 'lentille rouge', 'lentille brune', 'lentille'],
     exclude: ['soupe', 'soup', 'conserve'],
     queries: ['lentilles', 'lentils'],
     pkg: { size: 900, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
@@ -1613,6 +1613,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 399, IGA: 499, Metro: 449 },
   },
   {
+    name: 'Fruits rouges surgelés', brand: null, category: 'Fruits et légumes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['fruits rouges', 'fruit rouge', 'mélange de baies', 'mixed berries', 'baies mélangées', 'fruits des bois'],
+    exclude: ['confiture', 'sirop', 'jus'],
+    queries: ['fruits rouges', 'mixed berries'],
+    pkg: { size: 600, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+  },
+  {
     name: 'Laitue', brand: null, category: 'Fruits et légumes',
     defaultUnit: 'unit', defaultUnitType: 'count',
     include: ['laitue', 'lettuce', 'salade', 'romaine'],
@@ -1706,7 +1714,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Chocolat noir', brand: null, category: 'Épicerie',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['chocolat noir', 'dark chocolate', 'chocolat mi-sucré', 'chocolat mi-sucre', 'chocolat amer', 'chocolat semi-sucré', 'bittersweet chocolate', 'semisweet chocolate', 'chocolat 70%', 'chocolat haché', 'chocolat grossièrement haché', 'chocolat pâtissier', 'chocolat patissier', 'chocolat à pâtisserie', 'baking chocolate', 'chocolat de couverture'],
+    include: ['chocolat noir', 'dark chocolate', 'chocolat mi-sucré', 'chocolat mi-sucre', 'chocolat amer', 'chocolat semi-sucré', 'bittersweet chocolate', 'semisweet chocolate', 'chocolat 70%', 'chocolat haché', 'chocolat grossièrement haché', 'chocolat pâtissier', 'chocolat patissier', 'chocolat à pâtisserie', 'baking chocolate', 'chocolat de couverture', 'nestlé dessert noir', 'nestle dessert noir'],
     exclude: ['gâteau', 'boisson', 'chaud', 'au lait', 'blanc'],
     queries: ['chocolat noir', 'dark chocolate'],
     pkg: { size: 100, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },

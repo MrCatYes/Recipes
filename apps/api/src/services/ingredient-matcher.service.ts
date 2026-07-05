@@ -234,6 +234,7 @@ function parseQuantity(raw: string | undefined): number | null {
 function cleanRawText(raw: string): string {
   return raw
     .replace(/^[>*•·-]+\s*/g, '')  // strip leading bullets/arrows (ptitchef, some sites)
+    .replace(/(['''])\s+/g, '$1')   // normalize "d' ail" (space after apostrophe) → "d'ail"
     .replace(/\t+/g, ' ')
     .replace(/\(facultatif\)/gi, '')
     .replace(/\(optional\)/gi, '')
