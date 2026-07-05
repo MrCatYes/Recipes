@@ -617,7 +617,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Lime', brand: null, category: 'Fruits',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['lime', 'limes', 'citron vert'],
+    include: ['lime', 'limes', 'citron vert', 'citrons verts', 'lime fraîche', 'limes fraîches'],
     exclude: ['jus en bouteille'],
     queries: ['lime', 'citron vert'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 49, IGA: 59, Metro: 55 },
@@ -3103,6 +3103,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 142, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
   },
   {
+    name: 'Endives', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['endive', 'endives', 'chicon', 'chicorée witloof', 'witloof', 'belgian endive'],
+    exclude: [],
+    queries: ['endives', 'belgian endive'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
+  },
+  {
     name: 'Canneberges fraîches', brand: null, category: 'Fruits',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['canneberges fraîches', 'canneberges fraiches', 'canneberges surgelées', 'canneberges congelées', 'cranberries', 'fresh cranberries', 'canneberges'],
@@ -3145,8 +3153,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Crème fraîche', brand: null, category: 'Produits laitiers',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['crème fraîche', 'creme fraiche', 'crème épaisse', 'smetana', 'sour cream'],
-    exclude: ['glacée', 'glace', 'fouettée', 'whipped', 'chantilly'],
+    include: ['crème fraîche', 'creme fraiche', 'crème épaisse', 'crème fraîche épaisse', 'crème crue', 'smetana'],
+    exclude: ['glacée', 'glace', 'fouettée', 'whipped', 'chantilly', '35%', 'liquide'],
     queries: ['crème fraîche', 'sour cream'],
     pkg: { size: 200, unit: 'ml' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
   },
