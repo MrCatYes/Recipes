@@ -247,6 +247,30 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 999, IGA: 1099, Metro: 1049 },
   },
 
+  {
+    name: 'Huile de coco', brand: null, category: 'Huiles',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['huile de coco', 'huile de noix de coco', 'coconut oil'],
+    exclude: [],
+    queries: ['huile de coco', 'coconut oil'],
+    pkg: { size: 454, unit: 'ml' }, baseline: { Maxi: 799, IGA: 899, Metro: 849 }, densityGPerMl: 0.92,
+  },
+  {
+    name: 'Sirop d\'agave', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ["sirop d'agave", 'agave syrup', 'nectar d\'agave', 'agave nectar'],
+    exclude: [],
+    queries: ["sirop d'agave", 'agave syrup'],
+    pkg: { size: 333, unit: 'ml' }, baseline: { Maxi: 599, IGA: 649, Metro: 629 }, densityGPerMl: 1.35,
+  },
+  {
+    name: 'Grenadine', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['grenadine', 'sirop de grenadine', 'grenadine syrup'],
+    exclude: [],
+    queries: ['grenadine', 'sirop grenadine'],
+    pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 }, densityGPerMl: 1.2,
+  },
   // ─── Grains & pasta ───────────────────────────────────────────────────────────
   {
     name: 'Riz blanc long grain', brand: null, category: 'Féculents',
@@ -785,7 +809,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Fromage à la crème', brand: 'Philadelphia', category: 'Produits laitiers',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['fromage à la crème', 'cream cheese', 'philadelphia', 'saint-morêt', 'saint-moret', 'kiri'],
+    include: ['fromage à la crème', 'cream cheese', 'philadelphia', 'saint-morêt', 'saint-moret', 'kiri', 'fromage à crème', 'fromage a creme'],
     exclude: ['tartare', 'boursin', 'brie'],
     queries: ['fromage à la crème', 'cream cheese'],
     pkg: { size: 250, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
@@ -827,8 +851,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Moutarde de Dijon', brand: null, category: 'Épicerie',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['moutarde de dijon', 'dijon mustard', 'moutarde dijon', 'moutarde à l ancienne', 'moutarde ancienne', 'whole grain mustard', 'moutarde forte', 'moutarde jaune'],
-    exclude: ['miel', 'honey'],
+    include: ['moutarde de dijon', 'dijon mustard', 'moutarde dijon', 'moutarde à l ancienne', 'moutarde ancienne', 'whole grain mustard', 'moutarde forte', 'moutarde jaune', 'moutarde'],
+    exclude: ['miel', 'honey', 'poudre', 'sèche', 'graines', 'seeds'],
     queries: ['moutarde dijon', 'dijon mustard'],
     pkg: { size: 250, unit: 'ml' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 },
   },
