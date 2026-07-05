@@ -394,11 +394,12 @@ export class IngredientMatcherService {
         return await this._callGroq(productList, ingredients);
       } catch (e: unknown) {
         const status = (e as { status?: number })?.status;
-        if (status === 429) { lastError = e; continue; }
-        throw e;
+        lastError = e;
+        if (status === 429 || status == null) continue; // retry on rate-limit or network errors
+        break;
       }
     }
-    console.warn('Groq rate limit — falling back to fuzzy-only for this batch:', lastError);
+    console.warn('Groq unavailable — falling back to fuzzy-only for this batch:', (lastError as Error)?.message?.slice(0, 80));
     return ingredients.map(() => ({ quantity: null, unit: null, productName: null, notes: null }));
   }
 
