@@ -73,6 +73,16 @@ const SITES: SitemapSite[] = [
     sitemaps: ['https://www.marmiton.org/wsitemap_recipes_index.xml'],
     recipePattern: /marmiton\.org\/recettes\/recette_/,
   },
+  {
+    name: '750g',
+    sitemaps: ['https://www.750g.com/sitemaps/recipe.xml'],
+    recipePattern: /750g\.com\/recettes_de_/,
+  },
+  {
+    name: 'ptitchef',
+    sitemaps: ['https://www.ptitchef.com/sitemap.xml'],
+    recipePattern: /ptitchef\.com\/recettes\//,
+  },
 ];
 
 async function fetchSitemap(url: string): Promise<string[]> {
