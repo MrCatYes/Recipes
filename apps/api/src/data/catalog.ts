@@ -2977,8 +2977,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Baguette', brand: null, category: 'Boulangerie',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['baguette', 'miche', 'miche de pain', 'pain de campagne', 'pain croûté', 'pain artisan', 'pain baguette'],
-    exclude: ['sandwich', 'tranché', 'sliced'],
+    include: ['baguette', 'miche', 'miche de pain', 'pain de campagne', 'pain croûté', 'pain artisan', 'pain baguette', 'tranche pain', 'tranche de pain'],
+    exclude: ['sandwich', 'tranché', 'sliced', 'hamburger', 'hot-dog', 'hot dog', 'sous-marin', 'brioche', 'naan', 'pita'],
     queries: ['baguette', 'pain artisan'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
   },
@@ -3365,6 +3365,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ["oignons frits french's"],
     pkg: { size: 79, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Bouquet garni', brand: null, category: 'Épices',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['bouquet garni', 'bouquets garnis', 'herbes de bouquet', 'sachet bouquet garni'],
+    exclude: [],
+    queries: ['bouquet garni'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
   },
   {
     name: 'Sirop de canne', brand: null, category: 'Épicerie',
