@@ -159,9 +159,9 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Crème 35%', brand: null, category: 'Produits laitiers',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['crème 35', 'cream 35', 'crème à fouetter', 'whipping cream', 'crème épaisse', 'crème à cuisson à 35', 'crème chantilly', 'chantilly'],
-    exclude: ['crème 10', 'cream 10', 'crème 15', 'cream 15', 'sure', 'sour', 'café', 'coffee', 'glacée', 'ice', 'coco', 'fouettée en', 'aérosol'],
-    queries: ['crème 35', 'crème à fouetter'],
+    include: ['crème 35%', 'crème 35', 'creme 35%', 'cream 35', 'crème à fouetter', 'creme a fouetter', 'whipping cream', 'heavy cream', 'crème liquide entière', 'creme liquide entiere', 'crème fraîche liquide', 'crème liquide', 'crème entière', 'full cream', 'crème épaisse', 'crème à cuisson à 35', 'crème chantilly', 'chantilly'],
+    exclude: ['crème 10', 'cream 10', 'crème 15', 'cream 15', 'sure', 'sour', 'aigre', 'café', 'coffee', 'glacée', 'ice', 'coco', 'fouettée en', 'aérosol', 'légère'],
+    queries: ['crème 35%', 'crème fouetter', 'whipping cream'],
     pkg: { size: 473, unit: 'ml' }, baseline: { Maxi: 449, IGA: 499, Metro: 479 },
   },
   {
@@ -707,6 +707,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 600, unit: 'g' }, baseline: { Maxi: 799, IGA: 899, Metro: 849 },
   },
   {
+    name: 'Poulet haché', brand: null, category: 'Viandes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['poulet haché', 'ground chicken', 'poulet hache'],
+    exclude: ['poitrine', 'cuisse', 'blanc', 'rôti', 'entier'],
+    queries: ['poulet haché', 'ground chicken'],
+    pkg: { size: 450, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+  },
+  {
     name: 'Dinde hachée', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['dinde hachée', 'ground turkey'],
@@ -1050,9 +1058,17 @@ export const CATALOG: CatalogProduct[] = [
     name: 'Lait de coco', brand: null, category: 'Conserves',
     defaultUnit: 'ml', defaultUnitType: 'volume',
     include: ['lait de coco', 'coconut milk', 'lait de noix de coco'],
-    exclude: ['crème', 'boisson', 'eau de coco'],
+    exclude: ['crème de coco', 'boisson', 'eau de coco'],
     queries: ['lait de coco', 'coconut milk'],
     pkg: { size: 398, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+  {
+    name: 'Crème de coco', brand: null, category: 'Conserves',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['crème de coco', 'creme de coco', 'coconut cream', 'crème de noix de coco'],
+    exclude: [],
+    queries: ['crème de coco', 'coconut cream'],
+    pkg: { size: 398, unit: 'ml' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 },
   },
   {
     name: 'Noix de coco râpée', brand: null, category: 'Épicerie',
@@ -1259,7 +1275,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Rôti de porc', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['rôti de porc', 'longe de porc', 'pork roast', 'pork loin', 'filet de porc', 'épaule de porc', 'flanc de porc', 'palette de porc', 'côte de porc', 'jarret de porc', 'surlonge de porc'],
+    include: ['rôti de porc', 'longe de porc', 'pork roast', 'pork loin', 'filet de porc', 'filet mignon de porc', 'épaule de porc', 'flanc de porc', 'palette de porc', 'côte de porc', 'jarret de porc', 'surlonge de porc'],
     exclude: ['haché', 'saucisse'],
     queries: ['rôti porc', 'pork roast'],
     pkg: { size: 800, unit: 'g' }, baseline: { Maxi: 899, IGA: 999, Metro: 949 },
@@ -1381,9 +1397,9 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Basilic frais', brand: null, category: 'Légumes',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['basilic frais', 'fresh basil', 'basilic'],
+    include: ['basilic frais', 'feuilles de basilic', 'fresh basil', 'basilic ciselé', 'basilic haché', 'basilic pourpre', 'basilic déchiré', 'basilic'],
     exclude: ['séché', 'dried', 'pesto'],
-    queries: ['basilic', 'fresh basil'],
+    queries: ['basilic frais', 'fresh basil'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
   },
   {
@@ -1653,14 +1669,6 @@ export const CATALOG: CatalogProduct[] = [
     include: ['branche de thym', 'branches de thym', 'feuilles de thym', 'thym frais', 'fresh thyme', 'thym ciselé', 'thym', 'thyme'],
     exclude: ['séché', 'dried', 'tisane', 'citronnée'],
     queries: ['thym frais', 'fresh thyme'],
-    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
-  },
-  {
-    name: 'Basilic frais', brand: null, category: 'Fruits et légumes',
-    defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['basilic frais', 'feuilles de basilic', 'fresh basil', 'basilic ciselé', 'basilic haché', 'basilic pourpre', 'basilic déchiré', 'basilic'],
-    exclude: ['séché', 'dried', 'pesto'],
-    queries: ['basilic frais', 'fresh basil'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
   },
   {
@@ -2285,7 +2293,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Poudre d\'amande', brand: null, category: 'Épicerie',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ["poudre d'amande", 'almond flour', 'farine d amande', 'amandes moulues'],
+    include: ["poudre d'amande", "poudre d'amandes", 'almond flour', 'almond meal', "farine d'amandes", 'farine d amande', 'amandes moulues', 'amandes en poudre', 'amande en poudre'],
     exclude: ['amandes entières', 'amandes tranchées'],
     queries: ["poudre d'amande", 'almond flour'],
     pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 }, densityGPerMl: 0.55,
@@ -2401,14 +2409,6 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['graines', 'seeds', 'séché', 'dried'],
     queries: ['fenouil', 'fennel'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
-  },
-  {
-    name: 'Thym frais', brand: null, category: 'Légumes',
-    defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['thym frais', 'fresh thyme'],
-    exclude: ['séché', 'dried'],
-    queries: ['thym frais', 'fresh thyme'],
-    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 179, Metro: 169 },
   },
   {
     name: 'Tabasco', brand: 'Tabasco', category: 'Condiments',
@@ -2755,6 +2755,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['anchois', 'anchovies'],
     pkg: { size: 50, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
+    name: 'Escargots en conserve', brand: null, category: 'Conserves',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['escargot', 'escargots'],
+    exclude: [],
+    queries: ['escargots conserve'],
+    pkg: { size: 125, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
   },
   {
     name: 'Riz sauvage', brand: null, category: 'Épicerie',
@@ -3143,14 +3151,6 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 150, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
   },
   {
-    name: 'Poudre d\'amandes', brand: null, category: 'Noix & graines',
-    defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['poudre d\'amandes', 'poudre d\'amande', 'amandes en poudre', 'amande en poudre', 'almond flour', 'almond meal', 'farine d\'amandes'],
-    exclude: [],
-    queries: ['poudre amandes', 'almond flour'],
-    pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 549, IGA: 649, Metro: 599 },
-  },
-  {
     name: 'Praliné', brand: null, category: 'Épicerie',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['praliné', 'praline', 'pâte de praliné', 'praline paste'],
@@ -3237,14 +3237,6 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['brochettes bois', 'wooden skewers'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 0, IGA: 0, Metro: 0 },
-  },
-  {
-    name: 'Crème 35%', brand: null, category: 'Produits laitiers',
-    defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['crème 35%', 'creme 35%', 'crème à fouetter', 'creme a fouetter', 'whipping cream', 'heavy cream', 'crème liquide entière', 'creme liquide entiere', 'crème fraîche liquide', 'crème liquide', 'crème entière', 'full cream'],
-    exclude: ['sure', 'sour', 'aigre', 'légère', 'legere', 'glacée'],
-    queries: ['crème 35%', 'crème fouetter', 'whipping cream'],
-    pkg: { size: 473, unit: 'ml' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
   },
   {
     name: 'Whisky', brand: null, category: 'Vins & boissons',
