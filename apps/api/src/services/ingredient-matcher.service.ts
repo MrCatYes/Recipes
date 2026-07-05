@@ -238,7 +238,7 @@ function cleanRawText(raw: string): string {
     .replace(/\(facultatif\)/gi, '')
     .replace(/\(optional\)/gi, '')
     .replace(/\(au go[uû]t\)/gi, '')
-    .replace(/,?\s*(?:au go[uû]t|pour\s+le\s+service|environ|au\s+besoin|à\s+volonté|selon\s+le\s+go[uû]t)\s*$/gi, '')
+    .replace(/,?\s*(?:au go[uû]t|pour\s+le\s+service|environ|au\s+besoin|à\s+volonté|selon\s+le\s+go[uû]t|pour\s+chaque\s+\w+|par\s+portion|par\s+personne)\s*$/gi, '')
     // Strip Ricardo plural markers like "(s)" in "1 gousse(s) Vanille", "1 pincée(s) Sel"
     .replace(/\([sx]\)/gi, '')
     .replace(/\([^)]*(?:tasse|c\.\s*[àa]\s*(?:soupe|th[ée])|oz|ml|g|lb|po)[^)]*\)/gi, '')
