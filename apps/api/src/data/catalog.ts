@@ -93,8 +93,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Extrait de vanille', brand: null, category: 'Épices',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['extrait de vanille', 'vanilla extract', 'essence de vanille'],
-    exclude: ['gousse', 'bean', 'sucre'],
+    include: ['extrait de vanille', 'vanilla extract', 'essence de vanille', 'arôme vanille', 'arôme de vanille', 'arome vanille', 'vanilla flavor', 'vanilla flavour', 'vanilline'],
+    exclude: ['gousse', 'bean', 'sucre', 'yogourt', 'yaourt'],
     queries: ['vanille extrait', 'vanilla extract'],
     pkg: { size: 100, unit: 'ml' }, baseline: { Maxi: 449, IGA: 499, Metro: 479 },
   },
@@ -769,8 +769,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Lait 2%', brand: null, category: 'Produits laitiers',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['lait 2%', 'lait 2 %', 'milk 2%', 'lait partiellement écrémé', 'lait', 'milk'],
-    exclude: ['chocolat', 'chocolate', 'amande', 'almond', 'avoine', 'oat', 'soya', 'soy', 'coco', 'condensé', 'évaporé', 'evaporated', 'beurre', 'butter', '3,25', '1 %', '1%', 'écrémé', 'laitue', 'laitage'],
+    include: ['lait 2%', 'lait 2 %', 'milk 2%', 'lait partiellement écrémé', 'lait demi-écrémé', 'demi-écrémé', 'semi-skimmed', 'lait', 'milk'],
+    exclude: ['chocolat', 'chocolate', 'amande', 'almond', 'avoine', 'oat', 'soya', 'soy', 'coco', 'condensé', 'évaporé', 'evaporated', 'beurre', 'butter', '3,25', '1 %', '1%', 'lait écrémé', 'laitue', 'laitage'],
     queries: ['lait 2%', 'milk 2%'],
     pkg: { size: 2000, unit: 'ml' }, baseline: { Maxi: 569, IGA: 619, Metro: 599 },
   },
@@ -925,7 +925,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Piment de la Jamaïque', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['piment de la jamaïque', 'piment de jamaique', 'allspice', 'quatre-épices'],
+    include: ['piment de la jamaïque', 'piment de jamaique', 'allspice', 'quatre-épices', 'quatre épices', '4 épices', 'mélange 4 épices', 'melange 4 epices'],
     exclude: [],
     queries: ['piment de la jamaïque', 'allspice'],
     pkg: { size: 40, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 }, densityGPerMl: 0.45,
@@ -1281,6 +1281,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 800, unit: 'g' }, baseline: { Maxi: 899, IGA: 999, Metro: 949 },
   },
   {
+    name: 'Spare ribs', brand: null, category: 'Viandes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['spare ribs', 'spareribs', 'côtes levées', 'cotes levees', 'back ribs', 'baby back ribs', 'côtes de porc'],
+    exclude: [],
+    queries: ['spare ribs', 'côtes levées'],
+    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 999, IGA: 1099, Metro: 1049 },
+  },
+  {
     name: 'Ailes de poulet', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['ailes de poulet', 'chicken wings', 'aile de poulet', 'ailettes'],
@@ -1485,7 +1493,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Levure sèche', brand: 'Fleischmann', category: 'Épicerie',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['levure sèche', 'levure instantanée', 'active dry yeast', 'instant yeast', 'levure fleischmann'],
+    include: ['levure sèche', 'levure instantanée', 'levure boulangère', 'levure fraîche', 'levure de boulangerie', 'active dry yeast', 'instant yeast', 'fresh yeast', 'levure fleischmann'],
     exclude: ['chimique', 'baking powder', 'fève'],
     queries: ['levure sèche', 'dry yeast'],
     pkg: { size: 113, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 0.6,
@@ -3189,6 +3197,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['râpé', 'rapé', 'rapee', 'shredded', 'pizza'],
     queries: ['mozzarella fraîche', 'bocconcini'],
     pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Burrata', brand: null, category: 'Produits laitiers',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['burrata'],
+    exclude: [],
+    queries: ['burrata'],
+    pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
   },
   {
     name: 'Pamplemousse', brand: null, category: 'Fruits',

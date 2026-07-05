@@ -225,7 +225,7 @@ function cleanRawText(raw: string): string {
     .replace(/\(optional\)/gi, '')
     .replace(/\(au go[uû]t\)/gi, '')
     // Strip Ricardo plural markers like "(s)" in "1 gousse(s) Vanille", "1 pincée(s) Sel"
-    .replace(/\(s\)/gi, '')
+    .replace(/\([sx]\)/gi, '')
     .replace(/\([^)]*(?:tasse|c\.\s*[àa]\s*(?:soupe|th[ée])|oz|ml|g|lb|po)[^)]*\)/gi, '')
     // Strip leading French/English articles (including "une grosse X", "le jus de")
     .replace(/^(?:le|la|les|l[''']|un|une|des|du|d['''])\s+/i, '')
