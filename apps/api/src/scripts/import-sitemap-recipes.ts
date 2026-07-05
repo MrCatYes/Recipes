@@ -35,7 +35,12 @@ const SITES: SitemapSite[] = [
   },
   {
     name: 'soscuisine',
-    sitemaps: ['https://www.soscuisine.com/sitemap.xml'],
+    sitemaps: [
+      'https://www.soscuisine.com/sitemap-recipe-fr-0.xml',
+      'https://www.soscuisine.com/sitemap-recipe-fr-1.xml',
+      'https://www.soscuisine.com/sitemap-recipe-fr-2.xml',
+      'https://www.soscuisine.com/sitemap-recipe-fr-3.xml',
+    ],
     recipePattern: /soscuisine\.com\/recette\//,
   },
   {
@@ -72,11 +77,6 @@ const SITES: SitemapSite[] = [
     name: 'marmiton',
     sitemaps: ['https://www.marmiton.org/wsitemap_recipes_index.xml'],
     recipePattern: /marmiton\.org\/recettes\/recette_/,
-  },
-  {
-    name: '750g',
-    sitemaps: ['https://www.750g.com/sitemaps/recipe.xml'],
-    recipePattern: /750g\.com\/recettes_de_/,
   },
   {
     name: 'ptitchef',
