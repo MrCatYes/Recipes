@@ -191,7 +191,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Fromage cheddar râpé', brand: null, category: 'Produits laitiers',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['cheddar râpé', 'cheddar shredded', 'fromage râpé cheddar', 'cheddar jaune râpé', 'cheddar fort râpé'],
+    include: ['cheddar râpé', 'cheddar shredded', 'fromage râpé cheddar', 'cheddar jaune râpé', 'cheddar fort râpé', 'cheddar'],
     exclude: ['mozzarella', 'suisse', 'emmental', 'parmesan', 'quatre fromages', 'pizza'],
     queries: ['cheddar râpé', 'shredded cheddar'],
     pkg: { size: 320, unit: 'g' }, baseline: { Maxi: 549, IGA: 599, Metro: 579 }, densityGPerMl: 0.45,
@@ -679,6 +679,22 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['pané', 'breaded'],
     queries: ['tilapia', 'filet tilapia'],
     pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
+  },
+  {
+    name: 'Filets de sole', brand: null, category: 'Poissons',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['filet de sole', 'filets de sole', 'sole', 'sole filet'],
+    exclude: ['pané', 'breaded', 'frit'],
+    queries: ['filets sole', 'sole filet'],
+    pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 799, IGA: 899, Metro: 849 },
+  },
+  {
+    name: 'Filets de pangasius', brand: null, category: 'Poissons',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['pangasius', 'filet de pangasius', 'basa', 'swai'],
+    exclude: ['pané', 'breaded'],
+    queries: ['pangasius', 'basa filet'],
+    pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 649, IGA: 749, Metro: 699 },
   },
 
   // ─── More meat ─────────────────────────────────────────────────────────────────
@@ -1666,8 +1682,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Chocolat noir', brand: null, category: 'Épicerie',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['chocolat noir', 'dark chocolate'],
-    exclude: ['gâteau', 'boisson', 'chaud'],
+    include: ['chocolat noir', 'dark chocolate', 'chocolat mi-sucré', 'chocolat mi-sucre', 'chocolat amer', 'chocolat semi-sucré', 'bittersweet chocolate', 'semisweet chocolate', 'chocolat 70%', 'chocolat haché', 'chocolat grossièrement haché'],
+    exclude: ['gâteau', 'boisson', 'chaud', 'au lait', 'blanc'],
     queries: ['chocolat noir', 'dark chocolate'],
     pkg: { size: 100, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
   },
