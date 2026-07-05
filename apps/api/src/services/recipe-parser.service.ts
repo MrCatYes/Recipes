@@ -118,8 +118,17 @@ export function parseInstructions(raw: unknown): string[] {
       steps.push(...step.split(/\n/).map(clean).filter(s => s.length > 3));
     } else {
       const s = step as Record<string, unknown>;
-      const text = String(s.text ?? s.name ?? '').trim();
-      if (text) steps.push(clean(text));
+      // HowToSection: has itemListElement with nested HowToStep items
+      if (Array.isArray(s.itemListElement)) {
+        for (const sub of s.itemListElement as unknown[]) {
+          const subS = sub as Record<string, unknown>;
+          const subText = String(subS.text ?? subS.name ?? '').trim();
+          if (subText && subText.length > 3) steps.push(clean(subText));
+        }
+      } else {
+        const text = String(s.text ?? s.name ?? '').trim();
+        if (text && text.length > 3) steps.push(clean(text));
+      }
     }
   }
   return steps;
