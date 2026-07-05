@@ -2011,6 +2011,22 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 250, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 0.95,
   },
   {
+    name: 'Houmous', brand: null, category: 'Tartinades',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['houmous', 'hummus', 'hoummous', 'purée de pois chiches'],
+    exclude: [],
+    queries: ['houmous', 'hummus'],
+    pkg: { size: 230, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
+  },
+  {
+    name: 'Farine de pois chiches', brand: null, category: 'Épicerie',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['farine de pois chiches', 'farine de pois chiche', 'chickpea flour', 'besan', 'gram flour'],
+    exclude: [],
+    queries: ['farine pois chiches', 'chickpea flour'],
+    pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 0.6,
+  },
+  {
     name: 'Noix de cajou', brand: null, category: 'Noix',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['noix de cajou', 'cashew', 'cajou'],
