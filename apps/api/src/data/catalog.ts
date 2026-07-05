@@ -217,8 +217,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Huile canola', brand: null, category: 'Huiles',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['huile de canola', 'huile canola', 'canola oil', 'huile végétale', 'huile vegetale', 'vegetable oil', 'huile de tournesol', 'sunflower oil', 'huile de maïs', 'corn oil', 'huile de pépins', 'huile neutre', 'neutral oil'],
-    exclude: ['mélange', 'blend', 'spray', 'enduit', 'aérosol', 'olive', 'sésame', 'sesame', 'arachide', 'peanut', 'coco', 'avocado', 'avocat', 'truffe', 'friture', 'noix', 'noisette', 'lin', 'chanvre'],
+    include: ['huile de canola', 'huile canola', 'canola oil', 'huile végétale', 'huile vegetale', 'vegetable oil', 'huile de tournesol', 'sunflower oil', 'huile de maïs', 'corn oil', 'huile de pépins', 'huile neutre', 'neutral oil', 'huile'],
+    exclude: ['mélange', 'blend', 'spray', 'enduit', 'aérosol', 'olive', 'sésame', 'sesame', 'arachide', 'peanut', 'coco', 'avocado', 'avocat', 'truffe', 'friture', 'noix', 'noisette', 'lin', 'chanvre', 'd\'olive', 'de sésame', 'de noix'],
     queries: ['huile canola', 'canola oil'],
     pkg: { size: 1000, unit: 'ml' }, baseline: { Maxi: 699, IGA: 749, Metro: 729 },
   },
@@ -345,7 +345,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Poitrine de poulet', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['poitrine de poulet', 'poitrines de poulet', 'chicken breast', 'poitrine poulet'],
+    include: ['poitrine de poulet', 'poitrines de poulet', 'chicken breast', 'poitrine poulet', 'blanc de poulet', 'blancs de poulet', 'suprême de poulet'],
     exclude: ['haché', 'ground', 'aile', 'wing', 'cuisse', 'thigh', 'entier', 'whole', 'nugget', 'pané', 'panées', 'breaded', 'farci', 'mariné', 'bouillon', 'broth', 'porc', 'pork', 'tofu', 'escalope'],
     queries: ['poitrine poulet', 'chicken breast'],
     pkg: { size: 600, unit: 'g' }, baseline: { Maxi: 1299, IGA: 1399, Metro: 1349 },
@@ -429,8 +429,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Vinaigre blanc', brand: null, category: 'Épicerie',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['vinaigre blanc', 'white vinegar'],
-    exclude: ['balsamique', 'balsamic', 'cidre', 'cider', 'de riz', 'de vin', 'wine'],
+    include: ['vinaigre blanc', 'white vinegar', 'vinaigre'],
+    exclude: ['balsamique', 'balsamic', 'cidre', 'cider', 'de riz', 'de vin', 'wine', 'rouge', 'red'],
     queries: ['vinaigre blanc', 'white vinegar'],
     pkg: { size: 1000, unit: 'ml' }, baseline: { Maxi: 199, IGA: 219, Metro: 209 },
   },
