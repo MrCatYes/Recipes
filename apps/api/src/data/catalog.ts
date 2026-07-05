@@ -499,6 +499,22 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 299, IGA: 329, Metro: 319 },
   },
   {
+    name: 'Sauce teriyaki', brand: null, category: 'Condiments',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['sauce teriyaki', 'teriyaki sauce', 'sauce yakitori', 'yakitori'],
+    exclude: [],
+    queries: ['sauce teriyaki', 'teriyaki'],
+    pkg: { size: 350, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Tapenade', brand: null, category: 'Condiments',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['tapenade', "tapenade d'olives", 'tapenade olives'],
+    exclude: [],
+    queries: ['tapenade'],
+    pkg: { size: 190, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+  },
+  {
     name: 'Vinaigre blanc', brand: null, category: 'Épicerie',
     defaultUnit: 'ml', defaultUnitType: 'volume',
     include: ['vinaigre blanc', 'white vinegar', 'vinaigre'],
@@ -1704,7 +1720,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Sauce de poisson', brand: null, category: 'Condiments',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['sauce de poisson', 'nuoc-mâm', 'nuoc mam', 'fish sauce', 'nam pla'],
+    include: ['sauce de poisson', 'sauce poisson', 'nuoc-mâm', 'nuoc mam', 'fish sauce', 'nam pla'],
     exclude: [],
     queries: ['sauce poisson', 'fish sauce'],
     pkg: { size: 200, unit: 'ml' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
