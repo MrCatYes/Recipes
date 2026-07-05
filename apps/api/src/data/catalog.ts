@@ -101,8 +101,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Gousse de vanille', brand: null, category: 'Épices',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['gousse de vanille', 'vanilla bean', 'gousses de vanille'],
-    exclude: [],
+    include: ['gousse de vanille', 'vanilla bean', 'gousses de vanille', 'gousse vanille', 'gousses vanille'],
+    exclude: ['extrait', 'essence', 'extract', 'sucre', 'yaourt', 'yogourt', 'glace', 'arôme', 'arome'],
     queries: ['gousse de vanille', 'vanilla bean'],
     pkg: { size: 2, unit: 'unit' }, baseline: { Maxi: 699, IGA: 799, Metro: 749 },
   },
