@@ -15,7 +15,7 @@ const MIN_STEPS = parseInt(process.argv.find(a => a.startsWith('--min-steps='))?
 const DELAY_MS = 700;
 
 const SITE_PATTERNS: Record<string, string> = {
-  ricardo: 'ricardo.com/recettes/',
+  ricardo: 'ricardocuisine.com',
   '5ingredients': '5ingredients15minutes.com',
   soscuisine: 'soscuisine.com',
   mordu: 'ici.radio-canada.ca/mordu',

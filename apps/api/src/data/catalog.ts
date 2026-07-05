@@ -1278,7 +1278,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['yogourt', 'yogurt', 'iogo', 'activia', 'danone', 'yoplait'],
     exclude: ['grec', 'greek', 'à boire', 'tube'],
     queries: ['yogourt', 'yogurt'],
-    pkg: { size: 650, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
+    pkg: { size: 650, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 }, densityGPerMl: 1.0,
   },
   {
     name: 'Beurre de cuisson (bloc)', brand: null, category: 'Produits laitiers',
@@ -1424,7 +1424,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['ricotta', 'fromage ricotta'],
     exclude: [],
     queries: ['ricotta'],
-    pkg: { size: 475, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+    pkg: { size: 475, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 }, densityGPerMl: 1.0,
   },
   {
     name: 'Noix de Grenoble', brand: null, category: 'Noix',
@@ -2508,7 +2508,7 @@ export const CATALOG: CatalogProduct[] = [
     include: ['mascarpone'],
     exclude: [],
     queries: ['mascarpone'],
-    pkg: { size: 475, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+    pkg: { size: 475, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 0.95,
   },
   {
     name: 'Fromage brie', brand: null, category: 'Produits laitiers',
