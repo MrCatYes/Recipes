@@ -381,6 +381,10 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     // Pratico-pratiques / Les Recettes de Caty
     '.recipe_ingredients li',
     '.recipe-card-ingredients li',
+    // Marmiton.org
+    '.mrtn-recette_ingredients-content .mrtn-recette_ingredients-content-ingredient-item',
+    '.mrtn-recette_ingredients-content li',
+    '.mrtn-recette_ingredients li',
     // Generic fallback
     'ul[class*="recette"] li',
     'ul[class*="recipe"] li',
@@ -440,6 +444,9 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     'ol[class*="recipe"] li',
     'ol[class*="instruction"] li',
     'ol[class*="preparation"] li',
+    // Marmiton.org
+    '.recipe-step p',
+    '.recipe-preparation__item',
   ];
   for (const sel of stepSelectors) {
     $(sel).each((_, el) => {
