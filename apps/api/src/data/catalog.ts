@@ -851,7 +851,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Vinaigre de vin rouge', brand: null, category: 'Épicerie',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['vinaigre de vin rouge', 'red wine vinegar', 'vinaigre vin rouge', 'vinaigre de vin'],
+    include: ['vinaigre de vin rouge', 'red wine vinegar', 'vinaigre vin rouge', 'vinaigre de vin', 'vinaigre de xérès', 'vinaigre xeres', 'sherry vinegar', 'vinaigre de xeres'],
     exclude: ['blanc', 'white'],
     queries: ['vinaigre de vin rouge', 'red wine vinegar'],
     pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
@@ -1203,7 +1203,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Poulet entier', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['poulet entier', 'whole chicken', 'poulet à griller', 'poulet bbq'],
+    include: ['poulet entier', 'poulets', 'whole chicken', 'poulet à griller', 'poulet rôti', 'poulet bbq'],
     exclude: ['poitrine', 'cuisse', 'aile', 'haché', 'nugget', 'bouillon'],
     queries: ['poulet entier', 'whole chicken'],
     pkg: { size: 1500, unit: 'g' }, baseline: { Maxi: 999, IGA: 1099, Metro: 1049 },
@@ -1485,7 +1485,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Pâte à tarte', brand: null, category: 'Surgelés',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['pâte à tarte', 'pie crust', 'fond de tarte', 'croûte à tarte', 'abaisse'],
+    include: ['pâte à tarte', 'pie crust', 'fond de tarte', 'croûte à tarte', 'abaisse', 'pâte brisée', 'pate brisee', 'pâte sablée', 'pate sablee'],
     exclude: [],
     queries: ['pâte à tarte', 'pie crust'],
     pkg: { size: 2, unit: 'unit' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
@@ -1493,8 +1493,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Levure sèche', brand: 'Fleischmann', category: 'Épicerie',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['levure sèche', 'levure instantanée', 'levure boulangère', 'levure fraîche', 'levure de boulangerie', 'active dry yeast', 'instant yeast', 'fresh yeast', 'levure fleischmann'],
-    exclude: ['chimique', 'baking powder', 'fève'],
+    include: ['levure sèche', 'levure instantanée', 'levure boulangère', 'levure fraîche', 'levure de boulangerie', 'levure de boulanger', 'active dry yeast', 'instant yeast', 'fresh yeast', 'levure fleischmann', 'levure'],
+    exclude: ['chimique', 'baking powder', 'fève', 'bière', 'beer'],
     queries: ['levure sèche', 'dry yeast'],
     pkg: { size: 113, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 0.6,
   },
@@ -1905,6 +1905,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['beurre', 'butter', 'lait', 'milk'],
     queries: ['noix cajou', 'cashew'],
     pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+  },
+  {
+    name: 'Arachides', brand: null, category: 'Noix',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['arachides', 'cacahuètes', 'cacahuete', 'peanuts', 'groundnuts', 'arachide grillée', 'arachides rôties'],
+    exclude: ['beurre', 'butter', 'huile', 'oil'],
+    queries: ['arachides', 'peanuts'],
+    pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
   },
   {
     name: 'Pistaches', brand: null, category: 'Noix',
@@ -3201,7 +3209,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Mozzarella fraîche', brand: null, category: 'Produits laitiers',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['mozzarella fraîche', 'fresh mozzarella', 'boule de mozzarella', 'boule mozzarella', 'mozzarella en boule', 'mozzarella bocconcini'],
+    include: ['mozzarella fraîche', 'fresh mozzarella', 'boule de mozzarella', 'boule mozzarella', 'boules de mozzarella', 'boules mozzarella', 'mozzarella en boule', 'mozzarella bocconcini'],
     exclude: ['râpé', 'rapé', 'rapee', 'shredded', 'pizza'],
     queries: ['mozzarella fraîche', 'bocconcini'],
     pkg: { size: 400, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
@@ -3229,6 +3237,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['noir', 'black radish'],
     queries: ['radis', 'radish'],
     pkg: { size: 227, unit: 'g' }, baseline: { Maxi: 199, IGA: 249, Metro: 229 },
+  },
+  {
+    name: 'Radis noir', brand: null, category: 'Légumes',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['radis noir', 'radis noirs', 'black radish'],
+    exclude: [],
+    queries: ['radis noir', 'black radish'],
+    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 149, IGA: 179, Metro: 169 },
   },
   {
     name: 'Wasabi', brand: null, category: 'Épices',
