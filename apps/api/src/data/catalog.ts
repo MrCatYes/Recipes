@@ -3535,6 +3535,22 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
   },
   {
+    name: 'Farine de riz', brand: null, category: 'Farines',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['farine de riz', 'rice flour', 'farine de riz gluant', 'riz gluant'],
+    exclude: [],
+    queries: ['farine de riz', 'rice flour'],
+    pkg: { size: 500, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 }, densityGPerMl: 0.65,
+  },
+  {
+    name: 'Farine de seigle', brand: null, category: 'Farines',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['farine de seigle', 'rye flour', 'farine seigle'],
+    exclude: [],
+    queries: ['farine de seigle', 'rye flour'],
+    pkg: { size: 1000, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 0.65,
+  },
+  {
     name: 'Tortillas de maïs', brand: null, category: 'Boulangerie',
     defaultUnit: 'unit', defaultUnitType: 'count',
     include: ['tortillas de maïs', 'tortillas de mais', 'corn tortilla', 'corn tortillas', 'taco shells'],
