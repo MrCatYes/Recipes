@@ -54,6 +54,10 @@ const UNIT_NORMALIZE: Record<string, string> = {
   litres: 'L',
   liter: 'L',
   liters: 'L',
+  gr: 'g',
+  grm: 'g',
+  gramme: 'g',
+  grammes: 'g',
   livre: 'lb',
   livres: 'lb',
   lbs: 'lb',
@@ -113,6 +117,8 @@ const UNIT_NORMALIZE: Record<string, string> = {
   cuillères: 'c. à s.',
   cuiller: 'c. à s.',
   cuillers: 'c. à s.',
+  cas: 'c. à s.',
+  cac: 'c. à t.',
   't.': 'tasse',
   'demi': 'unit',
   'demi-tasse': 'tasse',
@@ -178,7 +184,8 @@ const UNIT_ALTERNATIVES = [
   'paquets?', 'pots?', 'barquettes?', 'bottes?', 'bouquets?', 'douzaines?',
   'grosses?', 'gros', 'petites?', 'petit', 'moyenn?e?s?', 'moyen',
   'pounds?', 'ounces?', 'lbs',
-  'kg', 'ml', 'cl', 'lb', 'g',
+  'grammes?', 'grm?',
+  'kg', 'ml', 'cl', 'lb', 'gr?',
   'livres?',
   'L(?!\\w)', 'litres?', 'liters?',
   'centilitres?', 'centiliters?',
@@ -226,6 +233,7 @@ function parseQuantity(raw: string | undefined): number | null {
 
 function cleanRawText(raw: string): string {
   return raw
+    .replace(/^[>*•·-]+\s*/g, '')  // strip leading bullets/arrows (ptitchef, some sites)
     .replace(/\t+/g, ' ')
     .replace(/\(facultatif\)/gi, '')
     .replace(/\(optional\)/gi, '')

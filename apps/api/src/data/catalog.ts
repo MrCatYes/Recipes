@@ -1325,8 +1325,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Crème 15%', brand: null, category: 'Produits laitiers',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['crème 15', 'cream 15', 'crème de table', 'crème à cuisson', 'crème à café'],
-    exclude: ['crème 35', 'cream 35', 'fouetter', 'sure', 'glacée'],
+    include: ['crème 15', 'cream 15', 'crème de table', 'crème à cuisson', 'crème à café', 'crème légère', 'creme legere', 'light cream', 'single cream', 'crème fleurette'],
+    exclude: ['crème 35', 'cream 35', 'fouetter', 'sure', 'glacée', 'entière'],
     queries: ['crème 15', 'crème de table'],
     pkg: { size: 473, unit: 'ml' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
   },
