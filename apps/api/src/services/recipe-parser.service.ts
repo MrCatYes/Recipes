@@ -271,6 +271,56 @@ export function extractHeuristicHtml(html: string): ParsedRecipe | null {
     || null;
   if (!title) return null;
 
+  // Ricardo old-format: full recipe data embedded in React component props
+  const ricardoEl = $('[data-react-app="recipeCookingMode"]');
+  if (ricardoEl.length) {
+    const raw = ricardoEl.attr('data-react-app-props') ?? '';
+    try {
+      const rData = JSON.parse(
+        raw.replace(/&quot;/g, '"').replace(/&#039;/g, "'").replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      );
+      if (Array.isArray(rData.ingredientGroups) && Array.isArray(rData.preparationGroups)) {
+        const rIngredients: string[] = [];
+        for (const g of rData.ingredientGroups) {
+          for (const ing of (g.ingredients ?? [])) {
+            const t = (ing.description ?? '').trim().replace(/\s+/g, ' ');
+            if (t && t.length > 2 && !isMetaLine(t)) rIngredients.push(t);
+          }
+        }
+        const rInstructions: string[] = [];
+        for (const g of rData.preparationGroups) {
+          const steps = (g.preparations ?? []).slice().sort((a: any, b: any) => a.preparationOrder - b.preparationOrder);
+          for (const step of steps) {
+            const t = (step.description ?? '').trim().replace(/\s+/g, ' ');
+            if (t && t.length > 5) rInstructions.push(t);
+          }
+        }
+        if (rIngredients.length >= 2) {
+          const imageUrl = $('meta[property="og:image"]').attr('content') ?? null;
+          const catText = $('[itemprop="recipeCategory"]').first().text().trim();
+          const descText = $('meta[property="og:description"]').attr('content')?.trim() ?? '';
+          let servings = 4;
+          const servText = $('[itemprop="recipeYield"]').first().text() || $('[class*="portion"]').first().text();
+          if (servText) { const sv = parseServings(servText); if (sv > 0) servings = sv; }
+          return {
+            title: rData.title ?? title,
+            servings,
+            ingredients: rIngredients,
+            instructions: rInstructions,
+            imageUrl,
+            prepTimeMinutes: null,
+            cookTimeMinutes: null,
+            category: mapCategory(catText) ?? null,
+            description: descText.length > 10 ? descText : null,
+            dietaryTags: parseDietaryTags(null, rIngredients),
+          };
+        }
+      }
+    } catch {
+      // fall through to CSS selector extraction
+    }
+  }
+
   const ingredients: string[] = [];
   const ingSelectors = [
     // WordPress recipe plugins
