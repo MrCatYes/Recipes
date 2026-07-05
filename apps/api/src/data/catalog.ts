@@ -1834,7 +1834,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Chocolat noir', brand: null, category: 'Épicerie',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['chocolat noir', 'dark chocolate', 'chocolat mi-sucré', 'chocolat mi-sucre', 'chocolat amer', 'chocolat semi-sucré', 'bittersweet chocolate', 'semisweet chocolate', 'chocolat 70%', 'chocolat haché', 'chocolat grossièrement haché', 'chocolat pâtissier', 'chocolat patissier', 'chocolat à pâtisserie', 'baking chocolate', 'chocolat de couverture', 'nestlé dessert noir', 'nestle dessert noir'],
+    include: ['chocolat noir', 'dark chocolate', 'chocolat mi-sucré', 'chocolat mi-sucre', 'chocolat amer', 'chocolat semi-sucré', 'bittersweet chocolate', 'semisweet chocolate', 'chocolat 70%', 'chocolat haché', 'chocolat grossièrement haché', 'chocolat pâtissier', 'chocolat patissier', 'chocolat à pâtisserie', 'baking chocolate', 'chocolat de couverture', 'nestlé dessert noir', 'nestle dessert noir', "côte d'or", "cote d'or noir", 'lindt noir'],
     exclude: ['gâteau', 'boisson', 'chaud', 'au lait', 'blanc'],
     queries: ['chocolat noir', 'dark chocolate'],
     pkg: { size: 100, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
@@ -3089,7 +3089,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Cognac', brand: null, category: 'Alcools',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['cognac', 'brandy'],
+    include: ['cognac', 'brandy', 'armagnac', 'calvados'],
     exclude: [],
     queries: ['cognac', 'brandy'],
     pkg: { size: 750, unit: 'ml' }, baseline: { Maxi: 4999, IGA: 5499, Metro: 5299 },
