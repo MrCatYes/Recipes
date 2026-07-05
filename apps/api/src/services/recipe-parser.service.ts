@@ -94,6 +94,8 @@ const META_BOOL_RE = /^se\s+congèle\s+(oui|non)$/i;
 const SECTION_HEADER_RE = /^(préparation|preparation|pour\s+(la|le|les|l['''])\s+\w+|la\s+sauce|la\s+garniture|la\s+farce|la\s+marinade|le\s+glaçage|la\s+pâte|la\s+crème|la\s+décoration|garniture|farce|sauce|marinade|vinaigrette)\s*:?\s*$/i;
 // Recipe cross-references ("1 recette de pâte à pizza"), non-food items, and decorative mentions
 const NON_INGREDIENT_RE = /^\d*\s*recette\s+de\s+/i;
+// Non-food kitchen supplies that appear as "ingredients" in some scraped recipes
+const KITCHEN_SUPPLY_RE = /ficelle\s+de\s+boucher|cure-dent|papier\s+(?:parchemin|cuisson|aluminium|d'aluminium)|pellicule\s+plastique|film\s+(?:alimentaire|plastique)|brochette[sx]?\s+(?:de\s+bois|métalliques?)|ramequin|moule\s+à|planche\s+à\s+découper/i;
 
 function cleanIngredientText(s: string): string {
   return s
@@ -104,7 +106,7 @@ function cleanIngredientText(s: string): string {
 
 function isMetaLine(s: string): boolean {
   const t = s.trim();
-  return META_LINE_RE.test(t) || META_BOOL_RE.test(t) || SECTION_HEADER_RE.test(t) || NON_INGREDIENT_RE.test(t);
+  return META_LINE_RE.test(t) || META_BOOL_RE.test(t) || SECTION_HEADER_RE.test(t) || NON_INGREDIENT_RE.test(t) || KITCHEN_SUPPLY_RE.test(t);
 }
 
 export function parseInstructions(raw: unknown): string[] {

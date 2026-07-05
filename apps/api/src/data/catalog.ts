@@ -2061,6 +2061,14 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 125, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 1.2,
   },
   {
+    name: 'Glaçons', brand: null, category: 'Épicerie',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['glaçons', 'glacon', 'glaçon', 'ice cube', 'ice cubes', 'glace pilée', 'glace concassée', 'crushed ice'],
+    exclude: ['crème', 'cream', 'cidre', 'cider'],
+    queries: ['glaçons', 'ice cubes'],
+    pkg: { size: 1, unit: 'kg' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
+  },
+  {
     name: 'Cidre de glace', brand: null, category: 'Vins & boissons',
     defaultUnit: 'ml', defaultUnitType: 'volume',
     include: ['cidre de glace', 'ice cider', 'cidre de glaces'],
