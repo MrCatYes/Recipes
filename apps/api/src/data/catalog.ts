@@ -1037,7 +1037,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Poudre de chili', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['poudre de chili', 'chili powder', 'assaisonnement chili', 'assaisonnement au chili'],
+    include: ['poudre de chili', 'chili powder', 'assaisonnement chili', 'assaisonnement au chili', 'assaisonnements pour chili', 'assaisonnement pour chili', 'épices à chili', 'chili seasoning'],
     exclude: ['sauce', 'piment', 'sriracha'],
     queries: ['poudre chili', 'chili powder'],
     pkg: { size: 50, unit: 'g' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 }, densityGPerMl: 0.5,
@@ -2085,7 +2085,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Cannelle bâtons', brand: null, category: 'Épices',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['bâton de cannelle', 'bâtons de cannelle', 'cinnamon stick', 'cannelle en bâton'],
+    include: ['bâton de cannelle', 'bâtons de cannelle', 'cinnamon stick', 'cannelle en bâton', 'baton cannelle', 'batons cannelle', 'cannelle bâton', 'cannelle stick'],
     exclude: [],
     queries: ['cannelle bâtons', 'cinnamon sticks'],
     pkg: { size: 3, unit: 'unit' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
@@ -3057,7 +3057,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Veau', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['rôti de veau', 'roti de veau', 'épaule de veau', 'gigot de veau', 'jarret de veau', 'escalope de veau', 'escalopes de veau', 'côtelette de veau', 'côtelettes de veau', 'osso-buco', 'osso buco', 'médaillon de veau', 'surlonge de veau', 'longe de veau', 'paupiette de veau', 'paupiettes de veau'],
+    include: ['rôti de veau', 'roti de veau', 'épaule de veau', 'gigot de veau', 'jarret de veau', 'escalope de veau', 'escalopes de veau', 'côtelette de veau', 'côtelettes de veau', 'côte de veau', 'côtes de veau', 'osso-buco', 'osso buco', 'médaillon de veau', 'surlonge de veau', 'longe de veau', 'paupiette de veau', 'paupiettes de veau'],
     exclude: ['haché', 'ground'],
     queries: ['veau rôti', 'veal roast'],
     pkg: { size: 454, unit: 'g' }, baseline: { Maxi: 1599, IGA: 1799, Metro: 1699 },
@@ -3553,7 +3553,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Tortillas de maïs', brand: null, category: 'Boulangerie',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['tortillas de maïs', 'tortillas de mais', 'corn tortilla', 'corn tortillas', 'taco shells'],
+    include: ['tortillas de maïs', 'tortillas de mais', 'corn tortilla', 'corn tortillas', 'taco shells', 'coquilles à tacos', 'coquilles de tacos', 'coquilles taco'],
     exclude: ['blé', 'wheat', 'flour'],
     queries: ['tortillas maïs', 'corn tortillas'],
     pkg: { size: 12, unit: 'unit' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 },
@@ -3893,6 +3893,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['yogourt brebis'],
     pkg: { size: 450, unit: 'g' }, baseline: { Maxi: 599, IGA: 649, Metro: 629 }, densityGPerMl: 1.0,
+  },
+  {
+    name: 'Crème de cassis', brand: null, category: 'Alcools',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['crème de cassis', 'creme de cassis', 'blackcurrant liqueur', 'liqueur de cassis'],
+    exclude: [],
+    queries: ['crème de cassis'],
+    pkg: { size: 750, unit: 'ml' }, baseline: { Maxi: 1699, IGA: 1899, Metro: 1799 },
   },
 ];
 
