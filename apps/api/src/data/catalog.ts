@@ -477,7 +477,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Bouillon de boeuf', brand: null, category: 'Conserves',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['bouillon de boeuf', 'bouillon de bœuf', 'beef broth', 'beef stock', 'fond de boeuf'],
+    include: ['bouillon de boeuf', 'bouillon de bœuf', 'beef broth', 'beef stock', 'fond de boeuf', 'consommé de boeuf', 'consomme de boeuf', 'beef consomme', 'bouillon de cuisson'],
     exclude: ['bouillon de poulet', 'chicken broth', 'chicken stock', 'fond de poulet', 'légume', 'vegetable', 'cube', 'poudre', 'soupe'],
     queries: ['bouillon de boeuf', 'beef broth'],
     pkg: { size: 900, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
@@ -1387,7 +1387,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Rôti de porc', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['rôti de porc', 'pork roast', 'épaule de porc', 'flanc de porc', 'palette de porc', 'côte de porc', 'jarret de porc', 'jarrets de porc', 'surlonge de porc', 'roti de porc', 'rôtis de porc'],
+    include: ['rôti de porc', 'pork roast', 'épaule de porc', 'flanc de porc', 'palette de porc', 'côte de porc', 'jarret de porc', 'jarrets de porc', 'surlonge de porc', 'roti de porc', 'rôtis de porc', 'échine de porc', 'echine de porc', 'porc dans la fesse', 'fesse de porc'],
     exclude: ['haché', 'saucisse', 'filet mignon', 'tenderloin', 'filet de porc'],
     queries: ['rôti porc', 'pork roast'],
     pkg: { size: 800, unit: 'g' }, baseline: { Maxi: 899, IGA: 999, Metro: 949 },
@@ -3797,6 +3797,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['sauce haricots noirs', 'black bean sauce'],
     pkg: { size: 350, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Pilons de poulet', brand: null, category: 'Viandes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['pilon de poulet', 'pilons de poulet', 'chicken drumstick', 'chicken drumsticks', 'pilon poulet', 'pilons poulet'],
+    exclude: ['haché', 'ground'],
+    queries: ['pilons de poulet', 'chicken drumsticks'],
+    pkg: { size: 900, unit: 'g' }, baseline: { Maxi: 799, IGA: 899, Metro: 849 },
   },
   {
     name: 'Têtes de violon', brand: null, category: 'Légumes',
