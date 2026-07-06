@@ -2013,7 +2013,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Bouillon de légumes', brand: null, category: 'Conserves',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['bouillon de légumes', 'bouillon legumes', 'vegetable broth', 'vegetable stock', 'fond de légumes', 'bouillon vegetarien'],
+    include: ['bouillon de légumes', 'bouillon legumes', 'vegetable broth', 'vegetable stock', 'fond de légumes', 'bouillon vegetarien', 'bouillon liquide légumes', 'bouillon liquide legumes'],
     exclude: ['poulet', 'chicken', 'boeuf', 'beef', 'veau', 'veal', 'cube', 'poudre'],
     queries: ['bouillon légumes', 'vegetable broth'],
     pkg: { size: 900, unit: 'ml' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
@@ -3725,6 +3725,22 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['jus de carotte', 'carrot juice'],
     pkg: { size: 946, unit: 'ml' }, baseline: { Maxi: 499, IGA: 599, Metro: 549 },
+  },
+  {
+    name: 'Arôme Maggi', brand: 'Maggi', category: 'Condiments',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['arôme maggi', 'arome maggi', 'maggi liquid', 'maggi seasoning', 'sauce maggi', 'assaisonnement maggi'],
+    exclude: ['cube', 'bouillon'],
+    queries: ['arôme maggi', 'maggi seasoning'],
+    pkg: { size: 100, unit: 'ml' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 },
+  },
+  {
+    name: 'Pintade', brand: null, category: 'Viandes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['pintade', 'pintades', 'guinea fowl', 'guinea hen'],
+    exclude: [],
+    queries: ['pintade', 'guinea fowl'],
+    pkg: { size: 1200, unit: 'g' }, baseline: { Maxi: 1499, IGA: 1699, Metro: 1599 },
   },
 ];
 
