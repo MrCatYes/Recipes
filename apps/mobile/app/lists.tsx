@@ -236,25 +236,45 @@ export default function ListsScreen() {
         data={lists}
         keyExtractor={l => l.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={GREEN} />}
-        renderItem={({ item: l }) => (
-          <TouchableOpacity
-            style={styles.listCard}
-            onPress={async () => {
-              setLoading(true);
-              try { setActiveList(await getShoppingList(l.id)); } catch { /* */ }
-              setLoading(false);
-            }}
-            onLongPress={() => handleDeleteList(l.id)}
-          >
-            <Ionicons name="cart-outline" size={28} color={GREEN} />
-            <View style={{ flex: 1 }}>
-              <Text style={styles.listName}>{l.name}</Text>
-              <Text style={styles.listMeta}>{l.checkedCount}/{l.itemCount} cochés</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color="#ccc" />
-          </TouchableOpacity>
-        )}
-        ListEmptyComponent={<Text style={styles.emptyText}>Aucune liste — créez-en une !</Text>}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        renderItem={({ item: l }) => {
+          const pct = l.itemCount > 0 ? l.checkedCount / l.itemCount : 0;
+          const done = l.itemCount > 0 && l.checkedCount === l.itemCount;
+          return (
+            <TouchableOpacity
+              style={[styles.listCard, done && styles.listCardDone]}
+              onPress={async () => {
+                setLoading(true);
+                try { setActiveList(await getShoppingList(l.id)); } catch { /* */ }
+                setLoading(false);
+              }}
+              onLongPress={() => handleDeleteList(l.id)}
+              activeOpacity={0.75}
+            >
+              <View style={[styles.listIcon, done && styles.listIconDone]}>
+                <Ionicons name={done ? 'checkmark' : 'cart-outline'} size={22} color={done ? '#fff' : GREEN} />
+              </View>
+              <View style={{ flex: 1, gap: 6 }}>
+                <Text style={[styles.listName, done && styles.listNameDone]}>{l.name}</Text>
+                <View style={styles.miniProgressBar}>
+                  <View style={[styles.miniProgressFill, { width: `${Math.round(pct * 100)}%` }]} />
+                </View>
+                <Text style={styles.listMeta}>
+                  {l.checkedCount}/{l.itemCount} coché{l.checkedCount !== 1 ? 's' : ''}
+                  {done ? ' · Terminé ✓' : ''}
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#ccc" />
+            </TouchableOpacity>
+          );
+        }}
+        ListEmptyComponent={
+          <View style={styles.emptyBlock}>
+            <Ionicons name="cart-outline" size={52} color="#e0e0e0" />
+            <Text style={styles.emptyTitle}>Aucune liste</Text>
+            <Text style={styles.emptyText}>Créez une liste ou ajoutez une recette depuis l'écran Recettes.</Text>
+          </View>
+        }
       />
     </View>
   );
@@ -286,7 +306,15 @@ const styles = StyleSheet.create({
   sectionHeader:   { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingVertical: 6, marginTop: 8 },
   sectionTitle:    { fontSize: 14, fontWeight: '700', color: '#555' },
   sectionCount:    { fontSize: 12, color: '#999' },
-  listCard:        { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 10 },
-  listName:        { fontSize: 16, fontWeight: '600' },
-  listMeta:        { fontSize: 13, color: '#888', marginTop: 2 },
+  listCard:        { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: '#fff', borderRadius: 14, padding: 16, marginBottom: 10, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 },
+  listCardDone:    { backgroundColor: '#F1F8E9' },
+  listIcon:        { width: 44, height: 44, borderRadius: 12, backgroundColor: '#E8F5E9', alignItems: 'center', justifyContent: 'center' },
+  listIconDone:    { backgroundColor: GREEN },
+  listName:        { fontSize: 16, fontWeight: '700', color: '#1a1a1a' },
+  listNameDone:    { color: '#666' },
+  listMeta:        { fontSize: 12, color: '#aaa' },
+  miniProgressBar: { height: 4, backgroundColor: '#E0E0E0', borderRadius: 2, overflow: 'hidden' },
+  miniProgressFill:{ height: 4, backgroundColor: GREEN, borderRadius: 2 },
+  emptyBlock:      { alignItems: 'center', paddingTop: 48, gap: 8 },
+  emptyTitle:      { fontSize: 18, fontWeight: '700', color: '#ccc' },
 });
