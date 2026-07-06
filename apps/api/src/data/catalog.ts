@@ -3831,6 +3831,22 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 250, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
   },
   {
+    name: 'Vin de riz', brand: null, category: 'Alcools',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['vin de riz', 'rice wine', 'vin de shaoxing', 'shaoxing', 'vin chinois', 'mirin', 'sake'],
+    exclude: ['vinaigre', 'vinegar'],
+    queries: ['vin de riz', 'mirin'],
+    pkg: { size: 500, unit: 'ml' }, baseline: { Maxi: 499, IGA: 599, Metro: 549 },
+  },
+  {
+    name: 'Vinaigrette française', brand: null, category: 'Condiments',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['vinaigrette française', 'vinaigrette francaise', 'french dressing', 'vinaigrette orange', 'vinaigrette de type français'],
+    exclude: [],
+    queries: ['vinaigrette française', 'french dressing'],
+    pkg: { size: 475, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
     name: 'Fromage à pâte semi-ferme', brand: null, category: 'Fromages',
     defaultUnit: 'g', defaultUnitType: 'weight',
     include: ['fromage à pâte semi-ferme', 'fromage pate semi-ferme', 'fromage semi-ferme', 'fromage affiné en surface'],
