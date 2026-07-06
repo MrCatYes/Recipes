@@ -989,7 +989,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Coriandre moulue', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['coriandre moulue', 'coriandre en poudre', 'ground coriander', 'coriandre moulu'],
+    include: ['coriandre moulue', 'coriandre en poudre', 'ground coriander', 'coriandre moulu', 'graines de coriandre', 'coriandre concassée'],
     exclude: ['fraîche', 'frais', 'fresh', 'séché', 'dried'],
     queries: ['coriandre moulue', 'ground coriander'],
     pkg: { size: 40, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 }, densityGPerMl: 0.5,
@@ -1818,7 +1818,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Thym frais', brand: null, category: 'Fruits et légumes',
     defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['branche de thym', 'branches de thym', 'feuilles de thym', 'thym frais', 'fresh thyme', 'thym ciselé', 'thym', 'thyme'],
+    include: ['branche de thym', 'branches de thym', 'feuilles de thym', 'thym frais', 'fresh thyme', 'thym ciselé', 'thym effeuillé', 'tige de thym', 'tiges de thym', 'thym', 'thyme'],
     exclude: ['séché', 'dried', 'tisane', 'citronnée'],
     queries: ['thym frais', 'fresh thyme'],
     pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 199, IGA: 229, Metro: 219 },
@@ -3289,7 +3289,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Assaisonnements italiens', brand: null, category: 'Épices',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['assaisonnements italiens', 'assaisonnement italien', 'italian seasoning', 'mélange d\'épices italiennes', 'épices italiennes'],
+    include: ['assaisonnements italiens', 'assaisonnement italien', 'italian seasoning', 'mélange d\'épices italiennes', 'épices italiennes', 'herbes italiennes', 'herbes de type italien', 'fines herbes italiennes'],
     exclude: [],
     queries: ['assaisonnements italiens', 'italian seasoning'],
     pkg: { size: 20, unit: 'g' }, baseline: { Maxi: 249, IGA: 279, Metro: 269 }, densityGPerMl: 0.5,
@@ -3829,6 +3829,14 @@ export const CATALOG: CatalogProduct[] = [
     exclude: ['lait', 'milk'],
     queries: ['crème végétale', 'plant-based cream'],
     pkg: { size: 250, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Épices tandoori', brand: null, category: 'Épices',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['épices tandoori', 'epices tandoori', 'tandoori', 'mélange tandoori', 'marinade tandoori'],
+    exclude: [],
+    queries: ['épices tandoori', 'tandoori'],
+    pkg: { size: 60, unit: 'g' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
   },
   {
     name: 'Sucre de coco', brand: null, category: 'Épicerie',
