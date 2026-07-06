@@ -182,38 +182,11 @@ export default function RecipeDetail() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.back}>
-          <Ionicons name="chevron-back" size={26} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle} numberOfLines={1}>Recette</Text>
-        <TouchableOpacity onPress={() => id && toggleFavorite(id)} style={styles.back}>
-          <Ionicons name={id && isFavorite(id) ? 'heart' : 'heart-outline'} size={24} color={id && isFavorite(id) ? '#FF8A80' : '#fff'} />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleShare} style={styles.back}>
-          <Ionicons name="share-outline" size={22} color="#fff" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={async () => {
-            if (!id) return;
-            try {
-              const result = await rematchRecipe(id);
-              setRecipe(result.recipe);
-              if (result.updated > 0) {
-                Alert.alert('Mis à jour', `${result.updated} ingrédient(s) nouvellement identifié(s).`);
-              } else {
-                Alert.alert('À jour', 'Tous les ingrédients sont déjà identifiés au mieux.');
-              }
-            } catch (e) { Alert.alert('Erreur', String(e)); }
-          }}
-          style={styles.back}
-        >
-          <Ionicons name="refresh-outline" size={22} color="#fff" />
-        </TouchableOpacity>
-      </View>
-
-      {loading && <ActivityIndicator style={{ marginTop: 40 }} size="large" color="#2E7D32" />}
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" color="#2E7D32" />
+        </View>
+      )}
       {error && <Text style={styles.error}>{error}</Text>}
 
       {/* Macro detail modal */}
@@ -266,9 +239,49 @@ export default function RecipeDetail() {
 
       {recipe && (
         <ScrollView contentContainerStyle={styles.scroll}>
-          {recipe.imageUrl && (
-            <Image source={{ uri: recipe.imageUrl }} style={styles.image} resizeMode="cover" />
-          )}
+          {/* Hero image with floating controls */}
+          <View style={styles.heroWrap}>
+            {recipe.imageUrl
+              ? <Image source={{ uri: recipe.imageUrl }} style={styles.image} resizeMode="cover" />
+              : <View style={[styles.image, styles.imagePlaceholder]}>
+                  <Ionicons name="restaurant" size={64} color="#ddd" />
+                </View>
+            }
+            {/* Dark gradient overlay at top for button legibility */}
+            <View style={styles.heroOverlayTop} />
+            {/* Floating action row */}
+            <View style={styles.heroActions}>
+              <TouchableOpacity style={styles.heroBtn} onPress={() => router.back()}>
+                <Ionicons name="chevron-back" size={22} color="#fff" />
+              </TouchableOpacity>
+              <View style={styles.heroActionsRight}>
+                <TouchableOpacity style={styles.heroBtn} onPress={() => id && toggleFavorite(id)}>
+                  <Ionicons name={id && isFavorite(id) ? 'heart' : 'heart-outline'} size={20} color={id && isFavorite(id) ? '#FF8A80' : '#fff'} />
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.heroBtn} onPress={handleShare}>
+                  <Ionicons name="share-outline" size={20} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.heroBtn}
+                  onPress={async () => {
+                    if (!id) return;
+                    try {
+                      const result = await rematchRecipe(id);
+                      setRecipe(result.recipe);
+                      if (result.updated > 0) {
+                        Alert.alert('Mis à jour', `${result.updated} ingrédient(s) nouvellement identifié(s).`);
+                      } else {
+                        Alert.alert('À jour', 'Tous les ingrédients sont déjà identifiés au mieux.');
+                      }
+                    } catch (e) { Alert.alert('Erreur', String(e)); }
+                  }}
+                >
+                  <Ionicons name="refresh-outline" size={20} color="#fff" />
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+
           <Text style={styles.title}>{recipe.title}</Text>
           <View style={styles.meta}>
             {recipe.category && (
@@ -437,16 +450,6 @@ export default function RecipeDetail() {
               </TouchableOpacity>
             );
           })}
-          {/* Match rate indicator */}
-          {(() => {
-            const matched = recipe.ingredients.filter(i => i.productId).length;
-            const total = recipe.ingredients.length;
-            return total > 0 ? (
-              <Text style={styles.matchRate}>
-                {matched}/{total} ingrédients identifiés ({Math.round(matched / total * 100)}%)
-              </Text>
-            ) : null;
-          })()}
 
           {/* Substitution suggestions */}
           {substitutions.length > 0 && (
@@ -486,28 +489,28 @@ export default function RecipeDetail() {
             </>
           )}
 
-          {recipe.sourceUrl && (
+          {/* Action row */}
+          <View style={styles.actionRow}>
             <TouchableOpacity
-              style={styles.sourceBtn}
-              onPress={() => Linking.openURL(recipe.sourceUrl!)}
+              style={styles.actionBtnPrimary}
+              onPress={handleAddToList}
+              disabled={addingToList}
             >
-              <Ionicons name="open-outline" size={18} color="#fff" />
-              <Text style={styles.sourceBtnText}>Voir la recette originale</Text>
+              {addingToList
+                ? <ActivityIndicator color="#fff" size="small" />
+                : <Ionicons name="cart-outline" size={18} color="#fff" />}
+              <Text style={styles.actionBtnPrimaryText}>Épicerie</Text>
             </TouchableOpacity>
-          )}
-
-          <TouchableOpacity
-            style={styles.listBtn}
-            onPress={handleAddToList}
-            disabled={addingToList}
-          >
-            {addingToList
-              ? <ActivityIndicator color="#2E7D32" />
-              : <>
-                  <Ionicons name="cart-outline" size={18} color="#2E7D32" />
-                  <Text style={styles.listBtnText}>Ajouter à la liste d'épicerie</Text>
-                </>}
-          </TouchableOpacity>
+            {recipe.sourceUrl && (
+              <TouchableOpacity
+                style={styles.actionBtnSecondary}
+                onPress={() => Linking.openURL(recipe.sourceUrl!)}
+              >
+                <Ionicons name="open-outline" size={18} color="#2E7D32" />
+                <Text style={styles.actionBtnSecondaryText}>Originale</Text>
+              </TouchableOpacity>
+            )}
+          </View>
 
           <TouchableOpacity
             style={styles.deleteBtn}
@@ -525,8 +528,8 @@ export default function RecipeDetail() {
               ]);
             }}
           >
-            <Ionicons name="trash-outline" size={18} color="#C62828" />
-            <Text style={styles.deleteBtnText}>Supprimer cette recette</Text>
+            <Ionicons name="trash-outline" size={16} color="#C62828" />
+            <Text style={styles.deleteBtnText}>Supprimer</Text>
           </TouchableOpacity>
         </ScrollView>
       )}
@@ -552,14 +555,21 @@ const macroStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  container:     { flex: 1, backgroundColor: '#f5f5f5' },
-  header:        { flexDirection: 'row', alignItems: 'center', backgroundColor: '#2E7D32', paddingTop: 48, paddingBottom: 12, paddingHorizontal: 8, gap: 4 },
-  back:          { padding: 4 },
-  headerTitle:   { flex: 1, color: '#fff', fontSize: 18, fontWeight: '600' },
-  error:         { color: '#C62828', padding: 16 },
-  scroll:        { paddingBottom: 40 },
-  image:         { width: '100%', height: 200 },
-  title:         { fontSize: 22, fontWeight: '700', paddingHorizontal: 16, paddingTop: 14 },
+  container:       { flex: 1, backgroundColor: '#f5f5f5' },
+  loadingOverlay:  { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  error:           { color: '#C62828', padding: 16 },
+  scroll:          { paddingBottom: 48 },
+
+  // Hero
+  heroWrap:        { position: 'relative' },
+  image:           { width: '100%', height: 260 },
+  imagePlaceholder:{ alignItems: 'center', justifyContent: 'center', backgroundColor: '#f0f0f0' },
+  heroOverlayTop:  { position: 'absolute', top: 0, left: 0, right: 0, height: 100, backgroundColor: 'rgba(0,0,0,0.35)' },
+  heroActions:     { position: 'absolute', top: 50, left: 12, right: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  heroActionsRight:{ flexDirection: 'row', gap: 6 },
+  heroBtn:         { width: 38, height: 38, borderRadius: 19, backgroundColor: 'rgba(0,0,0,0.45)', alignItems: 'center', justifyContent: 'center' },
+
+  title:           { fontSize: 24, fontWeight: '800', paddingHorizontal: 16, paddingTop: 16, color: '#1a1a1a', lineHeight: 30 },
   description:   { fontSize: 13, color: '#666', paddingHorizontal: 16, marginTop: 6, lineHeight: 19 },
   meta:          { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, paddingHorizontal: 16, marginTop: 4 },
   metaText:      { color: '#666', fontSize: 13 },
@@ -614,12 +624,13 @@ const styles = StyleSheet.create({
   subReplace:    { fontSize: 13, color: '#E65100', fontWeight: '600' },
   subSaving:     { backgroundColor: '#2E7D32', borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 },
   subSavingText: { color: '#fff', fontSize: 11, fontWeight: '700' },
-  sourceBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#2E7D32', marginHorizontal: 16, marginTop: 16, borderRadius: 10, paddingVertical: 14 },
-  sourceBtnText: { color: '#fff', fontWeight: '600', fontSize: 15 },
-  listBtn:       { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#E8F5E9', marginHorizontal: 16, marginTop: 8, marginBottom: 16, borderRadius: 10, paddingVertical: 14, borderWidth: 1.5, borderColor: '#2E7D32' },
-  listBtnText:   { color: '#2E7D32', fontWeight: '600', fontSize: 15 },
-  deleteBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, paddingVertical: 14, marginTop: 8, marginBottom: 20 },
-  deleteBtnText: { color: '#C62828', fontWeight: '500', fontSize: 14 },
+  actionRow:            { flexDirection: 'row', gap: 10, marginHorizontal: 16, marginTop: 16, marginBottom: 8 },
+  actionBtnPrimary:     { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7, backgroundColor: '#2E7D32', borderRadius: 12, paddingVertical: 14 },
+  actionBtnPrimaryText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  actionBtnSecondary:   { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 7, backgroundColor: '#E8F5E9', borderRadius: 12, paddingVertical: 14, borderWidth: 1.5, borderColor: '#2E7D32' },
+  actionBtnSecondaryText: { color: '#2E7D32', fontWeight: '700', fontSize: 15 },
+  deleteBtn:     { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 12, marginBottom: 20 },
+  deleteBtnText: { color: '#C62828', fontWeight: '500', fontSize: 13 },
   macroRow:      { flexDirection: 'row', gap: 6, marginTop: 10, justifyContent: 'center', flexWrap: 'wrap' },
   modalBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'flex-end' },
   modalCard:     { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, paddingBottom: 36 },
