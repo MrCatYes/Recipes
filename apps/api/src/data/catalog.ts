@@ -1315,7 +1315,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Poulet entier', brand: null, category: 'Viandes',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['poulet entier', 'poulets', 'whole chicken', 'poulet à griller', 'poulet rôti', 'poulet bbq'],
+    include: ['poulet entier', 'poulets', 'whole chicken', 'poulet à griller', 'poulet rôti', 'poulet bbq', 'poulet de grain', 'poulet fermier', 'poulet bio', 'poulet d\'environ'],
     exclude: ['poitrine', 'cuisse', 'aile', 'haché', 'nugget', 'bouillon'],
     queries: ['poulet entier', 'whole chicken'],
     pkg: { size: 1500, unit: 'g' }, baseline: { Maxi: 999, IGA: 1099, Metro: 1049 },
@@ -3781,6 +3781,30 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['concentré limonade', 'lemonade concentrate'],
     pkg: { size: 355, unit: 'ml' }, baseline: { Maxi: 299, IGA: 349, Metro: 329 },
+  },
+  {
+    name: 'Huîtres fraîches', brand: null, category: 'Poissons & fruits de mer',
+    defaultUnit: 'unit', defaultUnitType: 'count',
+    include: ['huître', 'huîtres', 'oyster', 'oysters', 'huîtres ouvertes', 'huîtres fraîches'],
+    exclude: ['sauce', 'sauce aux'],
+    queries: ['huîtres fraîches', 'fresh oysters'],
+    pkg: { size: 12, unit: 'unit' }, baseline: { Maxi: 1299, IGA: 1499, Metro: 1399 },
+  },
+  {
+    name: 'Sauce haricots noirs', brand: null, category: 'Épicerie',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['sauce aux haricots noirs', 'sauce haricots noirs', 'black bean sauce', 'sauce piments haricots', 'sauce piments et haricots'],
+    exclude: [],
+    queries: ['sauce haricots noirs', 'black bean sauce'],
+    pkg: { size: 350, unit: 'ml' }, baseline: { Maxi: 399, IGA: 449, Metro: 429 },
+  },
+  {
+    name: 'Têtes de violon', brand: null, category: 'Légumes',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['têtes de violon', 'tetes de violon', 'fiddlehead', 'fiddleheads', 'têtes de crosse'],
+    exclude: [],
+    queries: ['têtes de violon', 'fiddleheads'],
+    pkg: { size: 227, unit: 'g' }, baseline: { Maxi: 599, IGA: 699, Metro: 649 },
   },
 ];
 
