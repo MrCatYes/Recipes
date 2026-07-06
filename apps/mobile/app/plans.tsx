@@ -301,6 +301,7 @@ export default function PlansScreen() {
         data={plans}
         keyExtractor={p => p.id}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={GREEN} />}
+        contentContainerStyle={{ paddingBottom: 20 }}
         renderItem={({ item: p }) => (
           <TouchableOpacity
             style={styles.planCard}
@@ -310,19 +311,33 @@ export default function PlansScreen() {
               setLoading(false);
             }}
             onLongPress={() => handleDelete(p.id)}
+            activeOpacity={0.75}
           >
-            <Ionicons name="calendar-outline" size={28} color={GREEN} />
-            <View style={{ flex: 1 }}>
+            <View style={styles.planIcon}>
+              <Ionicons name="calendar-outline" size={22} color={GREEN} />
+            </View>
+            <View style={{ flex: 1, gap: 6 }}>
               <Text style={styles.planName}>{p.name}</Text>
+              {p.budgetCents != null && (
+                <View style={styles.miniProgressBar}>
+                  <View style={[styles.miniProgressFill, { width: '0%' }]} />
+                </View>
+              )}
               <Text style={styles.planMeta}>
                 {p.recipeCount} recette{p.recipeCount !== 1 ? 's' : ''}
                 {p.budgetCents ? ` · Budget ${formatPrice(p.budgetCents)}` : ''}
               </Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#ccc" />
+            <Ionicons name="chevron-forward" size={18} color="#ccc" />
           </TouchableOpacity>
         )}
-        ListEmptyComponent={<Text style={styles.emptyText}>Aucun plan — créez votre semaine !</Text>}
+        ListEmptyComponent={
+          <View style={styles.emptyBlock}>
+            <Ionicons name="calendar-outline" size={52} color="#e0e0e0" />
+            <Text style={styles.emptyTitle}>Aucun plan</Text>
+            <Text style={styles.emptyText}>Créez un plan repas pour la semaine.</Text>
+          </View>
+        }
       />
     </View>
   );
@@ -371,9 +386,14 @@ const styles = StyleSheet.create({
   createBtn:       { backgroundColor: GREEN, borderRadius: 10, paddingHorizontal: 20, justifyContent: 'center' },
   createBtnText:   { color: '#fff', fontWeight: '700', fontSize: 15 },
   // Plan card
-  planCard:        { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: '#fff', borderRadius: 12, padding: 16, marginBottom: 10 },
-  planName:        { fontSize: 16, fontWeight: '600' },
-  planMeta:        { fontSize: 13, color: '#888', marginTop: 2 },
+  planCard:        { flexDirection: 'row', alignItems: 'center', gap: 14, backgroundColor: '#fff', borderRadius: 14, padding: 16, marginBottom: 10, shadowColor: '#000', shadowOpacity: 0.04, shadowRadius: 4, elevation: 1 },
+  planIcon:        { width: 44, height: 44, borderRadius: 12, backgroundColor: '#E8F5E9', alignItems: 'center', justifyContent: 'center' },
+  planName:        { fontSize: 16, fontWeight: '700', color: '#1a1a1a' },
+  planMeta:        { fontSize: 12, color: '#aaa' },
+  miniProgressBar: { height: 4, backgroundColor: '#E0E0E0', borderRadius: 2, overflow: 'hidden' },
+  miniProgressFill:{ height: 4, backgroundColor: GREEN, borderRadius: 2 },
+  emptyBlock:      { alignItems: 'center', paddingTop: 48, gap: 8 },
+  emptyTitle:      { fontSize: 18, fontWeight: '700', color: '#ccc' },
   // Modal
   modalOverlay:    { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'flex-end' },
   modalContent:    { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 16, maxHeight: '70%' },
