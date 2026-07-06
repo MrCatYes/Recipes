@@ -183,7 +183,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Yogourt grec nature', brand: 'Oikos', category: 'Produits laitiers',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['yogourt grec', 'greek yogurt', 'yogourt nature', 'yaourt grec', 'yaourt à la grecque', 'yaourt nature', 'yaourts natures'],
+    include: ['yogourt grec', 'greek yogurt', 'yogourt nature', 'yaourt grec', 'yaourt à la grecque', 'yaourt nature', 'yaourts natures', 'yogurt grec', 'yogurt nature'],
     exclude: ['boire', 'drink', 'enfant', 'kids', 'aromatisé', 'vanille', 'fraise'],
     queries: ['yogourt grec', 'greek yogurt'],
     pkg: { size: 750, unit: 'g' }, baseline: { Maxi: 499, IGA: 549, Metro: 529 }, densityGPerMl: 1.05,
@@ -1411,8 +1411,8 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Yogourt', brand: null, category: 'Produits laitiers',
     defaultUnit: 'g', defaultUnitType: 'weight',
-    include: ['yogourt', 'yogurt', 'iogo', 'activia', 'danone', 'yoplait'],
-    exclude: ['grec', 'greek', 'à boire', 'tube'],
+    include: ['yogourt', 'yogurt', 'yaourt', 'yaourts', 'iogo', 'activia', 'danone', 'yoplait'],
+    exclude: ['grec', 'greek', 'à boire', 'tube', 'brebis', 'mouton', 'sheep'],
     queries: ['yogourt', 'yogurt'],
     pkg: { size: 650, unit: 'g' }, baseline: { Maxi: 349, IGA: 399, Metro: 379 }, densityGPerMl: 1.0,
   },
@@ -3391,14 +3391,6 @@ export const CATALOG: CatalogProduct[] = [
     pkg: { size: 150, unit: 'g' }, baseline: { Maxi: 249, IGA: 299, Metro: 279 },
   },
   {
-    name: 'Glaçons', brand: null, category: 'Boissons',
-    defaultUnit: 'unit', defaultUnitType: 'count',
-    include: ['glaçon', 'glaçons', 'glacon', 'glacons', 'ice cube', 'ice cubes', 'glaçons et', 'glaçons,', 'glace pilée', 'crushed ice', 'glace concassée'],
-    exclude: [],
-    queries: ['glaçons'],
-    pkg: { size: 1, unit: 'unit' }, baseline: { Maxi: 0, IGA: 0, Metro: 0 },
-  },
-  {
     name: 'Huile de truffe', brand: null, category: 'Huiles',
     defaultUnit: 'ml', defaultUnitType: 'volume',
     include: ['huile de truffe', 'truffle oil', 'huile truffée'],
@@ -3885,6 +3877,22 @@ export const CATALOG: CatalogProduct[] = [
     exclude: [],
     queries: ['fromage semi-ferme'],
     pkg: { size: 200, unit: 'g' }, baseline: { Maxi: 799, IGA: 899, Metro: 849 },
+  },
+  {
+    name: 'Lait au chocolat', brand: null, category: 'Produits laitiers',
+    defaultUnit: 'ml', defaultUnitType: 'volume',
+    include: ['lait au chocolat', 'lait chocolaté', 'lait chocolate', 'chocolate milk', 'lait choco'],
+    exclude: [],
+    queries: ['lait au chocolat', 'chocolate milk'],
+    pkg: { size: 1000, unit: 'ml' }, baseline: { Maxi: 369, IGA: 399, Metro: 389 }, densityGPerMl: 1.04,
+  },
+  {
+    name: 'Yogourt de brebis', brand: null, category: 'Produits laitiers',
+    defaultUnit: 'g', defaultUnitType: 'weight',
+    include: ['yogourt de brebis', 'yaourt de brebis', 'yaourts de brebis', 'yogurt de brebis', 'sheep milk yogurt', 'sheep yogurt'],
+    exclude: [],
+    queries: ['yogourt brebis'],
+    pkg: { size: 450, unit: 'g' }, baseline: { Maxi: 599, IGA: 649, Metro: 629 }, densityGPerMl: 1.0,
   },
 ];
 
