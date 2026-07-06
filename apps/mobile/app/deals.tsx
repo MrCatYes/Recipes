@@ -217,9 +217,11 @@ export default function DealsScreen() {
               return (
                 <TouchableOpacity
                   key={c}
-                  style={[styles.chainToggle, on && { backgroundColor: STORE_COLORS[c] }]}
+                  style={[styles.chainToggle, on && { backgroundColor: STORE_COLORS[c], borderColor: STORE_COLORS[c] }]}
                   onPress={() => toggleChain(c)}
+                  activeOpacity={0.75}
                 >
+                  {!on && <View style={[styles.chainDotSmall, { backgroundColor: STORE_COLORS[c] }]} />}
                   <Text style={[styles.chainToggleText, on && { color: '#fff' }]}>{c}</Text>
                 </TouchableOpacity>
               );
@@ -452,9 +454,10 @@ const styles = StyleSheet.create({
 
   weekLabel:     { textAlign: 'center', fontSize: 13, fontWeight: '600', color: '#555', paddingTop: 12 },
   chainRow:      { flexDirection: 'row', justifyContent: 'center', gap: 6, paddingHorizontal: 16, paddingTop: 8 },
-  chainToggle:   { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14, borderWidth: 1.5, borderColor: '#ddd' },
+  chainToggle:   { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: 14, borderWidth: 1.5, borderColor: '#ddd' },
+  chainDotSmall: { width: 6, height: 6, borderRadius: 3 },
   chainToggleText: { fontSize: 11, fontWeight: '700', color: '#999' },
-  statsBar:      { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 12, paddingHorizontal: 16, backgroundColor: '#fff', marginHorizontal: 16, marginTop: 12, borderRadius: 12 },
+  statsBar:      { flexDirection: 'row', justifyContent: 'space-around', paddingVertical: 12, paddingHorizontal: 16, backgroundColor: '#fff', marginHorizontal: 16, marginTop: 12, borderRadius: 14, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 4, elevation: 2 },
   stat:          { alignItems: 'center' },
   statValue:     { fontSize: 20, fontWeight: '700', color: '#333' },
   statLabel:     { fontSize: 11, color: '#888', marginTop: 2 },
