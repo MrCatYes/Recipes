@@ -91,9 +91,9 @@ export function parseImageUrl(raw: unknown): string | null {
 const META_LINE_RE = /^(portions?|rendement|préparation|preparation|cuisson|macération|maceration|repos|réfrigération|réfrigeration|congélation|congelation|attente|refroidissement|levée|levee|marinage|trempage|décongélation|decongelation|marinade\s+\d|temps\s+de)\s+[\d,]/i;
 const META_BOOL_RE = /^se\s+congèle\s+(oui|non)$/i;
 // Section headers that appear in French recipe ingredient lists but aren't ingredients
-const SECTION_HEADER_RE = /^(préparation|preparation|pour\s+(la|le|les|l['''])\s+\w+|la\s+sauce|la\s+garniture|la\s+farce|la\s+marinade|le\s+glaçage|la\s+pâte|la\s+crème|la\s+décoration|garniture|farce|sauce|marinade|vinaigrette)\s*:?\s*$/i;
+const SECTION_HEADER_RE = /^(préparation|preparation|pour\s+(la|le|les|l['''])\s+\w+|la\s+sauce|la\s+garniture|la\s+farce|la\s+marinade|le\s+glaçage|la\s+pâte|la\s+crème|la\s+décoration|garniture|farce|sauce|marinade|vinaigrette|montage|assemblage|finition|service|dressage|décoration|decoration|glaçage|glacage)\s*:?\s*$/i;
 // Recipe cross-references ("1 recette de pâte à pizza"), non-food items, and decorative mentions
-const NON_INGREDIENT_RE = /^\d*\s*recette\s+de\s+/i;
+const NON_INGREDIENT_RE = /^\d*\s*recette\s+de\s+|^eau\s+de\s+trempage$|^eau\s+de\s+cuisson$/i;
 // Non-food kitchen supplies that appear as "ingredients" in some scraped recipes
 const KITCHEN_SUPPLY_RE = /ficelle\s+de\s+boucher|cure-dent|papier\s+(?:parchemin|cuisson|aluminium|d'aluminium)|pellicule\s+plastique|film\s+(?:alimentaire|plastique)|brochette[sx]?\s+(?:de\s+bois|métalliques?)|ramequin|moule\s+à|planche\s+à\s+découper/i;
 
