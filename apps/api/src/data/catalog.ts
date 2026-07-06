@@ -317,7 +317,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Tomates en dés', brand: 'Hunts', category: 'Conserves',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['tomates en dés', 'diced tomatoes', 'tomates en conserve', 'canned tomatoes', 'tomates étuvées', 'tomates broyées', 'crushed tomatoes', 'tomates italiennes'],
+    include: ['tomates en dés', 'diced tomatoes', 'tomates en conserve', 'canned tomatoes', 'tomates étuvées', 'tomates broyées', 'crushed tomatoes', 'tomates italiennes', 'tomates pelées', 'tomate pelée', 'tomates concassées', 'tomate concassée', 'whole tomatoes'],
     exclude: ['vigne', 'vine', 'cerise', 'cherry', 'fraîche', 'fresh', 'serre', 'rouges', 'séché', 'dried', 'pâte', 'paste', 'ketchup', 'jus', 'juice', 'soupe', 'soup', 'sauce'],
     queries: ['tomates en dés', 'diced tomatoes'],
     pkg: { size: 796, unit: 'ml' }, baseline: { Maxi: 149, IGA: 169, Metro: 159 },
@@ -333,7 +333,7 @@ export const CATALOG: CatalogProduct[] = [
   {
     name: 'Sauce tomate', brand: null, category: 'Conserves',
     defaultUnit: 'ml', defaultUnitType: 'volume',
-    include: ['sauce tomate', 'tomato sauce', 'sauce aux tomates'],
+    include: ['sauce tomate', 'tomato sauce', 'sauce aux tomates', 'coulis de tomate', 'coulis tomate', 'purée de tomate', 'puree de tomate', 'passata'],
     exclude: ['pâte', 'paste', 'dés', 'diced', 'pour pâtes', 'pasta sauce', 'à spaghetti'],
     queries: ['sauce tomate', 'tomato sauce'],
     pkg: { size: 680, unit: 'ml' }, baseline: { Maxi: 129, IGA: 149, Metro: 139 },
