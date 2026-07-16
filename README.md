@@ -14,7 +14,7 @@ packages/shared-types Types TypeScript partagés (DTO API)
 
 - **Node.js** 20+
 - **pnpm** 9+ → `npm install -g pnpm@9`
-- **PostgreSQL 16** — natif (recommandé) **ou** via Docker
+- **PostgreSQL 16** — natif Windows (service `postgresql-x64-16`)
 - **Expo Go** sur ton téléphone (App Store / Play Store) pour tester le mobile
 - PC et téléphone sur le **même réseau Wi-Fi**
 
@@ -32,11 +32,11 @@ pnpm install
 ## 2. Base de données
 
 `DATABASE_URL` attendu (dans `apps/api/.env`) :
-`postgresql://epicerie:epicerie_dev@127.0.0.1:5432/epicerie`
+`postgresql://epicerie:epicerie_dev@localhost:5432/epicerie`
 
-### Option A — Postgres natif (recommandé, stable)
+### Postgres natif Windows
 
-Installe Postgres 16 (https://www.postgresql.org/download/windows/), port 5432, puis crée le user + la base :
+Installe Postgres 16 (`winget install PostgreSQL.PostgreSQL.16`), port 5432, puis crée le user + la base :
 
 ```powershell
 $env:PGPASSWORD="<mot_de_passe_postgres>"
@@ -44,13 +44,8 @@ psql -U postgres -h 127.0.0.1 -c "CREATE USER epicerie WITH PASSWORD 'epicerie_d
 psql -U postgres -h 127.0.0.1 -c "CREATE DATABASE epicerie OWNER epicerie;"
 ```
 
-### Option B — Docker
-
-```powershell
-cd D:\Recipes
-docker compose up -d
-```
-> Si le moteur Docker plante (`pipe\dockerBackendApiServer`) : `wsl --shutdown`, relance Docker Desktop, attends la baleine stable. Redis du compose n'est **pas requis** au runtime.
+> Le binaire est dans `C:\Program Files\PostgreSQL\16\bin` (pas dans le PATH par défaut).
+> Restaurer un backup : `pg_restore -U epicerie -h localhost -d epicerie --no-owner --no-privileges backups/epicerie-YYYY-MM-DD.dump`
 
 ### Appliquer le schéma + données
 
@@ -84,7 +79,7 @@ Copie `apps/api/.env.example` → `apps/api/.env` et remplis :
 
 ```powershell
 cd D:\Recipes\apps\api
-pnpm dev          # tsx watch + charge .env, port 3000
+pnpm dev          # tsx watch + charge .env, port 3100
 ```
 
 Vérifier (⚠️ utilise **`127.0.0.1`**, pas `localhost` — celui-ci résout en IPv6 `::1` alors que le serveur bind IPv4) :
@@ -93,7 +88,7 @@ Vérifier (⚠️ utilise **`127.0.0.1`**, pas `localhost` — celui-ci résout 
 Invoke-RestMethod "http://127.0.0.1:3100/health"
 ```
 
-> **Port 3100** : le port host est **3100** (et non 3000) pour éviter une collision avec un autre projet local (J.A.R.V.I.S, Next.js sur 3000). En Docker, le conteneur écoute 3000 en interne et est mappé `3100:3000` (voir `docker-compose.yml`). En natif, `PORT=3100` dans `apps/api/.env`.
+> **Port 3100** : le port est **3100** (et non 3000) pour éviter une collision avec un autre projet local (J.A.R.V.I.S, Next.js sur 3000). Défini par `PORT=3100` dans `apps/api/.env`.
 
 Autres scripts (depuis `apps/api`) :
 ```powershell
@@ -156,10 +151,8 @@ pnpm exec tsx --env-file=.env src/services/daily-scrape.service.ts
 |---|---|
 | `Network request failed` (mobile) | `.env` mobile pointe sur `localhost`/mauvaise IP → mettre l'IP LAN du PC. PC + tél même Wi-Fi. |
 | API `localhost` ne répond pas (PowerShell) | Utiliser `127.0.0.1` (IPv6 vs IPv4). |
-| `P1001 Can't reach database server` | Postgres pas démarré (Docker tombé / service Postgres arrêté). |
-| `pipe\dockerBackendApiServer` | Moteur Docker mort → `wsl --shutdown` + relancer Docker Desktop, ou passer à Postgres natif. |
-| `ports are not available: ... 3000/3100` | Un autre process tient le port (ex. J.A.R.V.I.S Next.js sur 3000). Recipes utilise **3100** ; si pris, change le mapping dans `docker-compose.yml`. |
-| `Cannot find module 'node-cron'` (conteneur) | Image Docker périmée après ajout de deps → `docker compose up -d --build`. |
+| `P1001 Can't reach database server` | Service Postgres arrêté → `Start-Service postgresql-x64-16`. |
+| Port 3100 déjà pris | Un autre process tient le port → change `PORT` dans `apps/api/.env`. |
 | `project incompatible with this version` (Expo Go) | Décalage SDK — projet = SDK 54. |
 | `expo not found` | Lancer `pnpm exec expo ...` depuis `apps/mobile`. |
 | Parsing recette tourne en boucle | `GROQ_API_KEY` absent dans `apps/api/.env`. |
