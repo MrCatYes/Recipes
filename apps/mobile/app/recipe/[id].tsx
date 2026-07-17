@@ -6,7 +6,7 @@ import {
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import type { RecipeWithCost } from '@epicerie/shared-types';
-import { getRecipeCost, getProductSubstitutions, createShoppingList, addRecipeToList, getShoppingLists, deleteRecipe, rematchRecipe } from '../../lib/api';
+import { getRecipeCost, getRecipeSubstitutions, createShoppingList, addRecipeToList, getShoppingLists, deleteRecipe, rematchRecipe } from '../../lib/api';
 import { useStores, type StoreChain } from '../../lib/store-context';
 import { useFavorites } from '../../lib/favorites-context';
 import { getFoodEmoji } from '../../lib/food-emoji';
@@ -103,22 +103,10 @@ export default function RecipeDetail() {
     getRecipeCost(id)
       .then((r) => {
         setRecipe(r);
-        // Fetch substitutions for matched ingredients
-        const matched = r.ingredients.filter(i => i.productId);
-        Promise.allSettled(
-          matched.map(i =>
-            getProductSubstitutions(i.productId!, selectedStores).then(subs =>
-              subs
-                .filter(s => s.savingsCents > 0)
-                .map(s => ({ ingredientId: i.id, ...s }))
-            )
-          )
-        ).then(results => {
-          const all = results
-            .filter((r): r is PromiseFulfilledResult<typeof substitutions> => r.status === 'fulfilled')
-            .flatMap(r => r.value);
-          setSubstitutions(all);
-        });
+        // Single batched request for all substitutions (was N requests, one per ingredient)
+        getRecipeSubstitutions(id, selectedStores)
+          .then(res => setSubstitutions(res.substitutions))
+          .catch(() => { /* substitutions are optional */ });
       })
       .catch((e) => setError(String(e)))
       .finally(() => setLoading(false));
@@ -395,7 +383,7 @@ export default function RecipeDetail() {
               <Ionicons name="copy-outline" size={20} color="#2E7D32" />
             </TouchableOpacity>
           </View>
-          <Text style={styles.pantryHint}>Appuie pour marquer en stock · Maintenir pour voir les macros</Text>
+          <Text style={styles.pantryHint}>Prix = quantité utilisée dans la recette (pas le format complet) · Appuie pour marquer en stock</Text>
           {recipe.ingredients.map((ing) => {
             const prices = ing.costByStore
               .filter(p => selectedStores.includes(p.chain as StoreChain))
@@ -444,6 +432,12 @@ export default function RecipeDetail() {
                   : cheapest
                     ? <View style={styles.ingPriceWrap}>
                         <Text style={styles.ingPrice}>{formatCents(Math.round(cheapest.priceCents * servingsMultiplier))}</Text>
+                        <Text style={styles.ingPortionPrice}>{formatCents(Math.round(cheapest.priceCents * servingsMultiplier / adjustedServings))}/portion</Text>
+                        {cheapest.packagePriceCents > 0 && (
+                          <Text style={styles.ingPkgPrice}>
+                            {formatPackage(cheapest.packageSize, cheapest.packageUnit)} · {formatCents(cheapest.packagePriceCents)}
+                          </Text>
+                        )}
                         {cheapest.isPromo && <Text style={styles.ingPromo}>PROMO</Text>}
                       </View>
                     : <Text style={styles.ingNo}>—</Text>}
@@ -539,6 +533,12 @@ export default function RecipeDetail() {
 
 function formatCents(c: number) { return `${(c / 100).toFixed(2)} $`; }
 
+function formatPackage(size: number, unit: string) {
+  if (!size || Number.isNaN(size)) return unit || '';
+  const n = size % 1 === 0 ? size : Math.round(size * 10) / 10;
+  return `${n} ${unit}`.trim();
+}
+
 function MacroChip({ label, value }: { label: string; value: string }) {
   return (
     <View style={macroStyles.chip}>
@@ -610,7 +610,9 @@ const styles = StyleSheet.create({
   pantryBadgeText: { fontSize: 12, color: '#2E7D32', fontWeight: '600' },
   matchRate:     { fontSize: 12, color: '#888', textAlign: 'center', paddingVertical: 8 },
   ingPriceWrap:  { alignItems: 'flex-end', gap: 1 },
-  ingPrice:      { fontSize: 14, color: '#2E7D32', fontWeight: '600' },
+  ingPrice:      { fontSize: 14, color: '#2E7D32', fontWeight: '700' },
+  ingPortionPrice: { fontSize: 10, color: '#66A366' },
+  ingPkgPrice:   { fontSize: 10, color: '#999' },
   ingPromo:      { fontSize: 8, color: '#FF6F00', fontWeight: '700' },
   ingNo:         { fontSize: 14, color: '#ccc' },
   stepRow:       { flexDirection: 'row', paddingHorizontal: 16, paddingVertical: 6, gap: 10 },

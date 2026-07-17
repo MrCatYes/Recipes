@@ -7,6 +7,7 @@ import { computeRecipeCost } from '../services/recipe-cost.service';
 import { getRecipesByPromos } from '../services/recipe-promos.service';
 import { listRecipes, refreshRecipeCostCache, type RecipeSort } from '../services/recipe-list.service';
 import { classifyRecipe, classifyDifficulty } from '../services/recipe-classifier';
+import { findSubstitutions } from '../services/substitution.service';
 import type { ParseRecipeResponse, StoreChain } from '@epicerie/shared-types';
 
 const CHAINS = ['IGA', 'Metro', 'Maxi', 'Walmart', 'Costco', 'SuperC'] as const;
@@ -196,6 +197,33 @@ export async function recipesRoutes(app: FastifyInstance) {
     const cost = await computeRecipeCost(req.params.id);
     if (!cost) return reply.notFound('Recipe not found');
     return cost;
+  });
+
+  // GET /recipes/:id/substitutions?chains=Maxi,IGA
+  // Batched: one request returns cheaper substitutes for every matched ingredient,
+  // replacing the previous N-requests-per-recipe (one call per ingredient) pattern.
+  app.get<{ Params: { id: string } }>('/recipes/:id/substitutions', async (req, reply) => {
+    const chainsParam = (req.query as Record<string, string>).chains ?? '';
+    const chains = chainsParam ? chainsParam.split(',') : ['Maxi', 'IGA', 'Metro', 'SuperC', 'Walmart', 'Costco'];
+    const recipe = await prisma.recipe.findUnique({
+      where: { id: req.params.id },
+      include: { ingredients: { select: { id: true, productId: true } } },
+    });
+    if (!recipe) return reply.notFound('Recipe not found');
+
+    // Distinct product → first ingredient that references it
+    const byProduct = new Map<string, string>();
+    for (const ing of recipe.ingredients) {
+      if (ing.productId && !byProduct.has(ing.productId)) byProduct.set(ing.productId, ing.id);
+    }
+
+    const results = await Promise.all(
+      Array.from(byProduct.entries()).map(async ([productId, ingredientId]) => {
+        const subs = await findSubstitutions(productId, chains);
+        return subs.filter(s => s.savingsCents > 0).map(s => ({ ingredientId, ...s }));
+      })
+    );
+    return { substitutions: results.flat() };
   });
 
   // GET /recipes/:id  → recipe metadata only

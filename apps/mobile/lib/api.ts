@@ -178,6 +178,19 @@ export function getProductSubstitutions(productId: string, chains: string[]) {
   }>>(`/products/${productId}/substitutions?chains=${chains.join(',')}`);
 }
 
+// Batched: all substitutions for a recipe in one request (replaces the N-per-recipe pattern)
+export function getRecipeSubstitutions(recipeId: string, chains: string[]) {
+  const qs = chains.length ? `?chains=${chains.join(',')}` : '';
+  return apiFetch<{ substitutions: Array<{
+    ingredientId: string;
+    originalName: string;
+    substituteName: string;
+    substituteProductId: string;
+    reason: string;
+    savingsCents: number;
+  }> }>(`/recipes/${recipeId}/substitutions${qs}`);
+}
+
 export function getProductCategories() {
   return apiFetch<Array<{ category: string; count: number }>>('/products/categories');
 }
